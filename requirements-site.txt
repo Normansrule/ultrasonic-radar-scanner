@@ -2,5 +2,5 @@
 Markdown==3.10.2
 pytest==9.1.1
 # build packet PDF (scripts/make_build_packet.py)
-reportlab==4.4.10
+reportlab==5.0.1
 pillow==12.2.0
