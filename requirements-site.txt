@@ -1,5 +1,5 @@
 # Minimal set for building the GitHub Pages site and running the fast tests (no CAD kernel).
-Markdown==3.10.2
+Markdown==3.11
 pytest==9.1.1
 # build packet PDF (scripts/make_build_packet.py)
 reportlab==4.4.10
