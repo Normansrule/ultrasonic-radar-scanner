@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en" data-mode="web"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0b110e">
+<link rel="icon" href="../assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+<title>Printing · Ultrasonic Radar Scanner</title>
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head><body class="guide">
+<header class="top"><a class="brand" href="../index.html"><span class="dot"></span>Ultrasonic Radar Scanner</a>
+<nav class="toplinks"><a href="../index.html">Home</a><a href="overview.html" aria-current="page">Guide</a><a href="../live.html">Live console</a><a class="web-only" href="../flash.html">Flash</a></nav>
+<span class="badge">educational sonar · not physically validated yet</span>
+<a class="gh web-only" href="https://github.com/Normansrule/ultrasonic-radar-scanner">GitHub</a></header>
+<div class="layout"><nav class="side"><a href="overview.html">Overview</a>
+<a href="requirements.html">Requirements</a>
+<a href="bom.html">Bill of materials</a>
+<a href="printing.html" class="here">Printing</a>
+<a href="wiring.html">Wiring</a>
+<a href="assembly.html">Assembly</a>
+<a href="equations.html">Equations</a>
+<a href="live-link.html">Live link &amp; apps</a>
+<a href="validation.html">Validation log</a>
+<a href="security.html">Security &amp; safety</a>
+<a href="glossary.html">Glossary</a>
+<a href="publish.html">Publishing</a>
+<a href="credits.html">Credits &amp; sources</a>
+<a href="changelog.html">Changelog</a></nav>
+<main class="doc"><h1 id="printing">Printing</h1>
+<p>Target printer: <strong>Bambu Lab A1 mini</strong> (180 × 180 × 180 mm), 0.4 mm nozzle, PLA. Any printer with a
+build plate of at least 176 × 176 mm will take every plate; smaller printers can print the parts
+one at a time from <code>cad/stl/</code>.</p>
+<p>Status: plates, orientations and overhangs are <strong>checked on screen only</strong> (see
+<a href="validation.html"><code>VALIDATION.md</code></a>). Nothing has been printed yet.</p>
+<h2 id="which-file-do-i-open">Which file do I open?</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+<th>When to use it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cad/3mf/plate_S1_fit_coupon.3mf</code></td>
+<td>The fit-test coupon alone</td>
+<td><strong>Print first.</strong> Stage 1.</td>
+</tr>
+<tr>
+<td><code>cad/3mf/plate_S2_servo_fit_subset.3mf</code></td>
+<td>Roof + rotor hub + turret keeper</td>
+<td>Stage 2: check the servo, horn and hub before the long print.</td>
+</tr>
+<tr>
+<td><code>cad/3mf/radar_v5_a1mini_multiplate.3mf</code></td>
+<td><strong>One file, two plates</strong> (P1, P2) laid out for the A1 mini</td>
+<td>Everything, once stages 1–2 pass.</td>
+</tr>
+<tr>
+<td><code>cad/3mf/plate_P1.3mf</code></td>
+<td>Body + front panel</td>
+<td>Fallback if the multi-plate file does not open as two plates.</td>
+</tr>
+<tr>
+<td><code>cad/3mf/plate_P2.3mf</code></td>
+<td>Roof + hub + keeper + sensor head + coupon</td>
+<td>Fallback.</td>
+</tr>
+<tr>
+<td><code>cad/3mf/plate_P3_optional_shim.3mf</code></td>
+<td>0.4 mm keeper shim</td>
+<td>Only if the hub binds under the keeper (see below).</td>
+</tr>
+<tr>
+<td><code>cad/stl/*.stl</code></td>
+<td>Each part alone, already in print orientation</td>
+<td>Any slicer; re-arrange yourself.</td>
+</tr>
+<tr>
+<td><code>cad/step/*.step</code></td>
+<td>Each part in its assembled position, plus <code>assembly_v5.step</code></td>
+<td>Editing in other CAD tools, checking fit.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The multi-plate file carries Bambu-style plate metadata written by <code>scripts/render_cad.py</code>. It has
+<strong>not</strong> been opened in Bambu Studio yet — if it loads as a single plate or complains, use the
+<code>plate_P1</code> / <code>plate_P2</code> fallbacks, which are plain 3D Manufacturing Format (3MF) core files that every
+slicer reads. Moving parts are always separate objects; nothing is merged into one solid.</p>
+<p><img alt="Plate P1" src="../assets/diagrams/plate_P1.png" />
+<img alt="Plate P2" src="../assets/diagrams/plate_P2.png" /></p>
+<h2 id="slicer-settings-starting-point">Slicer settings (starting point)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Layer height</td>
+<td>0.20 mm</td>
+<td>0.4 mm shim prints as exactly two layers</td>
+</tr>
+<tr>
+<td>Walls</td>
+<td>3</td>
+<td>screw pilots need solid material around them</td>
+</tr>
+<tr>
+<td>Top / bottom layers</td>
+<td>5 / 4</td>
+<td></td>
+</tr>
+<tr>
+<td>Infill</td>
+<td>15–20 % gyroid</td>
+<td></td>
+</tr>
+<tr>
+<td>Supports</td>
+<td><strong>off</strong></td>
+<td>every overhang is designed at 45° or as a short bridge</td>
+</tr>
+<tr>
+<td>Brim</td>
+<td>5 mm on the body only, if your plate adhesion is marginal</td>
+<td>the body is the tallest, largest footprint</td>
+</tr>
+<tr>
+<td>Bridging</td>
+<td>default on</td>
+<td>see the bridges listed below</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="orientation-already-applied-in-every-stl--3mf">Orientation (already applied in every STL / 3MF)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>On the plate</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 body</td>
+<td>floor down</td>
+<td>the ledge under the roof is a 45° chamfered deck, so it needs no supports</td>
+</tr>
+<tr>
+<td>02 front panel</td>
+<td>viewer face down</td>
+<td>the LCD locators point up; engraved labels print on the first layers</td>
+</tr>
+<tr>
+<td>03 roof</td>
+<td>top face down</td>
+<td>screw bosses point up</td>
+</tr>
+<tr>
+<td>04 rotor hub</td>
+<td>flange down</td>
+<td>the horn nest on the underside is a short bridge</td>
+</tr>
+<tr>
+<td>05 turret keeper</td>
+<td>top (tick marks) down</td>
+<td>the angle ticks are engraved into the first layers</td>
+</tr>
+<tr>
+<td>06 sensor head</td>
+<td>face down</td>
+<td>the keyed mast lies flat on the plate</td>
+</tr>
+<tr>
+<td>07 shim</td>
+<td>flat</td>
+<td>two layers at 0.2 mm</td>
+</tr>
+<tr>
+<td>08 fit coupon</td>
+<td>flat</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Bridges to expect:</strong> the top edge of the LCD window in the body front wall (about 61 mm — it is
+hidden behind the front panel and the LCD has 0.4 mm clearance, so a little sag is harmless), the
+8 mm ceiling of the LCD relief pocket behind it, the side-vent and USB-C opening tops (≤ 12.5 mm) and
+the horn nest in the hub (6.8 mm).</p>
+<p><strong>Knock-out:</strong> the rear wall has a Ø7 mm hole printed with a 0.45 mm outer skin (one line). Leave it
+closed unless the power open issue forces Option A in <a href="wiring.html"><code>WIRING.md</code></a>.</p>
+<h2 id="stage-1--the-fit-test-coupon-print-this-first">Stage 1 — the fit-test coupon (print this first)</h2>
+<p><img alt="Coupon" src="../assets/diagrams/plate_S1_fit_coupon.png" /></p>
+<p>The coupon is 66 × 28 × 3 mm and tests every printed fit the build depends on. In each column of
+three small holes, the hole <strong>nearest the long edge with the engraved "V5 FIT" label is the
+smallest</strong>.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Sizes</th>
+<th>Test</th>
+<th>If it fails, change (in <code>cad/build_radar_v5.py</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pilot holes (column nearer the switch hole)</td>
+<td>1.60 / 1.70 / 1.80 mm</td>
+<td>Tap M2 by hand. Pick the smallest that taps cleanly without splitting and holds an M2 screw firmly.</td>
+<td><code>M2_PILOT_D</code> (default 1.70)</td>
+</tr>
+<tr>
+<td>Clearance holes (outer column)</td>
+<td>2.15 / 2.25 / 2.35 mm</td>
+<td>Pick the smallest an M2 screw drops through without threading.</td>
+<td><code>M2_CLEAR_D</code> (default 2.25)</td>
+</tr>
+<tr>
+<td>Servo cut-out + two flange pilots</td>
+<td>body + 0.3 mm/side, 27.5 mm pitch</td>
+<td>The servo drops through without force, the flange sits flat, both flange holes line up.</td>
+<td><code>SERVO_CUTOUT_CLR</code>, <code>SERVO_BODY_L/W</code>, <code>SERVO_HOLE_PITCH</code></td>
+</tr>
+<tr>
+<td>12 mm switch hole</td>
+<td>12.2 mm</td>
+<td>The switch pushes in and its nut tightens.</td>
+<td><code>SWITCH_PANEL_D</code></td>
+</tr>
+<tr>
+<td>Hex nut pocket</td>
+<td>4.35 mm across flats</td>
+<td>An M2 nut presses in and stays.</td>
+<td><code>M2_NUT_POCKET_AF</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Measure your purchased modules with calipers while the coupon prints and compare against every
+value marked <strong>VERIFY</strong> at the top of the CAD file (servo, horn, HC-SR04, LCD, USB-C breakout,
+ESP32, cell holder). Record what you measured in <a href="validation.html"><code>VALIDATION.md</code></a>.</p>
+<h2 id="stage-2--servo-fit-subset">Stage 2 — servo-fit subset</h2>
+<p>Print <code>plate_S2_servo_fit_subset.3mf</code> (roof, hub, keeper). Then follow
+<a href="assembly.html#stage-2--servo-fit-subset"><code>ASSEMBLY.md</code> stage 2</a>. The two numbers that matter:</p>
+<ul>
+<li>the hub's <strong>axial play</strong> under the keeper lip should be about 0.2–0.6 mm (designed: 0.4 mm);</li>
+<li>the hub must turn by hand through the full travel with the keeper screwed down.</li>
+</ul>
+<p>If the hub binds, print <code>plate_P3_optional_shim.3mf</code> and fit the 0.4 mm shim under the keeper — or,
+better, measure the real servo/horn stack and change <code>HUB_BOTTOM_ABOVE_ROOF</code>.</p>
+<h2 id="regenerating-the-files">Regenerating the files</h2>
+<p>Never edit STL/STEP/3MF by hand. Change a variable in <code>cad/build_radar_v5.py</code>, then:</p>
+<pre><code class="language-bash">python -m pip install -r requirements.txt
+python scripts/render_cad.py        # STL + STEP + 3MF + cad/geometry_report.json
+python scripts/render_previews.py   # PNG previews in hardware/diagrams/
+python -m pytest tests/             # includes the geometry-report checks
+</code></pre>
+<p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/PRINTING.md">docs/PRINTING.md</a> — generated by scripts/build_site.py</p>
+</main></div>
+<script src="../assets/pwa.js" data-root="../"></script>
+</body></html>

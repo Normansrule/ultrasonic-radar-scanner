@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en" data-mode="web"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0b110e">
+<link rel="icon" href="../assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+<title>Credits &amp; sources · Ultrasonic Radar Scanner</title>
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head><body class="guide">
+<header class="top"><a class="brand" href="../index.html"><span class="dot"></span>Ultrasonic Radar Scanner</a>
+<nav class="toplinks"><a href="../index.html">Home</a><a href="overview.html" aria-current="page">Guide</a><a href="../live.html">Live console</a><a class="web-only" href="../flash.html">Flash</a></nav>
+<span class="badge">educational sonar · not physically validated yet</span>
+<a class="gh web-only" href="https://github.com/Normansrule/ultrasonic-radar-scanner">GitHub</a></header>
+<div class="layout"><nav class="side"><a href="overview.html">Overview</a>
+<a href="requirements.html">Requirements</a>
+<a href="bom.html">Bill of materials</a>
+<a href="printing.html">Printing</a>
+<a href="wiring.html">Wiring</a>
+<a href="assembly.html">Assembly</a>
+<a href="equations.html">Equations</a>
+<a href="live-link.html">Live link &amp; apps</a>
+<a href="validation.html">Validation log</a>
+<a href="security.html">Security &amp; safety</a>
+<a href="glossary.html">Glossary</a>
+<a href="publish.html">Publishing</a>
+<a href="credits.html" class="here">Credits &amp; sources</a>
+<a href="changelog.html">Changelog</a></nav>
+<main class="doc"><h1 id="credits-and-sources">Credits and sources</h1>
+<p>Every module datasheet the design relies on, and what was taken from it. "Checked" means the value
+was read from the linked source while writing this repository (2026-09-30); "unverified" means it
+is a typical value that could not be confirmed from a primary source — treat it as a VERIFY item.</p>
+<h2 id="module-datasheets-and-product-pages">Module datasheets and product pages</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Source</th>
+<th>Used for</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ESP32-WROOM-32 module</td>
+<td><a href="https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf">Espressif ESP32-WROOM-32 datasheet</a></td>
+<td>pins, 3.3 V logic, module vs WROVER differences (GPIO16/17)</td>
+<td>checked (link); pin rules also encoded in <code>tests/test_sync.py</code></td>
+</tr>
+<tr>
+<td>ESP32 chip</td>
+<td><a href="https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf">Espressif ESP32 series datasheet</a></td>
+<td>input-high threshold 0.75·VDD, absolute maximum VDD + 0.3 V, strapping pins (0, 2, 5, 12, 15), flash pins (6–11), input-only pins (34–39)</td>
+<td>values as commonly quoted — confirm in the DC-characteristics table</td>
+</tr>
+<tr>
+<td>HC-SR04</td>
+<td><a href="https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf">ElecFreaks HC-SR04 datasheet (SparkFun mirror)</a></td>
+<td>5 V supply, 10 µs trigger, ECHO pulse width ∝ distance, ≥60 ms measurement cycle, 45 × 20 × 15 mm</td>
+<td>datasheet located; mounting-hole positions <strong>unverified</strong> (boards vary)</td>
+</tr>
+<tr>
+<td>ST7735S controller</td>
+<td><a href="https://cdn.sparkfun.com/assets/9/0/2/5/8/ST7735S_v1.1.pdf">Sitronix ST7735S v1.1 datasheet (SparkFun mirror)</a></td>
+<td>serial write clock cycle ≥ 66 ns → firmware uses 15 MHz SPI</td>
+<td>checked (TSCYCW = 66 ns)</td>
+</tr>
+<tr>
+<td>Waveshare 1.8" LCD module</td>
+<td><a href="https://www.waveshare.com/wiki/1.8inch_LCD_Module">Waveshare wiki — 1.8inch LCD Module</a></td>
+<td>56.5 × 34 mm board, 35.04 × 28.03 mm active area, 128 × 160, pin names, 3.3 V/5 V</td>
+<td>checked; active-area offset on the board <strong>unverified</strong></td>
+</tr>
+<tr>
+<td>DFRobot DFR1026</td>
+<td><a href="https://www.dfrobot.com/product-2632.html">DFRobot product page — DC-DC Charge Discharge Integrated Module (5V 2A)</a></td>
+<td>4.6–5.4 V input, 0–2.1 A charge, 5 V 0–2.1 A output, 25 × 16 mm, 2.54 mm pads, KEY: short press enables output, ~10 s press disables</td>
+<td>checked</td>
+</tr>
+<tr>
+<td>DFR1026 field reports</td>
+<td><a href="https://forum.core-electronics.com.au/t/dc-dc-charge-discharge-integrated-module-5v-2a-dfr1026/18135">Core Electronics forum thread on the DFR1026</a></td>
+<td>reports of output shutting off at light load after ~30 s and needing KEY; keep-alive nearer 100 mA</td>
+<td>user reports, <strong>not</strong> manufacturer data — basis of the open issue</td>
+</tr>
+<tr>
+<td>Adafruit 4090 USB-C breakout</td>
+<td><a href="https://www.adafruit.com/product/4090">Adafruit product 4090</a> · <a href="https://thepihut.com/products/adafruit-usb-c-breakout-board-downstream-connection-ada4090">The Pi Hut listing</a></td>
+<td>20.4 × 14.2 × 5.0 mm, 5.1 kΩ CC pull-downs so a USB-C source supplies 5 V</td>
+<td>size checked via retailer; that <strong>both</strong> CC1 and CC2 carry 5.1 kΩ should be confirmed on the board/schematic</td>
+</tr>
+<tr>
+<td>SG90 servo</td>
+<td><a href="https://www.datasheetcafe.com/sg90-datasheet-pdf-9-g-micro-servo/">TowerPro SG90 datasheet (DatasheetCafe copy)</a></td>
+<td>22.2 × 11.8 × 31 mm, 4.8–5 V, 0.1 s/60°, 10 µs dead band</td>
+<td>overall size checked; flange, hole pitch, shaft offset and horn dimensions <strong>unverified</strong></td>
+</tr>
+<tr>
+<td>Adafruit PowerBoost 1000C (Option B only)</td>
+<td><a href="https://learn.adafruit.com/adafruit-powerboost-1000c-load-share-usb-charge-boost/pinouts">Adafruit learn guide — pinouts</a></td>
+<td>EN pulled high by default; tie EN to GND to turn the boost off; USB pad is the charge input</td>
+<td>checked; charging with EN low and current headroom <strong>unverified</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="software-and-references">Software and references</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ESP Web Tools 10.4.0 (browser flasher)</td>
+<td><a href="https://github.com/esphome/esp-web-tools">github.com/esphome/esp-web-tools</a> (Apache-2.0), loaded from unpkg.com on the Flash page</td>
+</tr>
+<tr>
+<td>ReportLab 4.4 (build packet PDF)</td>
+<td><a href="https://www.reportlab.com/opensource/">reportlab.com/opensource</a> (BSD)</td>
+</tr>
+<tr>
+<td>DejaVu Sans fonts (in <code>manufacturing/fonts/</code>)</td>
+<td><a href="https://dejavu-fonts.github.io/">dejavu-fonts.github.io</a> — Bitstream Vera licence, copy in <code>manufacturing/fonts/LICENSE-DejaVu.txt</code></td>
+</tr>
+<tr>
+<td>Arduino-ESP32 core, LEDC API</td>
+<td><a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/ledc.html">Espressif — LEDC API</a> and the <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/migration_guides/2.x_to_3.0.html">2.x → 3.0 migration guide</a> (ledcSetup/ledcAttachPin → ledcAttach)</td>
+</tr>
+<tr>
+<td>Adafruit GFX Library 1.12.6</td>
+<td><a href="https://github.com/adafruit/Adafruit-GFX-Library">github.com/adafruit/Adafruit-GFX-Library</a> (BSD licence)</td>
+</tr>
+<tr>
+<td>Adafruit ST7735 and ST7789 Library 1.11.0</td>
+<td><a href="https://github.com/adafruit/Adafruit-ST7735-Library">github.com/adafruit/Adafruit-ST7735-Library</a> (MIT licence)</td>
+</tr>
+<tr>
+<td>Adafruit BusIO 1.17.4</td>
+<td><a href="https://github.com/adafruit/Adafruit_BusIO">github.com/adafruit/Adafruit_BusIO</a> (MIT licence)</td>
+</tr>
+<tr>
+<td>CadQuery 2.8</td>
+<td><a href="https://github.com/CadQuery/cadquery">github.com/CadQuery/cadquery</a> (Apache 2.0)</td>
+</tr>
+<tr>
+<td>arduino-cli sketch profiles</td>
+<td><a href="https://arduino.github.io/arduino-cli/latest/sketch-project-file/">Arduino CLI — sketch project file</a></td>
+</tr>
+<tr>
+<td>OWASP Top 10:2025 — A03 Software Supply Chain Failures</td>
+<td><a href="https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/">owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures</a></td>
+</tr>
+<tr>
+<td>Speed of sound in air, $v ≈ 331.3 + 0.606\,T$</td>
+<td>standard linear approximation for dry air near room temperature; e.g. <a href="https://en.wikipedia.org/wiki/Speed_of_sound">Wikipedia — Speed of sound</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>The display simulator (<code>scripts/sim_display.py</code>) reads the 5×7 font from your locally installed
+Adafruit GFX library at run time; the font is not redistributed here.</p>
+<h2 id="people">People</h2>
+<p>Design, brief and project ownership: Aleksander Norman. Repository structure, CadQuery model,
+firmware, generators and documentation drafted with AI assistance (Claude, Anthropic) and to be
+reviewed and physically validated by the maintainer.</p>
+<p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/CREDITS.md">CREDITS.md</a> — generated by scripts/build_site.py</p>
+</main></div>
+<script src="../assets/pwa.js" data-root="../"></script>
+</body></html>

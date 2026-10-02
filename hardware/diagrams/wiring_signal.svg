@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 810 956" width="810" height="956" role="img" aria-label="Radar V5.1 — signal wiring">
+<rect width="810" height="956" fill="#ffffff"/>
+<text x="30" y="40" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:22px;font-weight:bold" fill="#111">Radar V5.1 — signal wiring</text>
+<text x="30" y="64" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px" fill="#555">HC-SR04 through the ECHO divider, servo PWM, LCD over SPI.</text>
+<g class="net" data-net="GND">
+<line x1="288" y1="633.5" x2="288" y2="649.5" stroke="#111418" stroke-width="3.2" stroke-linecap="round"/>
+<text transform="translate(292,158) rotate(-60)" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#111418">GND</text>
+<line x1="288" y1="162" x2="288" y2="633.5" stroke="#111418" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+</g>
+<g class="net" data-net="ECHO_5V">
+<line x1="314" y1="445.5" x2="314" y2="534.5" stroke="#e67700" stroke-width="3.2" stroke-linecap="round"/>
+<text transform="translate(318,158) rotate(-60)" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#e67700">ECHO_5V</text>
+<line x1="314" y1="162" x2="314" y2="445.5" stroke="#e67700" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+</g>
+<g class="net" data-net="ECHO_3V">
+<line x1="340" y1="225.5" x2="340" y2="628.5" stroke="#2f9e44" stroke-width="3.2" stroke-linecap="round"/>
+<text transform="translate(344,158) rotate(-60)" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#2f9e44">ECHO_3V</text>
+<line x1="340" y1="162" x2="340" y2="225.5" stroke="#2f9e44" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+</g>
+<g class="net" data-net="TRIG">
+<line x1="366" y1="204.5" x2="366" y2="440.5" stroke="#1c7ed6" stroke-width="3.2" stroke-linecap="round"/>
+<text transform="translate(370,158) rotate(-60)" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#1c7ed6">TRIG</text>
+<line x1="366" y1="162" x2="366" y2="204.5" stroke="#1c7ed6" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+</g>
+<g class="net" data-net="SERVO_PWM">
+<line x1="392" y1="246.5" x2="392" y2="722.5" stroke="#0c8599" stroke-width="3.2" stroke-linecap="round"/>
+<text transform="translate(396,158) rotate(-60)" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#0c8599">SERVO_PWM</text>
+<line x1="392" y1="162" x2="392" y2="246.5" stroke="#0c8599" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+</g>
+<g class="net" data-net="TFT_MOSI">
+<line x1="418" y1="267.5" x2="418" y2="795.5" stroke="#1971c2" stroke-width="3.2" stroke-linecap="round"/>
+<text transform="translate(422,158) rotate(-60)" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#1971c2">TFT_MOSI</text>
+<line x1="418" y1="162" x2="418" y2="267.5" stroke="#1971c2" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+</g>
+<g class="net" data-net="TFT_SCK">
+<line x1="444" y1="288.5" x2="444" y2="816.5" stroke="#5f3dc4" stroke-width="3.2" stroke-linecap="round"/>
+<text transform="translate(448,158) rotate(-60)" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#5f3dc4">TFT_SCK</text>
+<line x1="444" y1="162" x2="444" y2="288.5" stroke="#5f3dc4" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+</g>
+<g class="net" data-net="TFT_CS">
+<line x1="470" y1="309.5" x2="470" y2="837.5" stroke="#087f5b" stroke-width="3.2" stroke-linecap="round"/>
+<text transform="translate(474,158) rotate(-60)" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#087f5b">TFT_CS</text>
+<line x1="470" y1="162" x2="470" y2="309.5" stroke="#087f5b" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+</g>
+<g class="net" data-net="TFT_DC">
+<line x1="496" y1="330.5" x2="496" y2="858.5" stroke="#9c36b5" stroke-width="3.2" stroke-linecap="round"/>
+<text transform="translate(500,158) rotate(-60)" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#9c36b5">TFT_DC</text>
+<line x1="496" y1="162" x2="496" y2="330.5" stroke="#9c36b5" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+</g>
+<g class="net" data-net="TFT_RST">
+<line x1="522" y1="351.5" x2="522" y2="879.5" stroke="#a61e4d" stroke-width="3.2" stroke-linecap="round"/>
+<text transform="translate(526,158) rotate(-60)" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#a61e4d">TFT_RST</text>
+<line x1="522" y1="162" x2="522" y2="351.5" stroke="#a61e4d" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>
+</g>
+<g class="net" data-net="TRIG" data-row="S01">
+<title>S01 ESP32.GPIO27 → TRIG — 10 µs trigger pulse</title>
+<line x1="568" y1="212.5" x2="366" y2="212.5" stroke="#1c7ed6" stroke-width="2"/>
+<circle cx="366" cy="212.5" r="4.2" fill="#1c7ed6" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="TRIG" data-row="S02">
+<title>S02 SR04.TRIG → TRIG</title>
+<line x1="568" y1="432.5" x2="366" y2="432.5" stroke="#1c7ed6" stroke-width="2"/>
+<circle cx="366" cy="432.5" r="4.2" fill="#1c7ed6" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="ECHO_5V" data-row="S03">
+<title>S03 SR04.ECHO → ECHO_5V — 5 V pulse — never straight to a GPIO</title>
+<line x1="568" y1="453.5" x2="314" y2="453.5" stroke="#e67700" stroke-width="2"/>
+<circle cx="314" cy="453.5" r="4.2" fill="#e67700" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="ECHO_5V" data-row="S04">
+<title>S04 R1.1 → ECHO_5V — R1 = 2.2 kΩ 1 %</title>
+<line x1="568" y1="526.5" x2="314" y2="526.5" stroke="#e67700" stroke-width="2"/>
+<circle cx="314" cy="526.5" r="4.2" fill="#e67700" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="ECHO_3V" data-row="S05">
+<title>S05 R1.2 → ECHO_3V — divider junction</title>
+<line x1="568" y1="547.5" x2="340" y2="547.5" stroke="#2f9e44" stroke-width="2"/>
+<circle cx="340" cy="547.5" r="4.2" fill="#2f9e44" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="ECHO_3V" data-row="S06">
+<title>S06 R2.1 → ECHO_3V — R2 = 3.3 kΩ 1 %</title>
+<line x1="568" y1="620.5" x2="340" y2="620.5" stroke="#2f9e44" stroke-width="2"/>
+<circle cx="340" cy="620.5" r="4.2" fill="#2f9e44" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="GND" data-row="S07">
+<title>S07 R2.2 → GND</title>
+<line x1="568" y1="641.5" x2="288" y2="641.5" stroke="#111418" stroke-width="2"/>
+<circle cx="288" cy="641.5" r="4.2" fill="#111418" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="ECHO_3V" data-row="S08">
+<title>S08 ESP32.GPIO26 → ECHO_3V — ≈3.0 V high level</title>
+<line x1="568" y1="233.5" x2="340" y2="233.5" stroke="#2f9e44" stroke-width="2"/>
+<circle cx="340" cy="233.5" r="4.2" fill="#2f9e44" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="SERVO_PWM" data-row="S09">
+<title>S09 ESP32.GPIO14 → SERVO_PWM — 50 Hz LEDC output</title>
+<line x1="568" y1="254.5" x2="392" y2="254.5" stroke="#0c8599" stroke-width="2"/>
+<circle cx="392" cy="254.5" r="4.2" fill="#0c8599" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="SERVO_PWM" data-row="S10">
+<title>S10 SERVO.SIGNAL → SERVO_PWM — orange/yellow lead</title>
+<line x1="568" y1="714.5" x2="392" y2="714.5" stroke="#0c8599" stroke-width="2"/>
+<circle cx="392" cy="714.5" r="4.2" fill="#0c8599" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="TFT_MOSI" data-row="S11">
+<title>S11 ESP32.GPIO23 → TFT_MOSI — LCD pin labelled DIN</title>
+<line x1="568" y1="275.5" x2="418" y2="275.5" stroke="#1971c2" stroke-width="2"/>
+<circle cx="418" cy="275.5" r="4.2" fill="#1971c2" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="TFT_MOSI" data-row="S12">
+<title>S12 LCD.DIN → TFT_MOSI</title>
+<line x1="568" y1="787.5" x2="418" y2="787.5" stroke="#1971c2" stroke-width="2"/>
+<circle cx="418" cy="787.5" r="4.2" fill="#1971c2" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="TFT_SCK" data-row="S13">
+<title>S13 ESP32.GPIO18 → TFT_SCK — LCD pin labelled CLK</title>
+<line x1="568" y1="296.5" x2="444" y2="296.5" stroke="#5f3dc4" stroke-width="2"/>
+<circle cx="444" cy="296.5" r="4.2" fill="#5f3dc4" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="TFT_SCK" data-row="S14">
+<title>S14 LCD.CLK → TFT_SCK</title>
+<line x1="568" y1="808.5" x2="444" y2="808.5" stroke="#5f3dc4" stroke-width="2"/>
+<circle cx="444" cy="808.5" r="4.2" fill="#5f3dc4" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="TFT_CS" data-row="S15">
+<title>S15 ESP32.GPIO33 → TFT_CS — not GPIO5 (boot strapping pin)</title>
+<line x1="568" y1="317.5" x2="470" y2="317.5" stroke="#087f5b" stroke-width="2"/>
+<circle cx="470" cy="317.5" r="4.2" fill="#087f5b" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="TFT_CS" data-row="S16">
+<title>S16 LCD.CS → TFT_CS</title>
+<line x1="568" y1="829.5" x2="470" y2="829.5" stroke="#087f5b" stroke-width="2"/>
+<circle cx="470" cy="829.5" r="4.2" fill="#087f5b" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="TFT_DC" data-row="S17">
+<title>S17 ESP32.GPIO17 → TFT_DC — LCD pin labelled DC (sometimes A0)</title>
+<line x1="568" y1="338.5" x2="496" y2="338.5" stroke="#9c36b5" stroke-width="2"/>
+<circle cx="496" cy="338.5" r="4.2" fill="#9c36b5" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="TFT_DC" data-row="S18">
+<title>S18 LCD.DC → TFT_DC</title>
+<line x1="568" y1="850.5" x2="496" y2="850.5" stroke="#9c36b5" stroke-width="2"/>
+<circle cx="496" cy="850.5" r="4.2" fill="#9c36b5" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="TFT_RST" data-row="S19">
+<title>S19 ESP32.GPIO16 → TFT_RST</title>
+<line x1="568" y1="359.5" x2="522" y2="359.5" stroke="#a61e4d" stroke-width="2"/>
+<circle cx="522" cy="359.5" r="4.2" fill="#a61e4d" stroke="#fff" stroke-width="1.2"/>
+</g>
+<g class="net" data-net="TFT_RST" data-row="S20">
+<title>S20 LCD.RST → TFT_RST</title>
+<line x1="568" y1="871.5" x2="522" y2="871.5" stroke="#a61e4d" stroke-width="2"/>
+<circle cx="522" cy="871.5" r="4.2" fill="#a61e4d" stroke="#fff" stroke-width="1.2"/>
+</g>
+<rect x="568" y="170" width="212" height="204" rx="7" fill="#f6f8f7" stroke="#2b3a33" stroke-width="1.6"/>
+<rect x="568" y="170" width="212" height="26" rx="7" fill="#1f3b2d"/>
+<rect x="568" y="188" width="212" height="8" fill="#1f3b2d"/>
+<text x="578" y="188" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#d9f7e3">ESP32-WROOM-32 DevKit</text>
+<text x="578" y="216.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">GPIO27</text>
+<text x="578" y="237.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">GPIO26</text>
+<text x="578" y="258.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">GPIO14</text>
+<text x="578" y="279.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">GPIO23</text>
+<text x="578" y="300.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">GPIO18</text>
+<text x="578" y="321.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">GPIO33</text>
+<text x="578" y="342.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">GPIO17</text>
+<text x="578" y="363.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">GPIO16</text>
+<rect x="568" y="390" width="212" height="78" rx="7" fill="#f6f8f7" stroke="#2b3a33" stroke-width="1.6"/>
+<rect x="568" y="390" width="212" height="26" rx="7" fill="#1f3b2d"/>
+<rect x="568" y="408" width="212" height="8" fill="#1f3b2d"/>
+<text x="578" y="408" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#d9f7e3">HC-SR04</text>
+<text x="578" y="436.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">TRIG</text>
+<text x="578" y="457.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">ECHO</text>
+<rect x="568" y="484" width="212" height="78" rx="7" fill="#f6f8f7" stroke="#2b3a33" stroke-width="1.6"/>
+<rect x="568" y="484" width="212" height="26" rx="7" fill="#1f3b2d"/>
+<rect x="568" y="502" width="212" height="8" fill="#1f3b2d"/>
+<text x="578" y="502" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#d9f7e3">R1 2.2 kΩ</text>
+<text x="578" y="530.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">1</text>
+<text x="578" y="551.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">2</text>
+<rect x="568" y="578" width="212" height="78" rx="7" fill="#f6f8f7" stroke="#2b3a33" stroke-width="1.6"/>
+<rect x="568" y="578" width="212" height="26" rx="7" fill="#1f3b2d"/>
+<rect x="568" y="596" width="212" height="8" fill="#1f3b2d"/>
+<text x="578" y="596" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#d9f7e3">R2 3.3 kΩ</text>
+<text x="578" y="624.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">1</text>
+<text x="578" y="645.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">2</text>
+<rect x="568" y="672" width="212" height="57" rx="7" fill="#f6f8f7" stroke="#2b3a33" stroke-width="1.6"/>
+<rect x="568" y="672" width="212" height="26" rx="7" fill="#1f3b2d"/>
+<rect x="568" y="690" width="212" height="8" fill="#1f3b2d"/>
+<text x="578" y="690" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#d9f7e3">SG90-size servo</text>
+<text x="578" y="718.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">SIGNAL</text>
+<rect x="568" y="745" width="212" height="141" rx="7" fill="#f6f8f7" stroke="#2b3a33" stroke-width="1.6"/>
+<rect x="568" y="745" width="212" height="26" rx="7" fill="#1f3b2d"/>
+<rect x="568" y="763" width="212" height="8" fill="#1f3b2d"/>
+<text x="578" y="763" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#d9f7e3">ST7735S 1.8" LCD</text>
+<text x="578" y="791.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">DIN</text>
+<text x="578" y="812.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">CLK</text>
+<text x="578" y="833.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">CS</text>
+<text x="578" y="854.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">DC</text>
+<text x="578" y="875.5" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#111">RST</text>
+<text x="30" y="918" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#666">Generated from the NETLIST table in docs/WIRING.md by scripts/gen_diagrams.py — do not edit by hand.</text>
+<text x="30" y="936" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#666">Dots mark connections; lines that cross without a dot are not connected. Follow labels, not wire colours.</text>
+</svg>

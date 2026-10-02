@@ -1,0 +1,198 @@
+name: Release
+
+# Push a tag like v5.2.0 (matching app/package.json "version") to build:
+#   source ZIP + SBOM, manufacturing kit, ESP32 firmware images, desktop apps for
+#   Linux / Windows / macOS, SHA256SUMS, and a Sigstore-signed build-provenance
+#   attestation for every file.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to rebuild (e.g. v5.2.0)"
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  TAG: ${{ github.event.inputs.tag || github.ref_name }}
+
+jobs:
+  source:
+    name: Source ZIP + checks
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - name: Tag matches the app version
+        run: |
+          v="v$(python -c "import json;print(json.load(open('app/package.json'))['version'])")"
+          [ "$v" = "$TAG" ] || { echo "Tag $TAG does not match app/package.json version $v"; exit 1; }
+      - run: python -m pip install -r requirements-site.txt
+      - run: python -m pytest -q tests
+      - run: node --test tests/js/*.test.js
+      - run: python scripts/make_release_zip.py --version "$TAG" --out dist
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: source
+          path: |
+            dist/*.zip
+            dist/toolchain.cdx.json
+          if-no-files-found: error
+
+  firmware:
+    name: Firmware images
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - run: python -m pip install pyserial==3.5
+      - uses: arduino/setup-arduino-cli@81d310742121c928ea9c8bbd407b4217b432ae02 # v2.0.0
+        with:
+          version: 1.2.2
+      - name: Compile (pinned core 3.x profile)
+        run: arduino-cli compile --profile esp32-core3 --warnings all --output-dir build/fw firmware/Radar_V5
+      - name: Name the images
+        run: |
+          mkdir -p dist
+          cp build/fw/Radar_V5.ino.merged.bin "dist/radar_v5_esp32_${TAG}_merged.bin"
+          cp build/fw/Radar_V5.ino.bin "dist/radar_v5_esp32_${TAG}_app.bin"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: firmware
+          path: dist/*.bin
+          if-no-files-found: error
+
+  desktop:
+    name: Desktop app (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux, os: ubuntu-24.04, args: "--linux AppImage tar.gz --x64" }
+          - { name: windows, os: windows-2022, args: "--win" }
+          - { name: macos, os: macos-14, args: "--mac" }
+    defaults:
+      run:
+        shell: bash
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"   # unsigned builds; see docs/LIVE_LINK.md
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: python -m pip install -r requirements-site.txt
+      - name: Install pinned Electron toolchain
+        working-directory: app
+        run: npm ci --no-audit --no-fund
+      - name: Bundle the offline web pages
+        run: python scripts/build_site.py --app --out app/web
+      - name: Smoke test (Linux)
+        if: matrix.name == 'linux'
+        working-directory: app
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y xvfb
+          xvfb-run -a npx electron . --no-sandbox --smoke-test
+      - name: Build installers
+        working-directory: app
+        run: npx electron-builder ${{ matrix.args }} --publish never
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: desktop-${{ matrix.name }}
+          path: |
+            app/dist/*.AppImage
+            app/dist/*.tar.gz
+            app/dist/*.exe
+            app/dist/*.dmg
+          if-no-files-found: error
+
+  publish:
+    name: Publish release
+    needs: [source, firmware, desktop]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write        # create / update the GitHub release
+      id-token: write        # Sigstore signing for the attestation
+      attestations: write    # store the build-provenance attestation
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Manufacturing kit (build packet regenerated from the tagged sources)
+        run: |
+          python -m pip install -r requirements-site.txt
+          python scripts/export_mfg.py --check
+          python scripts/make_build_packet.py
+          python scripts/make_mfg_kit.py --version "$TAG" --out dist --firmware-dir dist \
+            --repo "https://github.com/$GITHUB_REPOSITORY"
+      - name: Checksums
+        run: |
+          cd dist
+          ls -la
+          sha256sum -- * > SHA256SUMS
+          cat SHA256SUMS
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            dist/*.zip
+            dist/*.bin
+            dist/*.AppImage
+            dist/*.tar.gz
+            dist/*.exe
+            dist/*.dmg
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          cat > notes.md <<NOTES
+          Educational ultrasonic (sonar) instrument with a radar-style display — **not RF radar, not a safety device**.
+          See docs/VALIDATION.md for what has and has not been physically validated.
+
+          **Downloads**
+          - Web app (no install): https://${GITHUB_REPOSITORY_OWNER,,}.github.io/${GITHUB_REPOSITORY#*/}/
+          - Windows: \`*-win-x64.exe\` (installer) or \`*-portable-x64.exe\`
+          - macOS: \`*-mac-arm64.dmg\` (Apple silicon) or \`*-mac-x64.dmg\` (Intel)
+          - Linux: \`*-linux-x86_64.AppImage\` or \`*-linux-x64.tar.gz\`
+          - **Manufacturing kit:** \`ultrasonic-radar-scanner-mfg-kit-${TAG}.zip\` — build packet PDF, BOM and wire-list CSVs, 3MF/STL/STEP, diagrams, firmware
+          - Firmware: \`radar_v5_esp32_${TAG}_merged.bin\` (flash at 0x0) — or use the web app's Flash page
+          - Source: \`ultrasonic-radar-scanner-${TAG}.zip\`, toolchain SBOM \`toolchain.cdx.json\`
+
+          The desktop apps are **unsigned** (Windows SmartScreen / macOS Gatekeeper will warn).
+          Verify: \`sha256sum -c SHA256SUMS\` and \`gh attestation verify <file> -R ${GITHUB_REPOSITORY}\`.
+          NOTES
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/* --clobber
+          else
+            gh release create "$TAG" dist/* --title "Ultrasonic Radar Scanner $TAG" --notes-file notes.md
+          fi

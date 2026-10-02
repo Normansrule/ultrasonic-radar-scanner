@@ -1,0 +1,9 @@
+part,role,plate,print_size_mm,solid_volume_cm3,pla_g_upper_bound,orientation,stl,step
+01_body,required,P1,128.0 x 96.0 x 52.0,114.5,141.9,floor on the plate; 45-degree deck needs no supports,cad/stl/01_body.stl,cad/step/01_body.step
+02_front_panel,required,P1,118.0 x 52.0 x 6.6,13.2,16.4,viewer face on the plate; locators up,cad/stl/02_front_panel.stl,cad/step/02_front_panel.step
+03_roof,required,P2,120.0 x 74.0 x 8.0,24.7,30.6,top face on the plate; bosses up,cad/stl/03_roof.stl,cad/step/03_roof.step
+04_rotor_hub,required,P2,38.0 x 38.0 x 15.0,8.6,10.7,flange on the plate; horn nest bridges,cad/stl/04_rotor_hub.stl,cad/step/04_rotor_hub.step
+05_turret_keeper,required,P2,54.0 x 54.0 x 20.0,34.3,42.5,lip/top face on the plate,cad/stl/05_turret_keeper.stl,cad/step/05_turret_keeper.step
+06_sensor_head,required,P2,53.0 x 39.0 x 10.0,7.6,9.5,face-down; mast lies on the plate,cad/stl/06_sensor_head.stl,cad/step/06_sensor_head.step
+07_keeper_shim_0p4mm,optional,P3_optional_shim,54.0 x 54.0 x 0.4,0.6,0.8,flat; two layers at 0.2 mm,cad/stl/07_keeper_shim_0p4mm.stl,cad/step/07_keeper_shim_0p4mm.step
+08_fit_test_coupon,print first - test piece,P2,66.0 x 28.0 x 3.0,4.2,5.2,flat; print this first,cad/stl/08_fit_test_coupon.stl,cad/step/08_fit_test_coupon.step

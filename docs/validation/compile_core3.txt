@@ -1,0 +1,26 @@
+# Compile record — core path 3.x (RECORDED, not a bench test)
+date_utc: 2026-10-01T00:03:29Z
+arduino-cli: 1.2.2
+source_sha256: 4c57fa12f1f133381276cd98cd09fa72d326b68bdb657aeedcc1f51848208a35  (firmware/Radar_V5/Radar_V5.ino)
+fqbn: esp32:esp32:esp32 (ESP32 Dev Module, defaults)
+flags: --warnings all
+Sketch uses 326215 bytes (24%) of program storage space. Maximum is 1310720 bytes.
+Global variables use 24504 bytes (7%) of dynamic memory, leaving 303176 bytes for local variables. Maximum is 327680 bytes.
+warnings: 0
+errors: 0
+app_bin_sha256: 19bbd15cf7ea6920ebf3b40be699cabc428a7994a1393e407f216576f455c487
+
+## toolchain used
+platform: esp32:esp32 3.3.12 (Espressif package index)
+Adafruit GFX Library 1.12.6            git ac6d7c3869a693d406f77b9bfcd486b0673169f0
+Adafruit ST7735 and ST7789 Library 1.11.0  git 62112b90eddcb2ecc51f474e9fe98b68eb26cb2a
+Adafruit BusIO 1.17.4                  git 3b8364267c3ee6e16bad91bc2101aefbd5b5915f
+
+## environment notes (honest)
+- Built in a cloud Linux sandbox whose network blocked downloads.arduino.cc, so the
+  libraries were cloned from their GitHub release tags and the Arduino ctags
+  prototype generator was replaced by a no-op (the sketch declares every
+  function before use, so no generated prototypes are needed).
+- The same sketch should be re-compiled on a normal install with
+  'arduino-cli compile --profile esp32-core3' before flashing.
+- NOT flashed. NOT run on hardware. No display, servo, sensor or power test.

@@ -1,0 +1,324 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:77257950-1258-5c42-9d41-2370403d0960",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "type": "application",
+      "name": "ultrasonic-radar-scanner",
+      "version": "5.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "generated-from",
+        "value": "firmware/Radar_V5/sketch.yaml, requirements.txt, app/package-lock.json"
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "framework",
+      "name": "esp32:esp32",
+      "version": "2.0.17",
+      "purl": "pkg:github/espressif/arduino-esp32@2.0.17",
+      "externalReferences": [
+        {
+          "type": "distribution",
+          "url": "https://github.com/espressif/arduino-esp32"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-2.1-or-later"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "role",
+          "value": "firmware toolchain"
+        }
+      ]
+    },
+    {
+      "type": "framework",
+      "name": "esp32:esp32",
+      "version": "3.3.12",
+      "purl": "pkg:github/espressif/arduino-esp32@3.3.12",
+      "externalReferences": [
+        {
+          "type": "distribution",
+          "url": "https://github.com/espressif/arduino-esp32"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-2.1-or-later"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "role",
+          "value": "firmware toolchain"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Adafruit BusIO",
+      "version": "1.17.4",
+      "purl": "pkg:github/adafruit/Adafruit_BusIO@1.17.4",
+      "properties": [
+        {
+          "name": "role",
+          "value": "firmware library"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/adafruit/Adafruit_BusIO"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Adafruit GFX Library",
+      "version": "1.12.6",
+      "purl": "pkg:github/adafruit/Adafruit-GFX-Library@1.12.6",
+      "properties": [
+        {
+          "name": "role",
+          "value": "firmware library"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/adafruit/Adafruit-GFX-Library"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Adafruit ST7735 and ST7789 Library",
+      "version": "1.11.0",
+      "purl": "pkg:github/adafruit/Adafruit-ST7735-Library@1.11.0",
+      "properties": [
+        {
+          "name": "role",
+          "value": "firmware library"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/adafruit/Adafruit-ST7735-Library"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "cadquery",
+      "version": "2.8.0",
+      "purl": "pkg:pypi/cadquery@2.8.0",
+      "properties": [
+        {
+          "name": "role",
+          "value": "python tooling"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "cadquery-ocp",
+      "version": "7.9.3.1.1",
+      "purl": "pkg:pypi/cadquery-ocp@7.9.3.1.1",
+      "properties": [
+        {
+          "name": "role",
+          "value": "python tooling"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Markdown",
+      "version": "3.10.2",
+      "purl": "pkg:pypi/markdown@3.10.2",
+      "properties": [
+        {
+          "name": "role",
+          "value": "python tooling"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "matplotlib",
+      "version": "3.10.9",
+      "purl": "pkg:pypi/matplotlib@3.10.9",
+      "properties": [
+        {
+          "name": "role",
+          "value": "python tooling"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "numpy",
+      "version": "2.4.4",
+      "purl": "pkg:pypi/numpy@2.4.4",
+      "properties": [
+        {
+          "name": "role",
+          "value": "python tooling"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pillow",
+      "version": "12.2.0",
+      "purl": "pkg:pypi/pillow@12.2.0",
+      "properties": [
+        {
+          "name": "role",
+          "value": "python tooling"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pytest",
+      "version": "9.1.1",
+      "purl": "pkg:pypi/pytest@9.1.1",
+      "properties": [
+        {
+          "name": "role",
+          "value": "python tooling"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "trimesh",
+      "version": "5.1.0",
+      "purl": "pkg:pypi/trimesh@5.1.0",
+      "properties": [
+        {
+          "name": "role",
+          "value": "python tooling"
+        }
+      ]
+    },
+    {
+      "type": "framework",
+      "name": "electron",
+      "version": "44.5.1",
+      "purl": "pkg:npm/electron@44.5.1",
+      "properties": [
+        {
+          "name": "role",
+          "value": "desktop app toolchain"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "971ec06281488b2bc4be0be9c963bd90e0bad31b4d3e988f640b61e859a0f4dbadce908030bc295256816361177d9c888147731262cc8fd2af2b456ba24975c9"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "electron-builder",
+      "version": "26.15.3",
+      "purl": "pkg:npm/electron-builder@26.15.3",
+      "properties": [
+        {
+          "name": "role",
+          "value": "desktop app toolchain"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "6b528ce617aa4b7810099ce2cd7108f118c9cb7415a2050b3dd792927b7beae2c3a41216fc70c6b0c83f5e03f4ae23fa3c8f423ac46f1484ca2860ea03c7c9c4"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "katex",
+      "version": "0.16.47",
+      "purl": "pkg:npm/katex@0.16.47",
+      "properties": [
+        {
+          "name": "role",
+          "value": "desktop app toolchain"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "11ea3c62cd5da14d73fb1f0066c3e942efa9fd0719048e4f78ea3b40641dcb6c769b4314fe161a8016c63a65f0af92956c47d5b96bfd2e99d059e7a1a20bab8e"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    }
+  ]
+}

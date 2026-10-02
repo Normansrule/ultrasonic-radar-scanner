@@ -1,0 +1,10 @@
+* text=auto eol=lf
+*.stl binary
+*.step linguist-generated=true
+*.3mf binary
+*.png binary
+*.gif binary
+cad/stl/** linguist-generated=true
+cad/step/** linguist-generated=true
+cad/3mf/** linguist-generated=true
+hardware/diagrams/** linguist-generated=true

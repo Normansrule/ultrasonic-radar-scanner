@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" data-mode="web"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0b110e">
+<link rel="icon" href="../assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+<title>Changelog · Ultrasonic Radar Scanner</title>
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head><body class="guide">
+<header class="top"><a class="brand" href="../index.html"><span class="dot"></span>Ultrasonic Radar Scanner</a>
+<nav class="toplinks"><a href="../index.html">Home</a><a href="overview.html" aria-current="page">Guide</a><a href="../live.html">Live console</a><a class="web-only" href="../flash.html">Flash</a></nav>
+<span class="badge">educational sonar · not physically validated yet</span>
+<a class="gh web-only" href="https://github.com/Normansrule/ultrasonic-radar-scanner">GitHub</a></header>
+<div class="layout"><nav class="side"><a href="overview.html">Overview</a>
+<a href="requirements.html">Requirements</a>
+<a href="bom.html">Bill of materials</a>
+<a href="printing.html">Printing</a>
+<a href="wiring.html">Wiring</a>
+<a href="assembly.html">Assembly</a>
+<a href="equations.html">Equations</a>
+<a href="live-link.html">Live link &amp; apps</a>
+<a href="validation.html">Validation log</a>
+<a href="security.html">Security &amp; safety</a>
+<a href="glossary.html">Glossary</a>
+<a href="publish.html">Publishing</a>
+<a href="credits.html">Credits &amp; sources</a>
+<a href="changelog.html" class="here">Changelog</a></nav>
+<main class="doc"><h1 id="changelog">Changelog</h1>
+<h2 id="520--2026-10-02-manufacturing-package">5.2.0 — 2026-10-02 (manufacturing package)</h2>
+<p>Hardware baseline unchanged (Radar V5.1). Nothing has been physically validated yet.</p>
+<ul>
+<li><code>docs/REQUIREMENTS.md</code>: 36 numbered requirements with verification method and evidence, status
+  generated from <code>VALIDATION.md</code> (<code>scripts/gen_traceability.py</code>) plus a status graphic.</li>
+<li><code>manufacturing/</code>: spreadsheet-ready <code>bom.csv</code>, <code>printed_parts.csv</code>, pin-by-pin <code>wiring_pins.csv</code>,
+  point-to-point <code>wire_list.csv</code> (W01–W28), and a printable <code>build_packet.pdf</code> traveller with tick
+  boxes for parts, wires, gates and physical tests — all generated from the docs.</li>
+<li>Visual parts-kit overview (<code>hardware/diagrams/bom_overview.svg</code>).</li>
+<li>Browser firmware flasher (Flash page, ESP Web Tools) fed by a firmware image compiled in the Pages
+  workflow; firmware images attached to releases.</li>
+<li>Release now also attaches a <strong>manufacturing kit</strong> ZIP (3D files, CSVs, build packet, diagrams, firmware).</li>
+<li>README rewritten to be short and visual.</li>
+</ul>
+<h2 id="510--2026-10-02-repository-baseline">5.1.0 — 2026-10-02 (repository baseline)</h2>
+<p>First open-source packaging of the Radar V5.1 baseline. Nothing in this release has been physically
+validated; see <code>docs/VALIDATION.md</code>.</p>
+<p>Repository
+- CadQuery model of record with every dimension as a named variable and VERIFY marks; one script
+  regenerates STL (print orientation), STEP (assembled position + assembly), an A1 mini
+  multi-plate 3MF, core-spec plate fallbacks and build-stage plates.
+- Recorded geometry checks (79): valid solids, nominal sizes, watertight meshes, plate fit,
+  22 interference pairs, ±75° sweep clearance, designed clearances.
+- Firmware compiles with zero warnings on Arduino-ESP32 3.3.12 and 2.0.17; versions pinned in
+  <code>sketch.yaml</code> profiles.
+- Wiring, BOM, assembly, printing, equations, validation, security, publishing and glossary docs;
+  generated wiring SVGs, callouts, renders and a simulated sweep GIF; GitHub Pages site.
+- Tests tie the firmware pins to the wiring net list and encode the wiring safety rules.
+- Supply chain: pinned Actions (by commit), least-privilege workflows, Dependabot, CodeQL,
+  CycloneDX SBOM, release ZIP with SHA256SUMS and signed build provenance.</p>
+<p>Web app and desktop app
+- Live console: listen-only Web Serial link, replay of saved logs, labelled demo, session recording
+  to CSV; one shared parser (<code>site/assets/radar-core.js</code>) tested against the firmware's exact formats.
+- Installable web app (manifest + service worker, offline after first visit).
+- Desktop app (Electron 44.5.1): locked-down window, serial-port picker, offline KaTeX; Linux AppImage
+  + tar.gz, Windows installer + portable, macOS dmg (arm64 + x64) built by the release workflow.
+- Optional two-wire telemetry tap (TX0 + GND to a 3.3 V adapter) so the live link never breaks the
+  "no ESP32 USB while the harness is connected" rule.</p>
+<p>Improvements over the brief
+- 45° self-supporting deck under the roof and gussets for the roof screws, so the body prints
+  without supports.
+- Keyed (one-way) mast/socket with an M2×20 cross-bolt and captive-nut pocket.
+- Engraved 30°–150° angle ticks on the turret keeper plus a pointer groove on the hub, used by the
+  new <code>CALIBRATE_SERVO</code> mode to calibrate travel without hitting the servo stops.
+- Hard pulse-width clamp (900–2100 µs) in the firmware, independent of the calibration values.
+- Full-frame off-screen buffer for a flicker-free display; measured step and sweep times printed
+  over serial each pass; CSV output for the serial plotter.
+- LCD SPI clock set to 15 MHz, inside the ST7735S 66 ns write-cycle spec (library default is 32 MHz).
+- Range labels moved inside the fan after the display simulator showed them clipped at the edge.
+- ESP32 end supports, zip-tie anchors for the cell holder, a USB-C breakout cradle, a sensor-cable
+  slot and a rear knock-out reserved for the DFR1026 KEY fall-back.
+- Open power issue researched: field reports indicate the DFR1026 may switch off at light load and
+  need its KEY; two documented fall-backs (rear KEY button, or PowerBoost 1000C with EN switching).</p>
+<p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/CHANGELOG.md">CHANGELOG.md</a> — generated by scripts/build_site.py</p>
+</main></div>
+<script src="../assets/pwa.js" data-root="../"></script>
+</body></html>

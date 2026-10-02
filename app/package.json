@@ -1,0 +1,94 @@
+{
+  "name": "ultrasonic-radar-scanner",
+  "productName": "Ultrasonic Radar Scanner",
+  "version": "5.2.0",
+  "description": "Desktop companion for the Ultrasonic Radar Scanner: offline build guide, sweep simulator and listen-only live console. Educational sonar - not a safety device.",
+  "main": "main.js",
+  "desktopName": "ultrasonic-radar-scanner.desktop",
+  "license": "MIT",
+  "author": "Aleksander Norman",
+  "homepage": "https://github.com/Normansrule/ultrasonic-radar-scanner",
+  "private": true,
+  "scripts": {
+    "web": "python3 ../scripts/build_site.py --app --out web",
+    "start": "electron .",
+    "smoke": "electron . --smoke-test",
+    "dist": "electron-builder --publish never"
+  },
+  "devDependencies": {
+    "electron": "44.5.1",
+    "electron-builder": "26.15.3",
+    "katex": "0.16.47"
+  },
+  "build": {
+    "appId": "io.github.normansrule.ultrasonic-radar-scanner",
+    "productName": "Ultrasonic Radar Scanner",
+    "copyright": "Copyright (c) 2026 Aleksander Norman - MIT licence",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "package.json",
+      "web/**/*",
+      "build/icon.png"
+    ],
+    "asar": true,
+    "electronLanguages": [
+      "en-US"
+    ],
+    "artifactName": "ultrasonic-radar-scanner-${version}-${os}-${arch}.${ext}",
+    "publish": null,
+    "linux": {
+      "target": [
+        "AppImage",
+        "tar.gz"
+      ],
+      "category": "Education",
+      "icon": "build/icon.png",
+      "synopsis": "Build guide, simulator and live console for an educational ultrasonic scanner",
+      "syncDesktopName": true
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "ultrasonic-radar-scanner-${version}-win-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "ultrasonic-radar-scanner-${version}-portable-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "category": "public.app-category.education",
+      "icon": "build/icon.png",
+      "identity": null
+    }
+  }
+}

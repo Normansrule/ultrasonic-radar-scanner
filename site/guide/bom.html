@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en" data-mode="web"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0b110e">
+<link rel="icon" href="../assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+<title>Bill of materials · Ultrasonic Radar Scanner</title>
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head><body class="guide">
+<header class="top"><a class="brand" href="../index.html"><span class="dot"></span>Ultrasonic Radar Scanner</a>
+<nav class="toplinks"><a href="../index.html">Home</a><a href="overview.html" aria-current="page">Guide</a><a href="../live.html">Live console</a><a class="web-only" href="../flash.html">Flash</a></nav>
+<span class="badge">educational sonar · not physically validated yet</span>
+<a class="gh web-only" href="https://github.com/Normansrule/ultrasonic-radar-scanner">GitHub</a></header>
+<div class="layout"><nav class="side"><a href="overview.html">Overview</a>
+<a href="requirements.html">Requirements</a>
+<a href="bom.html" class="here">Bill of materials</a>
+<a href="printing.html">Printing</a>
+<a href="wiring.html">Wiring</a>
+<a href="assembly.html">Assembly</a>
+<a href="equations.html">Equations</a>
+<a href="live-link.html">Live link &amp; apps</a>
+<a href="validation.html">Validation log</a>
+<a href="security.html">Security &amp; safety</a>
+<a href="glossary.html">Glossary</a>
+<a href="publish.html">Publishing</a>
+<a href="credits.html">Credits &amp; sources</a>
+<a href="changelog.html">Changelog</a></nav>
+<main class="doc"><h1 id="bill-of-materials-bom">Bill of materials (BOM)</h1>
+<p>Spreadsheet version: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/bom.csv"><code>manufacturing/bom.csv</code></a> (generated from this page). Visual overview:</p>
+<p><img alt="Parts kit" src="../assets/diagrams/bom_overview.svg" /></p>
+<p><strong>Reference candidates, not endorsements.</strong> Prices, stock and exact variants change — recheck
+every item live before buying, and compare the listing's own datasheet against the "what to
+check" column. Datasheet links are in <a href="credits.html"><code>CREDITS.md</code></a>.</p>
+<p><strong>Do not cheapen the safety parts.</strong> The cell, its protection, the switch rating, the fuse and the
+power-wire gauge are not places to save money.</p>
+<p><strong>Not in this project (on purpose):</strong> custom printed circuit board (PCB), decorative LEDs, battery
+fuel gauge, external display, Wi-Fi or Bluetooth inside the scanner. (The optional live console in the web/desktop app reads the existing serial output through a two-wire tap; see <a href="live-link.html"><code>LIVE_LINK.md</code></a>.) The firmware never enables Wi-Fi and does not
+show a measured battery percentage.</p>
+<h2 id="electronics">Electronics</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Qty</th>
+<th>Part</th>
+<th>What to check before you buy</th>
+<th>Reference candidate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E1</td>
+<td>1</td>
+<td>ESP32-WROOM-32 development board ("DevKit"), classic <strong>30-pin</strong>, headers <strong>already soldered</strong></td>
+<td>Module marking says WROOM-32 (not WROVER); pins labelled GPIO16/17/18/23/26/27/33/14; a USB data port. <strong>Do not substitute</strong> an ESP32-C3, ESP32-S3 or a WROVER board without re-checking every pin and the firmware — GPIO16/17 are used for PSRAM on WROVER.</td>
+<td>Generic "ESP32 DevKit V1 (30-pin)"</td>
+</tr>
+<tr>
+<td>E2</td>
+<td>1</td>
+<td>HC-SR04 ultrasonic sensor</td>
+<td>5 V part with 4-pin header VCC/TRIG/ECHO/GND; four corner mounting holes (the sensor head expects them — <code>SR04_HOLE_X/Y</code> in the CAD are VERIFY values).</td>
+<td>Generic HC-SR04</td>
+</tr>
+<tr>
+<td>E3</td>
+<td>1</td>
+<td>SG90-size <strong>positional</strong> micro servo <strong>with its factory double-arm horn</strong></td>
+<td>180°-type positional servo, <strong>not</strong> continuous-rotation ("360°") — those cannot hold an angle. Keep the factory horn and spline.</td>
+<td>TowerPro SG90</td>
+</tr>
+<tr>
+<td>E4</td>
+<td>1</td>
+<td>Waveshare 1.8" SPI LCD, ST7735S, 128×160</td>
+<td>Pins VCC/GND/DIN/CLK/CS/DC/RST/BL; board 56.5 × 34 mm (check your revision).</td>
+<td>Waveshare 1.8inch LCD Module</td>
+</tr>
+<tr>
+<td>E5</td>
+<td>1</td>
+<td>DFRobot DFR1026 charge/discharge module (5 V / 2 A output)</td>
+<td>Accepts 4.6–5.4 V input, ~2 A charge. It has <strong>no USB connector</strong> — needs E6. See the <a href="wiring.html#open-issue--dfr1026-restart-after-offon-unresolved-must-be-bench-tested">open issue</a> before committing to it.</td>
+<td>DFRobot DFR1026</td>
+</tr>
+<tr>
+<td>E6</td>
+<td>1</td>
+<td>USB-C female <strong>power-input</strong> breakout with <strong>5.1 kΩ pull-downs on both CC1 and CC2</strong></td>
+<td>The two 5.1 kΩ resistors (one per CC pin) are what make a USB-C charger switch on 5 V. <strong>No</strong> Power Delivery (PD) trigger board — this project must never receive 9 V or 12 V.</td>
+<td>Adafruit 4090 (USB-C breakout, downstream)</td>
+</tr>
+<tr>
+<td>E7</td>
+<td>1</td>
+<td>Protected 18650 lithium-ion cell, ~2600–3500 mAh</td>
+<td><strong>Protected</strong> (built-in protection circuit). Check the datasheet for <strong>≥2.1 A charge</strong> and <strong>≥3 A continuous discharge</strong> — capacity alone is not enough. Buy from a reputable supplier; protected cells are slightly longer than bare ones, so check the holder fits.</td>
+<td>Any reputable protected 18650 meeting both current ratings</td>
+</tr>
+<tr>
+<td>E8</td>
+<td>1</td>
+<td>Wired single-cell 18650 holder</td>
+<td>Flying leads (no soldering to the cell), fits a <em>protected</em> cell's length.</td>
+<td>Generic 1 × 18650 holder with leads</td>
+</tr>
+<tr>
+<td>E9</td>
+<td>1</td>
+<td>12 mm latching push-on/push-off button, 2 terminals, single-pole single-throw (SPST)</td>
+<td>Rated <strong>≥2 A at 5 V DC</strong> (check the DC rating, not only the AC one). Panel hole 12 mm; fascia is 2.6 mm thick.</td>
+<td>Generic 12 mm latching metal push button</td>
+</tr>
+<tr>
+<td>E10</td>
+<td>1</td>
+<td>3 A fuse + insulated inline holder</td>
+<td>On battery positive, as close to the holder as practical. Blade (ATM/mini) or 5 × 20 mm glass both fine.</td>
+<td>Inline mini-blade holder + 3 A fuse</td>
+</tr>
+<tr>
+<td>E11</td>
+<td>1</td>
+<td>1000 µF electrolytic capacitor, ≥10 V (16 V gives margin)</td>
+<td>Polarised: stripe = negative. Mounted at the servo end of its supply branch.</td>
+<td>Any 1000 µF 16 V radial</td>
+</tr>
+<tr>
+<td>E12</td>
+<td>1</td>
+<td>2.2 kΩ resistor, 1 %, ¼ W</td>
+<td>ECHO divider R1.</td>
+<td>Metal-film 1 %</td>
+</tr>
+<tr>
+<td>E13</td>
+<td>1</td>
+<td>3.3 kΩ resistor, 1 %, ¼ W</td>
+<td>ECHO divider R2.</td>
+<td>Metal-film 1 %</td>
+</tr>
+<tr>
+<td>E14</td>
+<td>~20</td>
+<td>Jumper leads, mostly female–female, plus short 22–24 AWG stranded power wire</td>
+<td>Power branches (charger → switch → load) in 22 AWG; signal leads can be jumpers.</td>
+<td>Assorted Dupont leads + 22 AWG silicone wire</td>
+</tr>
+<tr>
+<td>E15</td>
+<td>≥1</td>
+<td>Keyed two-pin power disconnect (J1)</td>
+<td>Polarised so it cannot be reversed (for example JST-XH 2.54 mm). Lets the ESP32's power lead unplug for programming.</td>
+<td>JST-XH 2-pin pair (or similar)</td>
+</tr>
+<tr>
+<td>E16</td>
+<td>1 lot</td>
+<td>Heat-shrink, double-sided foam tape, 2 battery straps or zip ties (≤3.6 mm wide), 4 rubber feet</td>
+<td>Straps go round the <strong>holder</strong>, not the bare cell.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>E17</td>
+<td>1</td>
+<td>5 V / 3 A USB-C wall supply + USB-C cable</td>
+<td>Plain 5 V is enough; a PD charger also works because the breakout only asks for 5 V.</td>
+<td>Any reputable 5 V 3 A USB-C supply</td>
+</tr>
+<tr>
+<td>E18</td>
+<td>1</td>
+<td>USB <strong>data</strong> cable for the ESP32 board</td>
+<td>Micro-USB or USB-C to match E1. Charge-only cables will not program.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>E19</td>
+<td>~260 g max</td>
+<td>PLA filament</td>
+<td>257 g is the solid-volume upper bound for all required parts plus the coupon (from <code>cad/geometry_report.json</code>); your slicer's figure with walls + infill will be lower.</td>
+<td>Any PLA</td>
+</tr>
+<tr>
+<td>E20</td>
+<td>1 (optional)</td>
+<td>3.3 V-logic USB-to-serial adapter + 2 female jumper leads</td>
+<td>Only for the live console. CP2102, CH340 or FT232 type, voltage set to <strong>3.3 V</strong>. Only its RX and GND are used; VCC stays unconnected. See <a href="live-link.html"><code>LIVE_LINK.md</code></a>.</td>
+<td>Generic CP2102 USB-UART module</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="fasteners--m2-only-no-m3m4">Fasteners — M2 only (no M3/M4)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Qty</th>
+<th>Item</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>M2×6 screw</td>
+<td>horn → rotor hub (from below, through the horn arm holes)</td>
+</tr>
+<tr>
+<td>12</td>
+<td>M2×8 screw</td>
+<td>4 roof → body, 4 front panel → body, 2 servo flange → roof, 2 turret keeper → roof</td>
+</tr>
+<tr>
+<td>4</td>
+<td>M2×12 screw</td>
+<td>HC-SR04 board → sensor head (nuts on the back)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>M2×20 screw</td>
+<td>cross-bolt through the rotor hub and the sensor-head mast</td>
+</tr>
+<tr>
+<td>6</td>
+<td>M2 hex nut</td>
+<td>4 sensor + 1 cross-bolt + 1 spare — buy extras</td>
+</tr>
+<tr>
+<td>8</td>
+<td>M2 washer</td>
+<td>6–10 under screw heads on printed plastic</td>
+</tr>
+<tr>
+<td>1</td>
+<td>M2 hand tap</td>
+<td>cuts threads in the 1.70 mm printed pilot holes</td>
+</tr>
+</tbody>
+</table></div>
+<p>Screws are machine screws (pan or socket head). Holes in the prints are <strong>1.70 mm pilots</strong> (tap
+M2) and <strong>2.25 mm clearances</strong> (screw passes through). Print the fit-test coupon first and adjust
+<code>M2_PILOT_D</code> / <code>M2_CLEAR_D</code> in the CAD source if your printer runs tight or loose — see
+<a href="printing.html"><code>PRINTING.md</code></a>.</p>
+<h2 id="tools-you-will-need">Tools you will need</h2>
+<p>Soldering iron (for the charger pads, fuse holder leads, resistors and capacitor — <strong>never</strong> the
+cell), wire strippers, small cross-head and hex drivers, multimeter (required for the bench-power
+stage), calipers (required for the VERIFY measurements), tweezers, a heat source for heat-shrink.</p>
+<h2 id="if-the-power-open-issue-forces-a-change">If the power open issue forces a change</h2>
+<p><a href="wiring.html#open-issue--dfr1026-restart-after-offon-unresolved-must-be-bench-tested"><code>WIRING.md</code> → Open issue</a>
+lists two documented fall-backs: <strong>Option A</strong> adds a small momentary push button for the DFR1026
+KEY (fits the rear knock-out); <strong>Option B</strong> replaces the DFR1026 with an Adafruit PowerBoost 1000C.
+Neither has been tested. Update this BOM in the same commit as the wiring change.</p>
+<p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/BOM.md">docs/BOM.md</a> — generated by scripts/build_site.py</p>
+</main></div>
+<script src="../assets/pwa.js" data-root="../"></script>
+</body></html>

@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Tests, wiring/firmware sync, diagram drift
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - run: python -m pip install -r requirements-site.txt
+      - run: python -m pytest -q tests
+      - name: Parser tests (shared by the web app and the desktop app)
+        run: node --test tests/js/*.test.js
+      - name: Wiring diagrams match docs/WIRING.md
+        run: |
+          python scripts/gen_diagrams.py --wiring-only
+          git diff --exit-code -- hardware/diagrams/wiring_*.svg
+      - name: SBOM matches the pin files
+        run: |
+          python scripts/gen_sbom.py --check
+
+  cad:
+    name: Regenerate CAD + geometry checks
+    needs: tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - run: python -m pip install -r requirements.txt
+      - name: Build STL/STEP/3MF and run the recorded geometry checks
+        run: python scripts/render_cad.py
+      - run: python -m pytest -q tests/test_cad_report.py
+      - name: Committed STL files match the source (informational)
+        continue-on-error: true   # tessellation can differ across OCP builds; see docs/SECURITY.md
+        run: git diff --stat --exit-code -- cad/stl
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: cad-build
+          path: |
+            cad/stl
+            cad/step
+            cad/3mf
+            cad/geometry_report.json
+          retention-days: 14
+
+  firmware:
+    name: Compile firmware (${{ matrix.profile }})
+    needs: tests
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [esp32-core3, esp32-core2]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - run: python -m pip install pyserial==3.5   # esptool dependency of the 2.x core
+      - uses: arduino/setup-arduino-cli@81d310742121c928ea9c8bbd407b4217b432ae02 # v2.0.0
+        with:
+          version: 1.2.2
+      - name: Compile with pinned core + libraries (sketch.yaml profile)
+        run: arduino-cli compile --profile "${{ matrix.profile }}" --warnings all firmware/Radar_V5
+
+  desktop-smoke:
+    name: Desktop app smoke test (Linux)
+    needs: tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: python -m pip install -r requirements-site.txt
+      - run: npm ci --no-audit --no-fund
+        working-directory: app
+      - run: python scripts/build_site.py --app --out app/web
+      - name: Load every page and run the demo in the live console
+        working-directory: app
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y xvfb
+          xvfb-run -a npx electron . --no-sandbox --smoke-test
+
+  web-browser:
+    name: Web app in headless Chromium
+    needs: tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - run: python -m pip install -r requirements-site.txt playwright==1.56.0
+      - run: python -m playwright install --with-deps chromium
+      - run: python scripts/build_site.py
+      - run: python tests/browser/check_site.py

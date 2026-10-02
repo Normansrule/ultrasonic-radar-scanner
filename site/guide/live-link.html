@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en" data-mode="web"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0b110e">
+<link rel="icon" href="../assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+<title>Live link &amp; apps · Ultrasonic Radar Scanner</title>
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head><body class="guide">
+<header class="top"><a class="brand" href="../index.html"><span class="dot"></span>Ultrasonic Radar Scanner</a>
+<nav class="toplinks"><a href="../index.html">Home</a><a href="overview.html" aria-current="page">Guide</a><a href="../live.html">Live console</a><a class="web-only" href="../flash.html">Flash</a></nav>
+<span class="badge">educational sonar · not physically validated yet</span>
+<a class="gh web-only" href="https://github.com/Normansrule/ultrasonic-radar-scanner">GitHub</a></header>
+<div class="layout"><nav class="side"><a href="overview.html">Overview</a>
+<a href="requirements.html">Requirements</a>
+<a href="bom.html">Bill of materials</a>
+<a href="printing.html">Printing</a>
+<a href="wiring.html">Wiring</a>
+<a href="assembly.html">Assembly</a>
+<a href="equations.html">Equations</a>
+<a href="live-link.html" class="here">Live link &amp; apps</a>
+<a href="validation.html">Validation log</a>
+<a href="security.html">Security &amp; safety</a>
+<a href="glossary.html">Glossary</a>
+<a href="publish.html">Publishing</a>
+<a href="credits.html">Credits &amp; sources</a>
+<a href="changelog.html">Changelog</a></nav>
+<main class="doc"><h1 id="live-link-and-apps">Live link and apps</h1>
+<p>The project ships in two forms built from the same files:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Where</th>
+<th>Works offline</th>
+<th>Live link to the scanner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Web app</strong></td>
+<td>the GitHub Pages site — open it in any browser; "Install web app" adds it to your desktop or phone home screen (a Progressive Web App (PWA))</td>
+<td>yes, after the first visit</td>
+<td>Chrome or Edge on a desktop (Web Serial API)</td>
+</tr>
+<tr>
+<td><strong>Desktop app</strong></td>
+<td>Releases page: Windows installer or portable <code>.exe</code>, macOS <code>.dmg</code>, Linux <code>.AppImage</code> / <code>.tar.gz</code></td>
+<td>always (guide, simulator, console are bundled)</td>
+<td>yes, on Windows, macOS and Linux</td>
+</tr>
+</tbody>
+</table></div>
+<p>Both contain the build guide, the sweep simulator, the wiring explorer and the <strong>live console</strong>.
+The console has three sources, all decoded by the same parser
+(<a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/site/assets/radar-core.js"><code>site/assets/radar-core.js</code></a>):</p>
+<ul>
+<li><strong>Connect scanner</strong> — reads the firmware's serial output (115 200 baud, <code>angle_deg,distance_cm</code> lines).</li>
+<li><strong>Replay a log</strong> — plays back a saved session, or any serial log, in any browser.</li>
+<li><strong>Demo</strong> — synthetic targets, clearly labelled, for trying the console without hardware.</li>
+</ul>
+<p>It can <strong>record</strong> a session and save it as CSV (<code>host_ms,angle_deg,distance_cm</code>) — use this for the
+validation tests T-FW-4 and T-FW-5. The console <strong>only listens</strong>: it never sends a byte to the scanner.</p>
+<p>Status: the parser, renderer, replay and demo are tested automatically (see
+<a href="validation.html"><code>VALIDATION.md</code></a>); <strong>the live serial link has never been connected to a real
+scanner.</strong> The desktop app has been built and smoke-tested on Linux only; the Windows and macOS
+builds are produced by GitHub Actions on each release and are unsigned.</p>
+<h2 id="wiring-the-live-link-safely">Wiring the live link safely</h2>
+<p>The rule from <a href="wiring.html"><code>WIRING.md</code></a> still holds: <strong>never plug the ESP32's own USB port in while the
+battery harness is connected</strong> (external 5 V/VIN and USB together). So the live link does not use that
+port. Instead, add a listen-only telemetry tap:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Tap wire</th>
+<th>From (scanner)</th>
+<th>To (adapter)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L1</td>
+<td>ESP32 <strong>TX0 / GPIO1</strong> (header pin often labelled <code>TX0</code>, <code>TXD</code> or <code>TX</code>)</td>
+<td>adapter <strong>RX</strong> (<code>RXD</code>)</td>
+</tr>
+<tr>
+<td>L2</td>
+<td>common <strong>GND</strong></td>
+<td>adapter <strong>GND</strong></td>
+</tr>
+<tr>
+<td>—</td>
+<td>nothing</td>
+<td>adapter <strong>VCC / 5V / 3V3</strong> — leave unconnected</td>
+</tr>
+<tr>
+<td>—</td>
+<td>nothing</td>
+<td>adapter <strong>TX</strong> — leave unconnected</td>
+</tr>
+</tbody>
+</table></div>
+<p>Adapter: any <strong>3.3 V-logic</strong> USB-to-serial adapter (CP2102, CH340 or FT232 type; set its voltage
+jumper to 3.3 V if it has one). With VCC unconnected, the adapter cannot back-power anything; with its
+TX unconnected, it cannot fight the ESP32's on-board USB bridge. GPIO1 already carries the firmware's
+serial output whenever the scanner runs, so the firmware does not change.</p>
+<p><img alt="Telemetry tap" src="../assets/diagrams/live_link_tap.svg" /></p>
+<p>Then: switch the scanner ON from its battery, plug the adapter into the computer, open the live console,
+press <strong>Connect scanner</strong> and pick the adapter's port.</p>
+<ul>
+<li><strong>Windows:</strong> the port appears as <code>COMx</code>. CH340 adapters may need the vendor driver.</li>
+<li><strong>Linux:</strong> add yourself to the <code>dialout</code> group once (<code>sudo usermod -aG dialout "$USER"</code>, then log out and in).</li>
+<li><strong>Windows Subsystem for Linux (WSL):</strong> USB serial ports are not visible inside WSL by default — use the
+  Windows desktop app or Chrome/Edge on Windows instead.</li>
+<li><strong>macOS:</strong> the port appears as <code>/dev/cu.usbserial-…</code> or <code>/dev/cu.wchusbserial…</code>.</li>
+</ul>
+<p>If the console shows text but no readings, the baud rate or the TX/RX wire is wrong; if it shows
+nothing, check that the scanner is ON and that L2 (GND) is connected.</p>
+<h2 id="installing-the-desktop-app">Installing the desktop app</h2>
+<p>Download from the repository's <strong>Releases</strong> page (the latest release is linked from the web app).</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>System</th>
+<th>File</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows 10/11</td>
+<td><code>…-win-x64.exe</code> (installer) or <code>…-portable-x64.exe</code></td>
+<td>Unsigned: SmartScreen shows "unknown publisher" → <em>More info</em> → <em>Run anyway</em>.</td>
+</tr>
+<tr>
+<td>macOS 12+</td>
+<td><code>…-mac-arm64.dmg</code> (Apple silicon) or <code>…-mac-x64.dmg</code> (Intel)</td>
+<td>Unsigned: first launch is blocked → System Settings → Privacy &amp; Security → <em>Open Anyway</em>.</td>
+</tr>
+<tr>
+<td>Linux x64</td>
+<td><code>…-linux-x86_64.AppImage</code> or <code>…-linux-x64.tar.gz</code></td>
+<td>AppImage needs FUSE 2 (<code>sudo apt install libfuse2t64</code> on Ubuntu 24.04+); the <code>.tar.gz</code> needs nothing — unpack and run <code>ultrasonic-radar-scanner</code>. If it exits with a sandbox error (Ubuntu 24.04+ AppArmor), start it with <code>--no-sandbox</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Every release carries <code>SHA256SUMS</code> and a signed build-provenance attestation — see
+<a href="security.html#verifying-a-release-yourself"><code>SECURITY.md</code></a>.</p>
+<h2 id="building-the-apps-yourself">Building the apps yourself</h2>
+<pre><code class="language-bash"># web app (GitHub Pages output in site/)
+python -m pip install -r requirements-site.txt
+python scripts/build_site.py
+
+# desktop app
+cd app
+npm ci                                         # Electron, electron-builder, KaTeX (versions pinned in package-lock.json)
+python ../scripts/build_site.py --app --out web
+npm start                                      # run it
+npm run dist                                   # build installers for this OS into app/dist/
+</code></pre>
+<p>The desktop app is a locked-down Electron window around the same pages: no Node.js access in the
+page, sandboxed renderer, context isolation, a strict Content Security Policy (CSP), external links
+open in your normal browser, and every browser permission except serial-port access is refused.</p>
+<p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/LIVE_LINK.md">docs/LIVE_LINK.md</a> — generated by scripts/build_site.py</p>
+</main></div>
+<script src="../assets/pwa.js" data-root="../"></script>
+</body></html>

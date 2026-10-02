@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" width="900" height="250" role="img" aria-label="Requirement status">
+<rect width="900" height="250" fill="#fff"/>
+<text x="30" y="38" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:20px;font-weight:bold" fill="#111">Requirements: 36 total</text>
+<text x="30" y="60" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#555">Generated from docs/REQUIREMENTS.md + docs/VALIDATION.md by scripts/gen_traceability.py</text>
+<rect x="30.0" y="80" width="303.3" height="34" fill="#74c69d"/>
+<text x="40.0" y="102" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#fff">Met (recorded): 13</text>
+<rect x="333.3" y="80" width="536.7" height="34" fill="#f59f00"/>
+<text x="343.3" y="102" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#fff">Open: 23</text>
+<text x="30" y="140" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px;font-weight:bold" fill="#333">by group</text>
+<rect x="30.0" y="150" width="110.0" height="60" rx="8" fill="#f4f7f5" stroke="#dde5df"/>
+<text x="40.0" y="174" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#1f3b2d">Functional</text>
+<text x="40.0" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#555">0/7 met</text>
+<rect x="150.0" y="150" width="110.0" height="60" rx="8" fill="#f4f7f5" stroke="#dde5df"/>
+<text x="160.0" y="174" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#1f3b2d">Performance</text>
+<text x="160.0" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#555">0/4 met</text>
+<rect x="270.0" y="150" width="110.0" height="60" rx="8" fill="#f4f7f5" stroke="#dde5df"/>
+<text x="280.0" y="174" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#1f3b2d">Safety</text>
+<text x="280.0" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#555">5/9 met</text>
+<rect x="390.0" y="150" width="110.0" height="60" rx="8" fill="#f4f7f5" stroke="#dde5df"/>
+<text x="400.0" y="174" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#1f3b2d">Interface</text>
+<text x="400.0" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#555">2/2 met</text>
+<rect x="510.0" y="150" width="110.0" height="60" rx="8" fill="#f4f7f5" stroke="#dde5df"/>
+<text x="520.0" y="174" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#1f3b2d">Mechanical</text>
+<text x="520.0" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#555">3/8 met</text>
+<rect x="630.0" y="150" width="110.0" height="60" rx="8" fill="#f4f7f5" stroke="#dde5df"/>
+<text x="640.0" y="174" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#1f3b2d">Software</text>
+<text x="640.0" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#555">2/5 met</text>
+<rect x="750.0" y="150" width="110.0" height="60" rx="8" fill="#f4f7f5" stroke="#dde5df"/>
+<text x="760.0" y="174" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px;font-weight:bold" fill="#1f3b2d">Open source</text>
+<text x="760.0" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#555">1/1 met</text>
+</svg>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" data-mode="{{MODE}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live Console · Ultrasonic Radar Scanner</title>
+<meta name="description" content="Connect to the scanner over USB serial, replay a saved session or run a labelled demo.">
+{{HEAD_COMMON}}
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="live">
+<header class="top">
+  <a class="brand" href="index.html"><span class="dot"></span>Ultrasonic Radar Scanner</a>
+  <nav class="toplinks"><a href="index.html">Home</a><a href="guide/overview.html">Guide</a><a href="live.html" aria-current="page">Live console</a><a class="web-only" href="flash.html">Flash</a></nav>
+  <a class="gh web-only" href="{{REPO_URL}}">GitHub</a>
+</header>
+
+<main class="console">
+  <section class="scope">
+    <div class="scope-head">
+      <span class="src-pill" id="src-pill">idle</span>
+      <span class="hint" id="src-hint">Choose a source on the right. The angle shown is the commanded servo position.</span>
+    </div>
+    <canvas id="radar" aria-label="Radar-style view of the scanner readings"></canvas>
+    <div class="readout big">
+      <div><span>angle (commanded)</span><b id="s-deg">–</b></div>
+      <div><span>distance</span><b id="s-cm">–</b></div>
+      <div><span>nearest this session</span><b id="s-near">–</b></div>
+      <div><span>step time</span><b id="s-step">–</b></div>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <div class="card">
+      <h3>Source</h3>
+      <div class="btnrow">
+        <button class="btn primary" id="b-serial" type="button">Connect scanner (USB serial)</button>
+        <button class="btn" id="b-demo" type="button">Demo (synthetic)</button>
+        <label class="btn filebtn">Replay a log…<input id="f-log" type="file" accept=".csv,.txt,.log,text/csv,text/plain"></label>
+        <button class="btn" id="b-stop" type="button" disabled>Stop</button>
+      </div>
+      <label class="row">Replay speed <select id="sel-speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="5">5×</option></select></label>
+      <p class="note" id="serial-note"></p>
+      <details class="safety">
+        <summary>Before connecting real hardware</summary>
+        <p><b>Never plug the ESP32's own USB port in while the scanner's battery harness is connected.</b>
+          Use the listen-only telemetry tap described in <a href="guide/live-link.html">Live link</a>: a 3.3 V USB-to-serial
+          adapter with only <code>RX ← TX0 (GPIO1)</code> and <code>GND</code> connected, its VCC pin left unconnected.</p>
+        <p>This console only listens; it never sends anything to the scanner. Not physically tested yet.</p>
+      </details>
+    </div>
+
+    <div class="card">
+      <h3>Session</h3>
+      <div class="btnrow">
+        <button class="btn" id="b-rec" type="button" aria-pressed="false">● Record</button>
+        <button class="btn" id="b-save" type="button" disabled>Save CSV</button>
+        <button class="btn" id="b-clear" type="button">Clear view</button>
+      </div>
+      <dl class="stats">
+        <dt>readings</dt><dd id="s-n">0</dd>
+        <dt>valid echoes</dt><dd id="s-valid">–</dd>
+        <dt>recorded</dt><dd id="s-rec">0</dd>
+        <dt>sweep</dt><dd id="s-sweep">30°–150°, 3° (default)</dd>
+        <dt>firmware timing</dt><dd id="s-meas">–</dd>
+      </dl>
+    </div>
+
+    <div class="card">
+      <h3>View</h3>
+      <label class="row">Display range (cm) <input id="i-range" type="number" min="20" max="500" step="10" value="200"></label>
+      <label class="row">Dot persistence (s) <input id="i-ttl" type="range" min="1" max="30" value="9"><span id="i-ttl-v">9</span></label>
+    </div>
+
+    <div class="card">
+      <h3>Serial log</h3>
+      <pre class="log" id="log" aria-live="off"></pre>
+    </div>
+  </aside>
+</main>
+
+<footer>Educational ultrasonic (sonar) instrument with a radar-style display — not a safety device.
+  <span class="web-only">· <a href="{{REPO_URL}}/releases/latest">Desktop app downloads</a></span></footer>
+
+<script src="assets/radar-core.js"></script>
+<script src="assets/live.js"></script>
+<script src="assets/pwa.js" data-root=""></script>
+</body>
+</html>

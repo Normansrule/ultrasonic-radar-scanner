@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" data-mode="web">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b110e">
+<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+<title>Flash Firmware · Ultrasonic Radar Scanner</title>
+<meta name="description" content="Install the scanner firmware on an ESP32 DevKit from Chrome or Edge — no toolchain needed.">
+<link rel="stylesheet" href="assets/style.css">
+<script type="module" src="https://unpkg.com/esp-web-tools@10.4.0/dist/web/install-button.js?module"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><span class="dot"></span>Ultrasonic Radar Scanner</a>
+  <nav class="toplinks"><a href="index.html">Home</a><a href="guide/overview.html">Guide</a><a href="live.html">Live console</a><a href="flash.html" aria-current="page">Flash</a></nav>
+  <a class="gh" href="https://github.com/Normansrule/ultrasonic-radar-scanner">GitHub</a>
+</header>
+<main class="flashpage">
+  <h1>Flash the firmware from your browser</h1>
+  <p class="lead">Installs <b>Radar V5.1 firmware</b> (release 5.2.0) on a classic ESP32-WROOM-32 DevKit over USB — no Arduino IDE needed.
+    Works in Chrome or Edge on a desktop computer.</p>
+
+  <div class="flashgrid">
+    <ol class="steps card">
+      <li><b>Switch the scanner OFF</b> and unplug the <b>whole harness</b> from the ESP32, including the J1 power plug.</li>
+      <li>Connect the ESP32's own USB port to this computer with a <b>data</b> cable.</li>
+      <li>Press <b>Install</b>, pick the board's serial port and confirm. (Hold the board's BOOT button if it does not connect.)</li>
+      <li>Unplug the USB cable. Re-connect the harness, J1 last, checking every label. Switch ON.</li>
+      <li>You should see the splash “EDU SONAR … NOT a safety device”, then the green sweep.</li>
+    </ol>
+    <div class="card installer">
+      <p><b>No firmware image in this build.</b> The GitHub Pages deployment compiles the firmware and publishes it here; it is also attached to every <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/releases/latest">release</a>.</p>
+    </div>
+  </div>
+
+  <div class="honest">Never connect the ESP32's USB port while the battery harness is plugged in. This page is the
+    ESP Web Tools installer (Apache-2.0, loaded from unpkg.com). The browser flasher has <b>not yet been tested on a real board</b>
+    (test T-FLS-1). Prefer to build it yourself? <code>arduino-cli compile --upload --profile esp32-core3 -p &lt;port&gt; firmware/Radar_V5</code></div>
+</main>
+<footer>Educational ultrasonic (sonar) instrument with a radar-style display — not a safety device.</footer>
+<script src="assets/pwa.js" data-root=""></script>
+</body>
+</html>

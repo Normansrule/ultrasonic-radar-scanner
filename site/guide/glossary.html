@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en" data-mode="web"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0b110e">
+<link rel="icon" href="../assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+<title>Glossary · Ultrasonic Radar Scanner</title>
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head><body class="guide">
+<header class="top"><a class="brand" href="../index.html"><span class="dot"></span>Ultrasonic Radar Scanner</a>
+<nav class="toplinks"><a href="../index.html">Home</a><a href="overview.html" aria-current="page">Guide</a><a href="../live.html">Live console</a><a class="web-only" href="../flash.html">Flash</a></nav>
+<span class="badge">educational sonar · not physically validated yet</span>
+<a class="gh web-only" href="https://github.com/Normansrule/ultrasonic-radar-scanner">GitHub</a></header>
+<div class="layout"><nav class="side"><a href="overview.html">Overview</a>
+<a href="requirements.html">Requirements</a>
+<a href="bom.html">Bill of materials</a>
+<a href="printing.html">Printing</a>
+<a href="wiring.html">Wiring</a>
+<a href="assembly.html">Assembly</a>
+<a href="equations.html">Equations</a>
+<a href="live-link.html">Live link &amp; apps</a>
+<a href="validation.html">Validation log</a>
+<a href="security.html">Security &amp; safety</a>
+<a href="glossary.html" class="here">Glossary</a>
+<a href="publish.html">Publishing</a>
+<a href="credits.html">Credits &amp; sources</a>
+<a href="changelog.html">Changelog</a></nav>
+<main class="doc"><h1 id="glossary">Glossary</h1>
+<p>Every abbreviation is written out once with its short form in brackets, as used in the rest of the
+documentation.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3D Manufacturing Format (3MF)</td>
+<td>A print-file format that can hold several objects, their placement and slicer settings in one file.</td>
+</tr>
+<tr>
+<td>Analog-to-Digital Converter (ADC)</td>
+<td>Not used in this build; mentioned only because battery-voltage measurement would need one.</td>
+</tr>
+<tr>
+<td>American Wire Gauge (AWG)</td>
+<td>Wire thickness scale; smaller numbers are thicker. Power leads here are 22 AWG.</td>
+</tr>
+<tr>
+<td>Bill of Materials (BOM)</td>
+<td>The shopping list: every part, how many, and what to check.</td>
+</tr>
+<tr>
+<td>Build packet</td>
+<td>The printable PDF traveller in <code>manufacturing/</code> with tick boxes for every part, wire, gate and test.</td>
+</tr>
+<tr>
+<td>Bulk capacitor</td>
+<td>A large capacitor (here 1000 µF) that supplies short current bursts, so the servo's spikes do not dip the 5 V rail.</td>
+</tr>
+<tr>
+<td>CadQuery</td>
+<td>A Python library for writing 3D models as code. <code>cad/build_radar_v5.py</code> is the model of record.</td>
+</tr>
+<tr>
+<td>Commanded angle</td>
+<td>The angle the firmware <em>asks</em> the servo for. Nothing measures the real angle.</td>
+</tr>
+<tr>
+<td>Configuration Channel (CC) pins</td>
+<td>Two USB-C pins. 5.1 kΩ resistors to ground on both tell a USB-C charger to supply 5 V.</td>
+</tr>
+<tr>
+<td>CycloneDX</td>
+<td>A standard file format for a software bill of materials.</td>
+</tr>
+<tr>
+<td>Development board (DevKit)</td>
+<td>A module mounted on a board with a USB port, regulator and headers.</td>
+</tr>
+<tr>
+<td>Duty (cycle)</td>
+<td>The fraction of each PWM period that the signal is high.</td>
+</tr>
+<tr>
+<td>ECHO / TRIG</td>
+<td>HC-SR04 pins: a 10 µs pulse on TRIG starts a ping; ECHO stays high for as long as the sound took to return.</td>
+</tr>
+<tr>
+<td>Electrostatic discharge (ESD)</td>
+<td>Static shocks that can damage modules — touch something grounded before handling boards.</td>
+</tr>
+<tr>
+<td>AppImage</td>
+<td>A single-file Linux application format; make it executable and run it.</td>
+</tr>
+<tr>
+<td>Content Security Policy (CSP)</td>
+<td>Browser rules that limit what a page may load or run; the desktop app's pages carry a strict one.</td>
+</tr>
+<tr>
+<td>Electron</td>
+<td>A framework that wraps web pages in a desktop window; used for the desktop app.</td>
+</tr>
+<tr>
+<td>ESP Web Tools</td>
+<td>An open-source web page component that flashes ESP32 boards from Chrome or Edge; used on the Flash page.</td>
+</tr>
+<tr>
+<td>Fit coupon</td>
+<td>A small printed test piece that checks hole and slot sizes before the long prints.</td>
+</tr>
+<tr>
+<td>General-Purpose Input/Output (GPIO)</td>
+<td>A numbered microcontroller pin that firmware can read or drive.</td>
+</tr>
+<tr>
+<td>Ground (GND)</td>
+<td>The shared 0 V reference all voltages are measured from.</td>
+</tr>
+<tr>
+<td>Harness</td>
+<td>All the leads that plug onto the ESP32, unplugged together for programming.</td>
+</tr>
+<tr>
+<td>Horn</td>
+<td>The plastic arm supplied with a servo that grips its splined output shaft.</td>
+</tr>
+<tr>
+<td>Keyed</td>
+<td>Shaped so it only fits one way (the sensor mast, the J1 power plug).</td>
+</tr>
+<tr>
+<td>LED Control (LEDC)</td>
+<td>The ESP32 peripheral that generates PWM in hardware; used here for the servo.</td>
+</tr>
+<tr>
+<td>Liquid-Crystal Display (LCD)</td>
+<td>The 1.8" screen; driven by an ST7735S controller chip.</td>
+</tr>
+<tr>
+<td>Lithium-ion (Li-ion)</td>
+<td>The 18650 cell's chemistry. Safe when protected, fused and not abused.</td>
+</tr>
+<tr>
+<td>Master Out, Slave In (MOSI) / Serial Clock (SCK)</td>
+<td>The SPI data and clock lines (the LCD labels them DIN and CLK).</td>
+</tr>
+<tr>
+<td>Net</td>
+<td>Every pin that is electrically connected together.</td>
+</tr>
+<tr>
+<td>Merged image</td>
+<td>One firmware file containing bootloader, partition table and app, flashed at address 0x0.</td>
+</tr>
+<tr>
+<td>Pilot hole</td>
+<td>A slightly undersized printed hole that you cut threads into with a tap.</td>
+</tr>
+<tr>
+<td>Progressive Web App (PWA)</td>
+<td>A website that can be installed and used offline like an app.</td>
+</tr>
+<tr>
+<td>Polylactic acid (PLA)</td>
+<td>The plastic used for printing.</td>
+</tr>
+<tr>
+<td>Power Delivery (PD)</td>
+<td>A USB-C protocol for raising voltage to 9–20 V. <strong>Not</strong> used here — 5 V only.</td>
+</tr>
+<tr>
+<td>Printed Circuit Board (PCB)</td>
+<td>A board with copper tracks. This project uses ready-made module boards and no custom PCB.</td>
+</tr>
+<tr>
+<td>Pulse-Width Modulation (PWM)</td>
+<td>A repeating square wave whose high time carries a value.</td>
+</tr>
+<tr>
+<td>Radar-style display</td>
+<td>A fan-shaped picture like a radar screen. The sensing here is ultrasonic, not radio.</td>
+</tr>
+<tr>
+<td>Serial Peripheral Interface (SPI)</td>
+<td>A fast clocked bus used for the LCD.</td>
+</tr>
+<tr>
+<td>Software Bill of Materials (SBOM)</td>
+<td>A list of the software components and exact versions used to build the project.</td>
+</tr>
+<tr>
+<td>Traceability</td>
+<td>Linking every requirement to the check or test that proves it (<code>docs/REQUIREMENTS.md</code>).</td>
+</tr>
+<tr>
+<td>Telemetry tap</td>
+<td>The optional two-wire, listen-only link (TX0 + GND) from the ESP32 to a USB-to-serial adapter.</td>
+</tr>
+<tr>
+<td>Spline</td>
+<td>The toothed servo output shaft.</td>
+</tr>
+<tr>
+<td>Standard for the Exchange of Product model data (STEP)</td>
+<td>A precise CAD exchange format for editing the parts in other CAD tools.</td>
+</tr>
+<tr>
+<td>Stereolithography file (STL)</td>
+<td>A triangle-mesh file that slicers read.</td>
+</tr>
+<tr>
+<td>Strapping pin</td>
+<td>An ESP32 pin whose level at power-up selects a boot mode (GPIO 0, 2, 5, 12, 15) — avoided here.</td>
+</tr>
+<tr>
+<td>Universal Asynchronous Receiver-Transmitter (UART)</td>
+<td>The serial port the firmware prints on (115 200 baud); TX0 is its transmit pin.</td>
+</tr>
+<tr>
+<td>Universal Serial Bus Type-C (USB-C)</td>
+<td>The reversible connector used for charging. The rear port carries power only.</td>
+</tr>
+<tr>
+<td>VERIFY</td>
+<td>A CAD dimension that depends on your purchased module and must be measured before printing the full set.</td>
+</tr>
+<tr>
+<td>Voltage divider</td>
+<td>Two resistors in series that output a fixed fraction of their input voltage.</td>
+</tr>
+<tr>
+<td>Web Serial</td>
+<td>The browser interface (Chrome/Edge, and the desktop app) that lets a page read a serial port after you pick it.</td>
+</tr>
+<tr>
+<td>Windows Subsystem for Linux (WSL)</td>
+<td>Runs Ubuntu inside Windows; the publish script supports it.</td>
+</tr>
+</tbody>
+</table></div>
+<p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/GLOSSARY.md">docs/GLOSSARY.md</a> — generated by scripts/build_site.py</p>
+</main></div>
+<script src="../assets/pwa.js" data-root="../"></script>
+</body></html>

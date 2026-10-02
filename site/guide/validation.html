@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en" data-mode="web"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0b110e">
+<link rel="icon" href="../assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+<title>Validation log · Ultrasonic Radar Scanner</title>
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head><body class="guide">
+<header class="top"><a class="brand" href="../index.html"><span class="dot"></span>Ultrasonic Radar Scanner</a>
+<nav class="toplinks"><a href="../index.html">Home</a><a href="overview.html" aria-current="page">Guide</a><a href="../live.html">Live console</a><a class="web-only" href="../flash.html">Flash</a></nav>
+<span class="badge">educational sonar · not physically validated yet</span>
+<a class="gh web-only" href="https://github.com/Normansrule/ultrasonic-radar-scanner">GitHub</a></header>
+<div class="layout"><nav class="side"><a href="overview.html">Overview</a>
+<a href="requirements.html">Requirements</a>
+<a href="bom.html">Bill of materials</a>
+<a href="printing.html">Printing</a>
+<a href="wiring.html">Wiring</a>
+<a href="assembly.html">Assembly</a>
+<a href="equations.html">Equations</a>
+<a href="live-link.html">Live link &amp; apps</a>
+<a href="validation.html" class="here">Validation log</a>
+<a href="security.html">Security &amp; safety</a>
+<a href="glossary.html">Glossary</a>
+<a href="publish.html">Publishing</a>
+<a href="credits.html">Credits &amp; sources</a>
+<a href="changelog.html">Changelog</a></nav>
+<main class="doc"><h1 id="validation-log--what-is-known-and-what-is-not">Validation log — what is known, and what is not</h1>
+<p>This project separates two kinds of evidence and never mixes them:</p>
+<ul>
+<li><strong>RECORDED</strong> — checks a computer can do without hardware: the CAD solids are valid, parts fit
+  the print bed, parts do not overlap in the model, the firmware compiles, the equations are
+  numerically consistent, the docs and firmware agree. These are real results, but they say
+  nothing about whether a physical build works.</li>
+<li><strong>PHYSICAL</strong> — anything that needs a printer, a multimeter, a powered scanner or a tape measure.</li>
+</ul>
+<blockquote>
+<p><strong>Current status: no PHYSICAL validation has been performed.</strong> No part has been printed or fitted,
+the firmware has not been flashed, and the scanner has never been powered. Do not quote this
+project as "working" until the PHYSICAL table below has entries.</p>
+</blockquote>
+<h2 id="recorded-checks">RECORDED checks</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Check</th>
+<th>Result</th>
+<th>Date (UTC)</th>
+<th>Evidence / how to reproduce</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R-CAD-1</td>
+<td>All 8 parts build as single valid solids; required parts match the brief's nominal sizes within 0.6 mm</td>
+<td>PASS</td>
+<td>2026-09-30</td>
+<td><code>python scripts/render_cad.py</code> → <code>cad/geometry_report.json</code></td>
+</tr>
+<tr>
+<td>R-CAD-2</td>
+<td>Every print mesh is watertight with outward normals</td>
+<td>PASS</td>
+<td>2026-09-30</td>
+<td>same report, "print mesh watertight"</td>
+</tr>
+<tr>
+<td>R-CAD-3</td>
+<td>Plates P1, P2, P3, S1, S2 fit the A1 mini bed (180 × 180 mm, 6 mm margin) with parts ≥ 6 mm apart; every part height ≤ 180 mm</td>
+<td>PASS</td>
+<td>2026-09-30</td>
+<td>same report, "plates"</td>
+</tr>
+<tr>
+<td>R-CAD-4</td>
+<td>No overlap in the assembled model between printed parts, or between printed parts and the module envelopes (servo, horn, HC-SR04, LCD, ESP32, cell holder, USB-C breakout) — 22 pairs, each &lt; 0.5 mm³</td>
+<td>PASS</td>
+<td>2026-09-30</td>
+<td>same report, "interference"</td>
+</tr>
+<tr>
+<td>R-CAD-5</td>
+<td>Sweep clearance in the model: head + HC-SR04, hub and horn rotated −75°…+75° about the turret axis (commanded travel is ±60°) never overlap keeper, roof, body or servo</td>
+<td>PASS</td>
+<td>2026-09-30</td>
+<td>same report, "sweep"</td>
+</tr>
+<tr>
+<td>R-CAD-6</td>
+<td>Designed clearances: hub axial play 0.4 mm; head rim 8.0 mm above keeper; hub 2.2 mm above servo gear boss; servo 1.3 mm from keeper</td>
+<td>RECORDED</td>
+<td>2026-09-30</td>
+<td>same report, "clearances" — all depend on VERIFY values</td>
+</tr>
+<tr>
+<td>R-FW-1</td>
+<td>Firmware compiles for ESP32 Dev Module on Arduino-ESP32 <strong>3.3.12</strong> with <code>--warnings all</code>: 0 warnings, 0 errors (326 215 B flash, 24 504 B RAM)</td>
+<td>PASS</td>
+<td>2026-10-01</td>
+<td><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/validation/compile_core3.txt"><code>validation/compile_core3.txt</code></a></td>
+</tr>
+<tr>
+<td>R-FW-2</td>
+<td>Same sketch on Arduino-ESP32 <strong>2.0.17</strong> (the 2.x LEDC path): 0 warnings, 0 errors (296 905 B flash, 22 624 B RAM)</td>
+<td>PASS</td>
+<td>2026-10-01</td>
+<td><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/validation/compile_core2.txt"><code>validation/compile_core2.txt</code></a></td>
+</tr>
+<tr>
+<td>R-FW-3</td>
+<td>Screen layout checked in the pixel-level Python port (<code>scripts/sim_display.py</code>); found and fixed range labels clipped at the right edge</td>
+<td>PASS</td>
+<td>2026-09-30</td>
+<td><code>hardware/diagrams/radar_frame.png</code> — synthetic targets only</td>
+</tr>
+<tr>
+<td>R-EQ-1</td>
+<td>18 equation checks: distance, temperature effect, echo timeout, divider incl. worst case, LEDC duty, angle map, clamp, sweep cadence estimate</td>
+<td>PASS</td>
+<td>2026-09-30</td>
+<td><code>python -m pytest tests/test_equations.py</code></td>
+</tr>
+<tr>
+<td>R-SYNC-1</td>
+<td>Firmware pins = WIRING.md pin map = net list; wiring safety rules (fuse first on battery +, ECHO never direct, switch on load side, servo on 5 V, no USB data, no flash/strapping pins)</td>
+<td>PASS</td>
+<td>2026-09-30</td>
+<td><code>python -m pytest tests/test_sync.py</code></td>
+</tr>
+<tr>
+<td>R-BOM-1</td>
+<td>Fastener counts in BOM add up to their listed uses</td>
+<td>PASS</td>
+<td>2026-09-30</td>
+<td><code>python -m pytest tests/test_bom.py</code></td>
+</tr>
+<tr>
+<td>R-APP-1</td>
+<td>Shared serial parser/recorder (web + desktop): 10 checks incl. the firmware's exact <code>printf</code> formats, lines split across chunks, wrong-baud garbage, CSV round-trip</td>
+<td>PASS</td>
+<td>2026-10-02</td>
+<td><code>node --test tests/js/*.test.js</code></td>
+</tr>
+<tr>
+<td>R-APP-2</td>
+<td>Web app in headless Chromium: landing simulator, wiring explorer, demo stream, record + save CSV, replay of a saved log, guide images, service worker, offline reload, no page errors — 17 checks</td>
+<td>PASS</td>
+<td>2026-10-02</td>
+<td><code>python tests/browser/check_site.py</code></td>
+</tr>
+<tr>
+<td>R-APP-3</td>
+<td>Desktop app (Electron 44.5.1) run from source and as the <strong>packaged Linux build</strong>: every main page loads with no errors or broken images, offline KaTeX renders 39 equations, Web Serial API present, demo delivers readings</td>
+<td>PASS</td>
+<td>2026-10-02</td>
+<td><code>xvfb-run npx electron . --smoke-test</code> and <code>dist/linux-unpacked/ultrasonic-radar-scanner --smoke-test</code></td>
+</tr>
+<tr>
+<td>R-APP-4</td>
+<td>Linux installers built: AppImage + tar.gz (electron-builder 26.15.3)</td>
+<td>PASS</td>
+<td>2026-10-02</td>
+<td>local build; Windows and macOS installers are built only by <code>.github/workflows/release.yml</code> and have <strong>not</strong> been run</td>
+</tr>
+<tr>
+<td>R-MFG-1</td>
+<td>Manufacturing exports regenerate identically from the docs (BOM, printed parts, pin list, 28-wire point-to-point list); every pin appears in the wire list; build packet PDF builds (11 pages)</td>
+<td>PASS</td>
+<td>2026-10-02</td>
+<td><code>python -m pytest tests/test_mfg.py</code>, <code>python scripts/make_build_packet.py</code></td>
+</tr>
+<tr>
+<td>R-REQ-1</td>
+<td>36 requirements each have a verification method and evidence that exists here; every physical test traces to a requirement</td>
+<td>PASS</td>
+<td>2026-10-02</td>
+<td><code>python -m pytest tests/test_requirements.py</code></td>
+</tr>
+<tr>
+<td>R-FLS-1</td>
+<td>Browser-flasher payload: merged ESP32 image (offset 0x0) and ESP Web Tools manifest generated from the compiled firmware</td>
+<td>PASS</td>
+<td>2026-10-02</td>
+<td><code>python scripts/build_site.py --firmware …merged.bin</code>; flashing itself is T-FLS-1</td>
+</tr>
+<tr>
+<td>R-APP-5</td>
+<td>Electron hardening + listen-only console encoded as tests (context isolation, sandbox, no Node, no preload, permissions refused except serial, external links to system browser, CSP, no serial writes)</td>
+<td>PASS</td>
+<td>2026-10-02</td>
+<td><code>python -m pytest tests/test_app.py</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Notes on R-FW-1/2: built in a sandbox that could not reach <code>downloads.arduino.cc</code>; libraries came
+from their GitHub release tags and the Arduino prototype generator (ctags) was stubbed — the sketch
+declares every function before use, so nothing depended on it. Re-compile on a normal install with
+<code>arduino-cli compile --profile esp32-core3 firmware/Radar_V5</code> before flashing.</p>
+<h2 id="physical-validation--all-not-established">PHYSICAL validation — all NOT established</h2>
+<p>Fill in <strong>Result</strong>, <strong>Date</strong> and <strong>By</strong> as you go; attach photos or serial logs under
+<code>docs/validation/</code>. A test that fails is still useful — write down what happened.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Test</th>
+<th>Pass criterion</th>
+<th>Status</th>
+<th>Result</th>
+<th>Date</th>
+<th>By</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T-PRN-1</td>
+<td>Print the fit coupon; tap pilots; try clearances, servo cut-out, switch hole, nut pocket</td>
+<td>chosen sizes recorded; CAD updated if needed</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-PRN-2</td>
+<td>Print the servo-fit subset (roof, hub, keeper)</td>
+<td>prints without supports or failures</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-PRN-3</td>
+<td>Print P1 (body, front panel) and the sensor head</td>
+<td>45° deck and bridges print cleanly</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-FIT-1</td>
+<td>LCD in the front-panel locators; display aperture over the active area</td>
+<td>no light leak; active area centred (else set <code>LCD_AA_OFFSET_X/Z</code>)</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-FIT-2</td>
+<td>ESP32 on its supports; cell holder on the anchors; USB-C receptacle flush with the rear opening</td>
+<td>plug inserts fully; nothing forced</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-FIT-3</td>
+<td>Hub on spline under the keeper</td>
+<td>0.2–0.6 mm axial play; turns freely 30°–150°</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-FIT-4</td>
+<td>Head mast in socket, cross-bolt</td>
+<td>no wobble; single orientation</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-PWR-1</td>
+<td>Bench power: no shorts; <code>OUT_5V</code>, <code>LOAD_5V</code> with switch ON/OFF</td>
+<td>≈5 V ON; <code>LOAD_5V</code> 0 V OFF</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-PWR-2</td>
+<td>Minimum running current of the complete scanner (servo holding, LCD on)</td>
+<td>record mA; compare with the DFR1026 keep-alive (forum reports ~100 mA)</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-PWR-3</td>
+<td><strong>Open issue:</strong> OFF → ON after 5 s, 60 s, 10 min; with and without USB-C</td>
+<td>output returns without pressing KEY</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-PWR-4</td>
+<td>One-hour run</td>
+<td>no drop-outs or resets</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-PWR-5</td>
+<td>Charge with scanner OFF; charge while ON</td>
+<td>charging indicated both ways; nothing hot</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-FW-1</td>
+<td>Flash; splash then grid and sweep</td>
+<td>as described in ASSEMBLY stage 4</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-FW-2</td>
+<td>Display orientation and colours</td>
+<td>correct with <code>INITR_GREENTAB</code>, rotation 1, no inversion — else record the settings that work</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-FW-3</td>
+<td><code>CENTER_ONLY</code> horn fit; <code>REVERSE_SERVO</code> direction</td>
+<td>pointer on 90° tick; screen matches head</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-FW-4</td>
+<td>Measured timing from the serial "# measured" line</td>
+<td>record mean step and one-way sweep (estimate: ≈101 ms, ≈4.0 s)</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-FW-5</td>
+<td>Distance at 30 / 100 / 150 cm on the 90° line (flat target)</td>
+<td>record reading vs tape measure</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-CAL-1</td>
+<td>Servo calibration against keeper ticks without hitting stops</td>
+<td>record <code>SERVO_US_AT_0/180</code>; no buzzing at ends</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-SWP-1</td>
+<td>Powered sweep clearance with the sensor cable fitted</td>
+<td>no rubbing, no cable tug at 30° or 150°</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-RUN-1</td>
+<td>Runtime from full charge</td>
+<td>record hours</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-THM-1</td>
+<td>Temperatures after 30 min running and during charging (DFR1026, ESP32 regulator, cell)</td>
+<td>nothing uncomfortable to touch; record °C if you have a thermometer</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-LNK-1</td>
+<td>Live link: telemetry tap (TX0 + GND only) to a 3.3 V adapter; live console connects at 115 200 baud</td>
+<td>readings appear, sweep matches the real head, nothing resets or heats up</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-LNK-2</td>
+<td>Record a session in the console and replay it</td>
+<td>replay matches the live view</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-APP-1</td>
+<td>Windows installer + portable build open and connect over the tap</td>
+<td>app opens; port picker lists the adapter</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-APP-2</td>
+<td>macOS build opens (after Gatekeeper approval) and connects</td>
+<td>as above</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-FLS-1</td>
+<td>Browser flasher (Flash page, Chrome/Edge) installs the release firmware on a bare ESP32 DevKit (harness unplugged)</td>
+<td>splash screen appears after re-connecting the harness</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-REL-1</td>
+<td>First tagged release on GitHub carries the source ZIP, manufacturing kit, firmware, desktop apps, SHA256SUMS and attestations</td>
+<td><code>sha256sum -c</code> and <code>gh attestation verify</code> pass</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="untested-assumptions-every-verify-value-in-the-cad">Untested assumptions (every VERIFY value in the CAD)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Assumed</th>
+<th>Source of the assumption</th>
+<th>Measured</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SERVO_BODY_L</code> × <code>SERVO_BODY_W</code></td>
+<td>22.2 × 11.8 mm</td>
+<td>SG90 datasheet overall size</td>
+<td></td>
+</tr>
+<tr>
+<td><code>SERVO_FLANGE_L</code>, <code>SERVO_FLANGE_T</code></td>
+<td>32.2 mm, 2.5 mm</td>
+<td>typical SG90 drawings</td>
+<td></td>
+</tr>
+<tr>
+<td><code>SERVO_FLANGE_BELOW</code>, <code>SERVO_CASE_ABOVE</code>, <code>SERVO_BOSS_ABOVE</code>, <code>SERVO_SPLINE_ABOVE</code></td>
+<td>15.9, 6.8, 10.8, 15.1 mm</td>
+<td>typical SG90 drawings (31 mm overall)</td>
+<td></td>
+</tr>
+<tr>
+<td><code>SERVO_HOLE_PITCH</code>, <code>SERVO_SHAFT_OFFSET</code></td>
+<td>27.5 mm, 5.5 mm</td>
+<td>typical SG90 drawings</td>
+<td></td>
+</tr>
+<tr>
+<td><code>HORN_LEN</code>, <code>HORN_ARM_W</code>, <code>HORN_ARM_T</code>, <code>HORN_COLLAR_D</code>, <code>HORN_SCREW_R</code></td>
+<td>34, 6.2, 1.5, 7.2, 12 mm</td>
+<td>estimate of a stock double-arm horn</td>
+<td></td>
+</tr>
+<tr>
+<td><code>HUB_BOTTOM_ABOVE_ROOF</code></td>
+<td>13.0 mm</td>
+<td>derived from the servo estimates</td>
+<td></td>
+</tr>
+<tr>
+<td><code>SR04_PCB_L/W</code>, <code>SR04_CAN_D/H</code>, <code>SR04_CAN_PITCH</code></td>
+<td>45 × 20, Ø16 × 12, 26 mm</td>
+<td>common HC-SR04 dimensions</td>
+<td></td>
+</tr>
+<tr>
+<td><code>SR04_HOLE_X/Y</code></td>
+<td>±21, ±8.5 mm</td>
+<td>estimate — boards vary; some have no holes</td>
+<td></td>
+</tr>
+<tr>
+<td><code>LCD_PCB_L/H</code>, <code>LCD_AA_W/H</code></td>
+<td>56.5 × 34, 35.04 × 28.03 mm</td>
+<td>Waveshare 1.8inch LCD Module wiki</td>
+<td></td>
+</tr>
+<tr>
+<td><code>LCD_AA_OFFSET_X/Z</code></td>
+<td>0, 0</td>
+<td>not known — check against the Waveshare 2D drawing</td>
+<td></td>
+</tr>
+<tr>
+<td><code>SWITCH_PANEL_D</code>, <code>SWITCH_NUT_CLR_D</code></td>
+<td>12.2, 17.0 mm</td>
+<td>typical 12 mm switch</td>
+<td></td>
+</tr>
+<tr>
+<td><code>USBC_PCB_L/D</code>, <code>USBC_PCB_T</code>, <code>USBC_RECEPT_H</code>, <code>USBC_OPEN_W/H</code></td>
+<td>20.4 × 14.2, 1.6, 3.3, 12.5 × 7.0 mm</td>
+<td>Adafruit 4090 listed size (20.4 × 14.2 × 5.0) + estimates</td>
+<td></td>
+</tr>
+<tr>
+<td><code>ESP32_L/W</code></td>
+<td>51.5 × 28.4 mm</td>
+<td>typical 30-pin DevKit</td>
+<td></td>
+</tr>
+<tr>
+<td><code>CELL_HOLDER_L/W</code></td>
+<td>77 × 21 mm</td>
+<td>typical single 18650 holder</td>
+<td></td>
+</tr>
+<tr>
+<td><code>M2_PILOT_D</code>, <code>M2_CLEAR_D</code>, <code>M2_NUT_POCKET_AF</code></td>
+<td>1.70, 2.25, 4.35 mm</td>
+<td>print allowances — set from the coupon</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="electrical-assumptions-not-yet-checked-on-hardware">Electrical assumptions not yet checked on hardware</h2>
+<ul>
+<li>The DFR1026 delivers a stable 5 V at the scanner's peak load (servo moving + ESP32 + LCD) — datasheet
+  says up to 2.1 A output; not measured here.</li>
+<li>The DFR1026 restarts after OFF → ON — <strong>open issue</strong>, evidence suggests it may not (see WIRING.md).</li>
+<li>The HC-SR04 variant used gives ECHO ≈ 5 V; some clones differ.</li>
+<li>The chosen ST7735S revision works with <code>INITR_GREENTAB</code> / rotation 1 / no inversion at 15 MHz SPI.</li>
+<li>1000–2000 µs covers 30°–150° of real travel on the chosen servo — probably not exactly; calibrate.</li>
+</ul>
+<p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/VALIDATION.md">docs/VALIDATION.md</a> — generated by scripts/build_site.py</p>
+</main></div>
+<script src="../assets/pwa.js" data-root="../"></script>
+</body></html>

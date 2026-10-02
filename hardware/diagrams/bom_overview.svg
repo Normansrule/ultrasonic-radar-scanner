@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 646" width="1200" height="646" role="img" aria-label="Parts kit overview">
+<rect width="1200" height="646" fill="#fbfaf7"/>
+<text x="30" y="42" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:24px;font-weight:bold" fill="#111">What you need — the parts kit</text>
+<text x="30" y="68" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:13px" fill="#555">Generated from docs/BOM.md by scripts/export_mfg.py · quantities in brackets · full details and checks in manufacturing/bom.csv</text>
+<rect x="30" y="90" width="274" height="158" rx="12" fill="#fff" stroke="#e1e6e2"/>
+<g transform="translate(42,98)">
+<rect x="4" y="10" width="44" height="30" rx="3" fill="#1c6f3a"/>
+<rect x="8" y="4" width="3" height="8" fill="#adb5bd"/>
+<rect x="16" y="4" width="3" height="8" fill="#adb5bd"/>
+<rect x="24" y="4" width="3" height="8" fill="#adb5bd"/>
+<rect x="32" y="4" width="3" height="8" fill="#adb5bd"/>
+<rect x="40" y="4" width="3" height="8" fill="#adb5bd"/>
+<rect x="8" y="38" width="3" height="8" fill="#adb5bd"/>
+<rect x="16" y="38" width="3" height="8" fill="#adb5bd"/>
+<rect x="24" y="38" width="3" height="8" fill="#adb5bd"/>
+<rect x="32" y="38" width="3" height="8" fill="#adb5bd"/>
+<rect x="40" y="38" width="3" height="8" fill="#adb5bd"/>
+<rect x="16" y="17" width="20" height="16" rx="2" fill="#0d2a18"/>
+</g>
+<text x="102" y="127" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14.5px;font-weight:bold" fill="#1f3b2d">Electronics</text>
+<text x="46" y="168" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> ESP32-WROOM-32 DevKit, 30-pin</text>
+<text x="46" y="190" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> HC-SR04 ultrasonic sensor</text>
+<text x="46" y="212" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> SG90 positional servo + horn</text>
+<text x="46" y="234" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> 1.8" ST7735S LCD (Waveshare)</text>
+<rect x="320" y="90" width="274" height="224" rx="12" fill="#fff" stroke="#e1e6e2"/>
+<g transform="translate(332,98)">
+<rect x="4" y="14" width="40" height="22" rx="9" fill="#3b82c4"/>
+<rect x="44" y="20" width="5" height="10" rx="1" fill="#868e96"/>
+<path d="M24 16 L18 26 H25 L21 35 L31 23 H24 Z" fill="#ffd43b"/>
+</g>
+<text x="392" y="127" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14.5px;font-weight:bold" fill="#1f3b2d">Power and protection</text>
+<text x="336" y="168" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> DFRobot DFR1026 charger/boost</text>
+<text x="336" y="190" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> USB-C breakout, 5.1 kΩ CC×2</text>
+<text x="336" y="212" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> Protected 18650 cell</text>
+<text x="336" y="234" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> 18650 holder with leads</text>
+<text x="336" y="256" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> 12 mm latching switch ≥2 A</text>
+<text x="336" y="278" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> 3 A fuse + inline holder</text>
+<text x="336" y="300" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> 1000 µF ≥10 V capacitor</text>
+<rect x="610" y="90" width="274" height="114" rx="12" fill="#fff" stroke="#e1e6e2"/>
+<g transform="translate(622,98)">
+<line x1="2" y1="25" x2="50" y2="25" stroke="#adb5bd" stroke-width="2"/>
+<rect x="12" y="18" width="28" height="14" rx="6" fill="#e2c38c"/>
+<rect x="17" y="18" width="3" height="14" fill="#d11f1f"/><rect x="23" y="18" width="3" height="14" fill="#d11f1f"/>
+<rect x="29" y="18" width="3" height="14" fill="#111"/>
+</g>
+<text x="682" y="127" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14.5px;font-weight:bold" fill="#1f3b2d">Passive parts</text>
+<text x="626" y="168" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> 2.2 kΩ 1 % resistor</text>
+<text x="626" y="190" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> 3.3 kΩ 1 % resistor</text>
+<rect x="900" y="90" width="274" height="136" rx="12" fill="#fff" stroke="#e1e6e2"/>
+<g transform="translate(912,98)">
+<path d="M4 34 C 16 6, 30 46, 48 14" stroke="#e03131" stroke-width="3.5" fill="none"/>
+<path d="M4 40 C 18 14, 32 52, 48 22" stroke="#111" stroke-width="3.5" fill="none"/>
+</g>
+<text x="972" y="127" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14.5px;font-weight:bold" fill="#1f3b2d">Wiring and mounting</text>
+<text x="916" y="168" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[~20]</tspan> jumper leads + 22 AWG wire</text>
+<text x="916" y="190" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[≥1]</tspan> Keyed 2-pin plug (J1)</text>
+<text x="916" y="212" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1 lot]</tspan> Heat-shrink, tape, ties, feet</text>
+<rect x="30" y="338" width="274" height="114" rx="12" fill="#fff" stroke="#e1e6e2"/>
+<g transform="translate(42,346)">
+<rect x="6" y="16" width="18" height="14" rx="3" fill="#495057"/>
+<path d="M24 23 C 34 23, 34 36, 46 36" stroke="#495057" stroke-width="4" fill="none"/>
+</g>
+<text x="102" y="375" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14.5px;font-weight:bold" fill="#1f3b2d">Cables</text>
+<text x="46" y="416" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> 5 V 3 A USB-C supply + cable</text>
+<text x="46" y="438" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> USB data cable (ESP32)</text>
+<rect x="320" y="338" width="274" height="92" rx="12" fill="#fff" stroke="#e1e6e2"/>
+<g transform="translate(332,346)">
+<circle cx="26" cy="25" r="19" fill="#2f9e44"/><circle cx="26" cy="25" r="7" fill="#fff"/>
+</g>
+<text x="392" y="375" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14.5px;font-weight:bold" fill="#1f3b2d">Consumables</text>
+<text x="336" y="416" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[~260 g max]</tspan> PLA filament</text>
+<rect x="610" y="338" width="274" height="224" rx="12" fill="#fff" stroke="#e1e6e2"/>
+<g transform="translate(622,346)">
+<rect x="10" y="8" width="18" height="8" rx="2" fill="#868e96"/>
+<rect x="16" y="16" width="6" height="28" fill="#adb5bd"/>
+<line x1="15" y1="20" x2="23" y2="18" stroke="#6c757d" stroke-width="1.2"/>
+<line x1="15" y1="25" x2="23" y2="23" stroke="#6c757d" stroke-width="1.2"/>
+<line x1="15" y1="30" x2="23" y2="28" stroke="#6c757d" stroke-width="1.2"/>
+<line x1="15" y1="35" x2="23" y2="33" stroke="#6c757d" stroke-width="1.2"/>
+<line x1="15" y1="40" x2="23" y2="38" stroke="#6c757d" stroke-width="1.2"/>
+<polygon points="34,20 42,15 50,20 50,30 42,35 34,30" fill="#868e96"/><circle cx="42" cy="25" r="3.5" fill="#fff"/>
+</g>
+<text x="682" y="375" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14.5px;font-weight:bold" fill="#1f3b2d">Fasteners (M2 only)</text>
+<text x="626" y="416" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[2]</tspan> M2×6 screw</text>
+<text x="626" y="438" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[12]</tspan> M2×8 screw</text>
+<text x="626" y="460" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[4]</tspan> M2×12 screw</text>
+<text x="626" y="482" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> M2×20 screw</text>
+<text x="626" y="504" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[6]</tspan> M2 hex nut</text>
+<text x="626" y="526" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[8]</tspan> M2 washer</text>
+<text x="626" y="548" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> M2 hand tap</text>
+<rect x="900" y="338" width="274" height="92" rx="12" fill="#fff" stroke="#e1e6e2"/>
+<g transform="translate(912,346)">
+<rect x="6" y="10" width="40" height="30" rx="6" fill="#ced4da"/>
+</g>
+<text x="972" y="375" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14.5px;font-weight:bold" fill="#1f3b2d">Optional (live link)</text>
+<text x="916" y="416" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12.5px" fill="#222"><tspan fill="#2f9e44" font-weight="bold">[1]</tspan> 3.3 V USB-serial adapter</text>
+<text x="30" y="628" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:12px" fill="#888">Plus the six printed parts and the fit coupon (manufacturing/printed_parts.csv). Recheck every listing before buying; safety parts are not optional.</text>
+</svg>

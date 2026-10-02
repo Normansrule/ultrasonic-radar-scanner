@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" data-mode="{{MODE}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ultrasonic Radar Scanner</title>
+<meta name="description" content="An educational ultrasonic (sonar) desktop scanner with a radar-style display: ESP32, HC-SR04, SG90 servo, ST7735S LCD, CadQuery-printed case.">
+{{HEAD_COMMON}}
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><span class="dot"></span>Ultrasonic Radar Scanner</a>
+  <nav class="toplinks"><a href="index.html" aria-current="page">Home</a><a href="guide/overview.html">Guide</a><a href="live.html">Live console</a><a class="web-only" href="flash.html">Flash</a></nav>
+  <span class="badge">educational sonar · not physically validated yet</span>
+  <a class="gh web-only" href="{{REPO_URL}}">GitHub</a>
+</header>
+
+<section class="hero">
+  <div>
+    <div class="kicker">Radar V5.1 · open hardware</div>
+    <h1>Print it, wire it, flash it — and see sound.</h1>
+    <p class="lead">A battery-powered desktop instrument that sweeps an HC-SR04 ultrasonic sensor on a
+      servo and draws what it hears as a green radar-style picture. Every part, pin and number is
+      documented so a first-time maker can build it and understand why it works.</p>
+    <div class="honest"><b>Honest scope.</b> This is ultrasonic <em>sonar</em> with a radar-<em>style</em>
+      display — not radio-frequency radar, not a safety or obstacle-avoidance device. It sweeps about
+      120°, the angle shown is the commanded servo position, and nothing has been printed, fitted or
+      powered yet.</div>
+    <div class="cta">
+      <a class="btn primary" href="guide/overview.html">Start the build guide</a>
+      <a class="btn" href="live.html">Live console</a>
+      <a class="btn" href="guide/validation.html">What's validated</a>
+      <a class="btn web-only" href="flash.html">Flash firmware</a>
+      <a class="btn web-only" href="{{REPO_URL}}/releases/latest">Desktop app &amp; manufacturing kit</a>
+      <button class="btn web-only" id="b-install" type="button" hidden>Install web app</button>
+    </div>
+  </div>
+  <div class="device">
+    <canvas id="screen" width="160" height="128" aria-label="Simulated scanner screen"></canvas>
+    <p class="cap" id="sim-note">Simulation of the firmware's screen with synthetic targets. Click inside the fan to add a target.</p>
+    <div class="controls">
+      <label>Step (°) <span id="c-step-v"></span><input id="c-step" type="range" min="1" max="10" value="3"></label>
+      <label>Settle (ms) <span id="c-settle-v"></span><input id="c-settle" type="range" min="20" max="200" step="5" value="70"></label>
+      <label>Display range (cm) <span id="c-range-v"></span><input id="c-range" type="range" min="50" max="400" step="10" value="200"></label>
+      <label>Air temperature (°C) <span id="c-temp-v"></span><input id="c-temp" type="range" min="0" max="40" value="20"></label>
+    </div>
+    <div class="readout">
+      <div><span>one-way sweep (est.)</span><b id="r-sweep">–</b></div>
+      <div><span>screen refresh (est.)</span><b id="r-fps">–</b></div>
+      <div><span>echo timeout</span><b id="r-timeout">–</b></div>
+    </div>
+    <p class="cap"><button class="chip" id="c-reset" type="button">reset targets</button>
+      Timing uses the documented estimate (SPI frame push + draw + echo), not a measurement.</p>
+  </div>
+</section>
+
+<section class="band">
+  <h2>Six printed parts, one CadQuery source</h2>
+  <p class="sub">Every STL, STEP and 3MF is regenerated from <code>cad/build_radar_v5.py</code>. Each
+    dimension is a named variable; anything that depends on your exact modules is marked
+    <b>VERIFY</b> and checked with a printed fit coupon first.</p>
+  <div class="grid2">
+    <img src="assets/diagrams/exploded_v5.png" alt="Exploded view of the six printed parts">
+    <div class="card">
+      <ul class="parts">
+        <li><b>01</b><span><b>Body</b> 128 × 96 × 52 mm — electronics bay, side vents, rear USB-C opening, 45° self-supporting deck.</span></li>
+        <li><b>02</b><span><b>Front panel</b> 118 × 52 × 2.6 mm — LCD window, 12 mm switch, corner locators.</span></li>
+        <li><b>03</b><span><b>Roof</b> 120 × 74 × 3 mm — servo mount, vents, sensor-cable slot.</span></li>
+        <li><b>04</b><span><b>Rotor hub</b> — carries the stock servo horn; keyed mast socket.</span></li>
+        <li><b>05</b><span><b>Turret keeper</b> — anti-lift sleeve with engraved 30°–150° ticks.</span></li>
+        <li><b>06</b><span><b>Sensor head</b> — open-backed HC-SR04 shroud and keyed mast, printed face-down.</span></li>
+        <li><b>07</b><span>optional 0.4 mm keeper shim · <b>08</b> fit-test coupon (print first)</span></li>
+      </ul>
+      <p class="cta"><a class="btn" href="guide/printing.html">Printing guide</a><a class="btn" href="guide/assembly.html">Assembly</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <h2>Wiring explorer</h2>
+  <p class="sub">Generated from the net list in <code>docs/WIRING.md</code> — the same table the firmware
+    pin test reads. Click a net to isolate it. Follow labels, not wire colours.</p>
+  <div class="chips" id="netchips"></div>
+  <div class="wiring" id="wiring">{{WIRING_SVG}}</div>
+  <div class="pinlist card" id="pinlist" style="margin-top:14px"></div>
+</section>
+
+<section class="band">
+  <h2>The four equations, live</h2>
+  <p class="sub">Same formulas as <a href="guide/equations.html">the equations page</a> and
+    <code>tests/radar_math.py</code>.</p>
+  <div class="grid2">
+    <div class="card calc">
+      <h3>Distance from echo time</h3>
+      <label>ECHO high time (µs) <input id="q-t" type="number" value="5823" min="0"></label>
+      <label>Air temperature (°C) <input id="q-T" type="number" value="20"></label>
+      <div class="out" id="q-d"></div>
+    </div>
+    <div class="card calc">
+      <h3>ECHO divider</h3>
+      <label>Vin (V) <input id="q-vin" type="number" value="5.0" step="0.05"></label>
+      <label>R1 (Ω) <input id="q-r1" type="number" value="2200"></label>
+      <label>R2 (Ω) <input id="q-r2" type="number" value="3300"></label>
+      <div class="out" id="q-vout"></div>
+    </div>
+    <div class="card calc">
+      <h3>Servo pulse and LEDC duty</h3>
+      <label>Commanded angle (°) <input id="q-a" type="number" value="90" min="0" max="180"></label>
+      <div class="out" id="q-duty"></div>
+    </div>
+    <div class="card">
+      <h3>Build in gated stages</h3>
+      <img src="assets/diagrams/build_flow.svg" alt="Five build stages with gate checks">
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <h2>Validation, honestly</h2>
+  <div class="stats">
+    <div class="stat"><b>{{RECORDED}}</b><span>recorded checks passing — CAD geometry, firmware compiles (ESP32 core 3.x and 2.x), equations, wiring ↔ firmware sync</span></div>
+    <div class="stat warn"><b>{{PHYS_DONE}} / {{PHYS_TOTAL}}</b><span>physical tests done — print, fit, power, flash, sweep, runtime and thermals are all still to do</span></div>
+    <div class="stat warn"><b>1</b><span>open power issue — does the charger module restart after OFF→ON? <a href="guide/wiring.html#open-issue--dfr1026-restart-after-offon-unresolved-must-be-bench-tested">details</a></span></div>
+  </div>
+</section>
+
+<footer>
+  MIT licence · <a href="live.html">live console</a> · <a href="guide/live-link.html">apps &amp; live link</a> · <a href="guide/credits.html">credits &amp; datasheets</a> · <a href="guide/security.html">security &amp; safety</a> ·
+  <a href="guide/bom.html">bill of materials</a> · built from the repository by <code>scripts/build_site.py</code>
+</footer>
+
+<script>window.NETLIST = {{NETLIST_JSON}};</script>
+<script src="assets/app.js"></script>
+<script src="assets/pwa.js" data-root=""></script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en" data-mode="web"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0b110e">
+<link rel="icon" href="../assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+<title>Requirements · Ultrasonic Radar Scanner</title>
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head><body class="guide">
+<header class="top"><a class="brand" href="../index.html"><span class="dot"></span>Ultrasonic Radar Scanner</a>
+<nav class="toplinks"><a href="../index.html">Home</a><a href="overview.html" aria-current="page">Guide</a><a href="../live.html">Live console</a><a class="web-only" href="../flash.html">Flash</a></nav>
+<span class="badge">educational sonar · not physically validated yet</span>
+<a class="gh web-only" href="https://github.com/Normansrule/ultrasonic-radar-scanner">GitHub</a></header>
+<div class="layout"><nav class="side"><a href="overview.html">Overview</a>
+<a href="requirements.html" class="here">Requirements</a>
+<a href="bom.html">Bill of materials</a>
+<a href="printing.html">Printing</a>
+<a href="wiring.html">Wiring</a>
+<a href="assembly.html">Assembly</a>
+<a href="equations.html">Equations</a>
+<a href="live-link.html">Live link &amp; apps</a>
+<a href="validation.html">Validation log</a>
+<a href="security.html">Security &amp; safety</a>
+<a href="glossary.html">Glossary</a>
+<a href="publish.html">Publishing</a>
+<a href="credits.html">Credits &amp; sources</a>
+<a href="changelog.html">Changelog</a></nav>
+<main class="doc"><h1 id="requirements-and-traceability">Requirements and traceability</h1>
+<p>What the scanner must do, how each requirement is verified, and where the evidence lives.
+Verification methods: <strong>I</strong>nspection, <strong>A</strong>nalysis, <strong>D</strong>emonstration, <strong>T</strong>est. Evidence IDs point to
+<a href="validation.html"><code>VALIDATION.md</code></a>: <code>R-…</code> are recorded checks a computer can run, <code>T-…</code> are physical tests.</p>
+<p><strong>Status</strong> is filled in by <code>python scripts/gen_traceability.py</code> from <code>VALIDATION.md</code>:
+<em>Met (recorded)</em> = all evidence is a passing recorded check; <em>Open</em> = at least one physical test has not
+been run yet. Values marked <em>target</em> are proposed goals for an educational instrument — confirm or
+change them after the first bench runs.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requirement</th>
+<th>Method</th>
+<th>Evidence</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RQ-F-01</td>
+<td>Sweep the HC-SR04 through a <strong>commanded</strong> 30°–150° in 3° steps and back, centring at boot.</td>
+<td>D, A</td>
+<td>R-EQ-1, T-FW-1, T-CAL-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-F-02</td>
+<td>Compute distance as d = v·t/2 and show 2–200 cm; show <code>---</code> for no echo or out of range.</td>
+<td>A, T</td>
+<td>R-EQ-1, T-FW-5</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-F-03</td>
+<td>Draw a radar-style display: semicircular grid, sweep line, fading detections, angle and distance readout.</td>
+<td>D</td>
+<td>R-FW-3, T-FW-1, T-FW-2</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-F-04</td>
+<td>Provide <code>CENTER_ONLY</code> (horn fitting), <code>REVERSE_SERVO</code> and <code>CALIBRATE_SERVO</code> modes.</td>
+<td>D</td>
+<td>R-FW-1, T-FW-3, T-CAL-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-F-05</td>
+<td>Print one <code>angle,distance</code> line per reading at 115 200 baud for logging and the live console.</td>
+<td>T</td>
+<td>R-APP-1, T-LNK-1, T-LNK-2</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-F-06</td>
+<td>Run from one protected 18650 cell; charge from USB-C with the scanner switched OFF.</td>
+<td>T</td>
+<td>T-PWR-1, T-PWR-5</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-F-07</td>
+<td>Turn on and off with the front latching switch without opening the case, and stay on while running (open power issue).</td>
+<td>T</td>
+<td>T-PWR-2, T-PWR-3, T-PWR-4</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-P-01</td>
+<td>One-way sweep ≤ 5 s at default settings (estimate 4.0 s).</td>
+<td>A, T</td>
+<td>R-EQ-1, T-FW-4</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-P-02</td>
+<td><em>Target:</em> distance within ±3 cm of a tape measure at 30, 100 and 150 cm on a flat target.</td>
+<td>T</td>
+<td>T-FW-5</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-P-03</td>
+<td><em>Target:</em> ≥ 2 h runtime from a full charge.</td>
+<td>T</td>
+<td>T-RUN-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-P-04</td>
+<td>Servo travel calibrated without driving into its end stops.</td>
+<td>T</td>
+<td>T-CAL-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-S-01</td>
+<td>A 3 A fuse is the first item on the battery positive lead.</td>
+<td>I, T</td>
+<td>R-SYNC-1, T-PWR-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-S-02</td>
+<td>A bare cell never feeds the ESP32, servo, sensor or display.</td>
+<td>I</td>
+<td>R-SYNC-1</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-S-03</td>
+<td>HC-SR04 ECHO reaches the ESP32 only through the 2.2 k/3.3 k divider; GPIO stays ≤ 3.6 V at worst case.</td>
+<td>A, I</td>
+<td>R-EQ-1, R-SYNC-1</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-S-04</td>
+<td>Servo and sensor run from the switched 5 V rail, never from 3V3.</td>
+<td>I</td>
+<td>R-SYNC-1</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-S-05</td>
+<td>Protected cell rated ≥ 2.1 A charge and ≥ 3 A discharge; switch rated ≥ 2 A at 5 V DC.</td>
+<td>I</td>
+<td>R-BOM-1</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-S-06</td>
+<td>USB-C input negotiates 5 V only (5.1 kΩ on CC1 and CC2, no Power Delivery trigger).</td>
+<td>I</td>
+<td>R-BOM-1, R-SYNC-1</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-S-07</td>
+<td>The instrument is labelled "educational — not a safety device" on the case and the start-up screen.</td>
+<td>I, D</td>
+<td>R-CAD-1, R-FW-1, T-FW-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-S-08</td>
+<td>The ESP32's own USB port is never connected while the battery harness is; the live link is a listen-only tap.</td>
+<td>I</td>
+<td>R-APP-5, T-LNK-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-S-09</td>
+<td>No part is uncomfortable to touch after 30 min running or during charging.</td>
+<td>T</td>
+<td>T-THM-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-I-01</td>
+<td>Every connection follows the <code>WIRING.md</code> net list, and firmware pin constants match it.</td>
+<td>I</td>
+<td>R-SYNC-1</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-I-02</td>
+<td>Classic 30-pin ESP32-WROOM-32 DevKit; no flash, strapping or input-only pins used as outputs.</td>
+<td>I</td>
+<td>R-SYNC-1</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-M-01</td>
+<td>Every printed part fits a Bambu Lab A1 mini (180 × 180 × 180 mm) and prints without supports.</td>
+<td>A, T</td>
+<td>R-CAD-3, T-PRN-2, T-PRN-3</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-M-02</td>
+<td>M2 fasteners only; counts in the BOM match their uses.</td>
+<td>I</td>
+<td>R-BOM-1</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-M-03</td>
+<td>The turret clears the keeper, roof, body and servo through the commanded travel plus 15° margin.</td>
+<td>A, T</td>
+<td>R-CAD-5, T-SWP-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-M-04</td>
+<td>Hole and slot allowances are confirmed with the fit coupon before the full print.</td>
+<td>T</td>
+<td>T-PRN-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-M-05</td>
+<td>Modules (LCD, ESP32, USB-C breakout, cell holder) fit without force; no model interference.</td>
+<td>A, T</td>
+<td>R-CAD-4, T-FIT-1, T-FIT-2</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-M-06</td>
+<td>Rotor hub axial play 0.2–0.6 mm under the keeper; mast fits one way only.</td>
+<td>A, T</td>
+<td>R-CAD-6, T-FIT-3, T-FIT-4</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-M-07</td>
+<td>All CAD outputs regenerate from one CadQuery source as valid, watertight single solids.</td>
+<td>A</td>
+<td>R-CAD-1, R-CAD-2</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-M-08</td>
+<td>No custom PCB: off-the-shelf modules, hand wiring, one keyed disconnect for programming.</td>
+<td>I</td>
+<td>R-SYNC-1, R-BOM-1</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-SW-01</td>
+<td>Firmware compiles with zero warnings on the pinned ESP32 cores 3.x and 2.x.</td>
+<td>T</td>
+<td>R-FW-1, R-FW-2</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-SW-02</td>
+<td>No Wi-Fi or Bluetooth in the firmware; the consoles never write to the scanner.</td>
+<td>I</td>
+<td>R-SYNC-1, R-APP-5</td>
+<td>Met (recorded)</td>
+</tr>
+<tr>
+<td>RQ-SW-03</td>
+<td>Build guide, simulator and live console work offline in the web app and the desktop app on Linux, Windows and macOS.</td>
+<td>T</td>
+<td>R-APP-2, R-APP-3, T-APP-1, T-APP-2</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-SW-04</td>
+<td>Firmware can be installed from a browser without installing a toolchain.</td>
+<td>D</td>
+<td>T-FLS-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-SW-05</td>
+<td>Every release carries checksums, a build-provenance attestation and a toolchain SBOM.</td>
+<td>I</td>
+<td>T-REL-1</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>RQ-O-01</td>
+<td>Everything needed to build it is in editable open formats (CadQuery, STEP, STL/3MF, Markdown, CSV) under the MIT licence.</td>
+<td>I</td>
+<td>R-CAD-1, R-BOM-1</td>
+<td>Met (recorded)</td>
+</tr>
+</tbody>
+</table></div>
+<p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/REQUIREMENTS.md">docs/REQUIREMENTS.md</a> — generated by scripts/build_site.py</p>
+</main></div>
+<script src="../assets/pwa.js" data-root="../"></script>
+</body></html>

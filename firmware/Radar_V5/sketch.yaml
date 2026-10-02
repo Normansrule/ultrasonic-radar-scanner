@@ -1,0 +1,28 @@
+# Arduino CLI sketch project file — pins the toolchain that this sketch was
+# actually COMPILED with (2026-09-30, arduino-cli 1.2.2, zero warnings with
+# --warnings all). Compiling is not bench testing: see docs/VALIDATION.md.
+#
+#   arduino-cli compile --profile esp32-core3 firmware/Radar_V5
+#   arduino-cli compile --profile esp32-core2 firmware/Radar_V5
+profiles:
+  esp32-core3:
+    notes: Espressif Arduino-ESP32 3.x path (ledcAttach / ledcWrite(pin, ...))
+    fqbn: esp32:esp32:esp32
+    platforms:
+      - platform: esp32:esp32 (3.3.12)
+        platform_index_url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+    libraries:
+      - Adafruit GFX Library (1.12.6)
+      - Adafruit ST7735 and ST7789 Library (1.11.0)
+      - Adafruit BusIO (1.17.4)
+  esp32-core2:
+    notes: Espressif Arduino-ESP32 2.x path (ledcSetup / ledcAttachPin)
+    fqbn: esp32:esp32:esp32
+    platforms:
+      - platform: esp32:esp32 (2.0.17)
+        platform_index_url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+    libraries:
+      - Adafruit GFX Library (1.12.6)
+      - Adafruit ST7735 and ST7789 Library (1.11.0)
+      - Adafruit BusIO (1.17.4)
+default_profile: esp32-core3
