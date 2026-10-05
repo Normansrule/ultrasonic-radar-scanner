@@ -1,5 +1,27 @@
 # Changelog
 
+## 6.0.0 — 2026-10-04 (Radar V6 "Mini": nicer, fewer parts, cheaper)
+
+New hardware design. Nothing has been physically validated yet.
+
+- **Electronics: 3 modules, 7 wires.** The ESP32 DevKit + 1.8" LCD are replaced by one
+  ESP32-2432S028R "Cheap Yellow Display" (ESP32 + 2.8" 320 × 240 touch screen + RGB LED + USB).
+  The HC-SR04 + resistor divider is replaced by a 3.3 V RCWL-1601 / HC-SR04P. Wiring goes through the
+  board's JST connectors — no breadboard, no soldering to the board.
+- **Power: one USB cable.** The 18650 cell, holder, charger/boost module, USB-C breakout, fuse,
+  switch and 1000 µF capacitor are gone (and with them the open charger-restart issue).
+- **Enclosure: four printed parts, no loose screws.** Ivory console with the screen tilted back 20°,
+  a slide-in bezel the CYD presses onto, a press-fit base, and a mint "two-eye" sensor head on a neck.
+  Printed without supports; only the two screws that come with the servo.
+- **Firmware V6:** 320 × 240 UI with a glowing beam, touch −/+ range (50–400 cm) and pause,
+  automatic ILI9341 / ST7789 panel detection, near-object LED, band-buffered drawing, same serial
+  format. Live console now works over the scanner's own USB cable.
+- Photo-style Cycles renders, an illustrated 7-wire picture, a new parts-kit graphic; BOM, wiring,
+  assembly, requirements (33), validation log and build packet rewritten for V6.
+- Purchased line items drop from 20 to 5 (+1 optional); estimated parts cost about US$18–30
+  (rough single-unit estimate, not a quote).
+
+
 ## 5.2.0 — 2026-10-02 (manufacturing package)
 
 Hardware baseline unchanged (Radar V5.1). Nothing has been physically validated yet.

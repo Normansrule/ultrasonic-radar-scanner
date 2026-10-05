@@ -56,7 +56,7 @@
       if (ev.type === "config") $("i-range").value = String(ev.range);
       if (recorder) recorder.add(ev, t);
       if (ev.type === "unknown" && stats.state.unknownLines === 20 && stats.state.readings === 0)
-        log("! no readings yet — check the baud rate (115200) and the TX0/GND wiring");
+        log("! no readings yet — check the baud rate (115200), the USB cable (it must carry data) and that no other program has the port open");
     }
     if (events.length) dirty = true;
   }

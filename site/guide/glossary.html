@@ -43,14 +43,6 @@ documentation.</p>
 <td>A print-file format that can hold several objects, their placement and slicer settings in one file.</td>
 </tr>
 <tr>
-<td>Analog-to-Digital Converter (ADC)</td>
-<td>Not used in this build; mentioned only because battery-voltage measurement would need one.</td>
-</tr>
-<tr>
-<td>American Wire Gauge (AWG)</td>
-<td>Wire thickness scale; smaller numbers are thicker. Power leads here are 22 AWG.</td>
-</tr>
-<tr>
 <td>Bill of Materials (BOM)</td>
 <td>The shopping list: every part, how many, and what to check.</td>
 </tr>
@@ -59,28 +51,52 @@ documentation.</p>
 <td>The printable PDF traveller in <code>manufacturing/</code> with tick boxes for every part, wire, gate and test.</td>
 </tr>
 <tr>
-<td>Bulk capacitor</td>
-<td>A large capacitor (here 1000 µF) that supplies short current bursts, so the servo's spikes do not dip the 5 V rail.</td>
+<td>CadQuery</td>
+<td>A Python library for writing 3D models as code. <code>cad/build_radar.py</code> is the model of record.</td>
 </tr>
 <tr>
-<td>CadQuery</td>
-<td>A Python library for writing 3D models as code. <code>cad/build_radar_v5.py</code> is the model of record.</td>
+<td>Cheap Yellow Display (CYD)</td>
+<td>Community name for the ESP32-2432S028R: an ESP32, a 2.8" 320 × 240 touch screen, an RGB LED and USB on one yellow board.</td>
+</tr>
+<tr>
+<td>JST 1.25 mm connector</td>
+<td>The small 4-pin sockets on the back of the CYD (CN1, P3, P1); cables with a JST plug on one end and Dupont sockets on the other plug into them.</td>
+</tr>
+<tr>
+<td>Dupont connector</td>
+<td>The 2.54 mm push-on jumper connector used on hobby modules and servo plugs.</td>
+</tr>
+<tr>
+<td>ILI9341 / ST7789</td>
+<td>The two display controller chips found on CYD boards; the firmware detects which one you have.</td>
+</tr>
+<tr>
+<td>XPT2046</td>
+<td>The CYD's resistive touch controller.</td>
+</tr>
+<tr>
+<td>Press fit</td>
+<td>A joint held by friction because the hole is very slightly smaller than the part pushed into it.</td>
+</tr>
+<tr>
+<td>Crush rib</td>
+<td>A thin printed ridge that deforms slightly to make a firm press fit.</td>
+</tr>
+<tr>
+<td>VIN</td>
+<td>The CYD's P1 pin that carries the USB 5 V; it powers the servo.</td>
+</tr>
+<tr>
+<td>Liquid-Crystal Display (LCD) / Thin-Film Transistor (TFT)</td>
+<td>The colour screen technology on the CYD.</td>
 </tr>
 <tr>
 <td>Commanded angle</td>
 <td>The angle the firmware <em>asks</em> the servo for. Nothing measures the real angle.</td>
 </tr>
 <tr>
-<td>Configuration Channel (CC) pins</td>
-<td>Two USB-C pins. 5.1 kΩ resistors to ground on both tell a USB-C charger to supply 5 V.</td>
-</tr>
-<tr>
 <td>CycloneDX</td>
 <td>A standard file format for a software bill of materials.</td>
-</tr>
-<tr>
-<td>Development board (DevKit)</td>
-<td>A module mounted on a board with a USB port, regulator and headers.</td>
 </tr>
 <tr>
 <td>Duty (cycle)</td>
@@ -88,7 +104,7 @@ documentation.</p>
 </tr>
 <tr>
 <td>ECHO / TRIG</td>
-<td>HC-SR04 pins: a 10 µs pulse on TRIG starts a ping; ECHO stays high for as long as the sound took to return.</td>
+<td>Ultrasonic sensor pins: a 10 µs pulse on TRIG starts a ping; ECHO stays high for as long as the sound took to return.</td>
 </tr>
 <tr>
 <td>Electrostatic discharge (ESD)</td>
@@ -123,32 +139,12 @@ documentation.</p>
 <td>The shared 0 V reference all voltages are measured from.</td>
 </tr>
 <tr>
-<td>Harness</td>
-<td>All the leads that plug onto the ESP32, unplugged together for programming.</td>
-</tr>
-<tr>
 <td>Horn</td>
 <td>The plastic arm supplied with a servo that grips its splined output shaft.</td>
 </tr>
 <tr>
-<td>Keyed</td>
-<td>Shaped so it only fits one way (the sensor mast, the J1 power plug).</td>
-</tr>
-<tr>
 <td>LED Control (LEDC)</td>
 <td>The ESP32 peripheral that generates PWM in hardware; used here for the servo.</td>
-</tr>
-<tr>
-<td>Liquid-Crystal Display (LCD)</td>
-<td>The 1.8" screen; driven by an ST7735S controller chip.</td>
-</tr>
-<tr>
-<td>Lithium-ion (Li-ion)</td>
-<td>The 18650 cell's chemistry. Safe when protected, fused and not abused.</td>
-</tr>
-<tr>
-<td>Master Out, Slave In (MOSI) / Serial Clock (SCK)</td>
-<td>The SPI data and clock lines (the LCD labels them DIN and CLK).</td>
 </tr>
 <tr>
 <td>Net</td>
@@ -159,20 +155,12 @@ documentation.</p>
 <td>One firmware file containing bootloader, partition table and app, flashed at address 0x0.</td>
 </tr>
 <tr>
-<td>Pilot hole</td>
-<td>A slightly undersized printed hole that you cut threads into with a tap.</td>
-</tr>
-<tr>
 <td>Progressive Web App (PWA)</td>
 <td>A website that can be installed and used offline like an app.</td>
 </tr>
 <tr>
 <td>Polylactic acid (PLA)</td>
 <td>The plastic used for printing.</td>
-</tr>
-<tr>
-<td>Power Delivery (PD)</td>
-<td>A USB-C protocol for raising voltage to 9–20 V. <strong>Not</strong> used here — 5 V only.</td>
 </tr>
 <tr>
 <td>Printed Circuit Board (PCB)</td>
@@ -188,7 +176,7 @@ documentation.</p>
 </tr>
 <tr>
 <td>Serial Peripheral Interface (SPI)</td>
-<td>A fast clocked bus used for the LCD.</td>
+<td>A fast clocked bus; the CYD's screen and touch controller each use one.</td>
 </tr>
 <tr>
 <td>Software Bill of Materials (SBOM)</td>
@@ -197,10 +185,6 @@ documentation.</p>
 <tr>
 <td>Traceability</td>
 <td>Linking every requirement to the check or test that proves it (<code>docs/REQUIREMENTS.md</code>).</td>
-</tr>
-<tr>
-<td>Telemetry tap</td>
-<td>The optional two-wire, listen-only link (TX0 + GND) from the ESP32 to a USB-to-serial adapter.</td>
 </tr>
 <tr>
 <td>Spline</td>
@@ -220,11 +204,7 @@ documentation.</p>
 </tr>
 <tr>
 <td>Universal Asynchronous Receiver-Transmitter (UART)</td>
-<td>The serial port the firmware prints on (115 200 baud); TX0 is its transmit pin.</td>
-</tr>
-<tr>
-<td>Universal Serial Bus Type-C (USB-C)</td>
-<td>The reversible connector used for charging. The rear port carries power only.</td>
+<td>The serial port the firmware prints on (115 200 baud); it reaches the computer through the CYD's USB chip.</td>
 </tr>
 <tr>
 <td>VERIFY</td>

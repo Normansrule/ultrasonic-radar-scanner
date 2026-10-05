@@ -28,18 +28,17 @@
 <a href="credits.html">Credits &amp; sources</a>
 <a href="changelog.html">Changelog</a></nav>
 <main class="doc"><h1 id="validation-log--what-is-known-and-what-is-not">Validation log — what is known, and what is not</h1>
-<p>This project separates two kinds of evidence and never mixes them:</p>
+<p>Two kinds of evidence, never mixed:</p>
 <ul>
-<li><strong>RECORDED</strong> — checks a computer can do without hardware: the CAD solids are valid, parts fit
-  the print bed, parts do not overlap in the model, the firmware compiles, the equations are
-  numerically consistent, the docs and firmware agree. These are real results, but they say
-  nothing about whether a physical build works.</li>
+<li><strong>RECORDED</strong> — checks a computer can run without hardware: CAD solids are valid, parts fit the
+  bed and don't overlap in the model, the firmware compiles, the equations agree, the docs and
+  firmware agree. Real results, but they say nothing about whether a physical build works.</li>
 <li><strong>PHYSICAL</strong> — anything that needs a printer, a multimeter, a powered scanner or a tape measure.</li>
 </ul>
 <blockquote>
-<p><strong>Current status: no PHYSICAL validation has been performed.</strong> No part has been printed or fitted,
-the firmware has not been flashed, and the scanner has never been powered. Do not quote this
-project as "working" until the PHYSICAL table below has entries.</p>
+<p><strong>Current status: no PHYSICAL validation has been performed for Radar V6.</strong> No part has been
+printed or fitted, the firmware has not been flashed onto a Cheap Yellow Display, and the scanner
+has never been powered. Do not call it "working" until the PHYSICAL table has entries.</p>
 </blockquote>
 <h2 id="recorded-checks">RECORDED checks</h2>
 <div class="tablewrap"><table>
@@ -55,153 +54,153 @@ project as "working" until the PHYSICAL table below has entries.</p>
 <tbody>
 <tr>
 <td>R-CAD-1</td>
-<td>All 8 parts build as single valid solids; required parts match the brief's nominal sizes within 0.6 mm</td>
+<td>All 5 parts build as single valid solids; the shell matches its nominal size within 0.6 mm</td>
 <td>PASS</td>
-<td>2026-09-30</td>
+<td>2026-10-04</td>
 <td><code>python scripts/render_cad.py</code> → <code>cad/geometry_report.json</code></td>
 </tr>
 <tr>
 <td>R-CAD-2</td>
 <td>Every print mesh is watertight with outward normals</td>
 <td>PASS</td>
-<td>2026-09-30</td>
-<td>same report, "print mesh watertight"</td>
+<td>2026-10-04</td>
+<td>same report</td>
 </tr>
 <tr>
 <td>R-CAD-3</td>
-<td>Plates P1, P2, P3, S1, S2 fit the A1 mini bed (180 × 180 mm, 6 mm margin) with parts ≥ 6 mm apart; every part height ≤ 180 mm</td>
+<td>Plates P1, P2 and S1 fit the A1 mini bed (180 × 180 mm, 6 mm margin), parts ≥ 6 mm apart</td>
 <td>PASS</td>
-<td>2026-09-30</td>
+<td>2026-10-04</td>
 <td>same report, "plates"</td>
 </tr>
 <tr>
 <td>R-CAD-4</td>
-<td>No overlap in the assembled model between printed parts, or between printed parts and the module envelopes (servo, horn, HC-SR04, LCD, ESP32, cell holder, USB-C breakout) — 22 pairs, each &lt; 0.5 mm³</td>
+<td>No overlap in the assembled model between printed parts and the module models (CYD, SG90, horn, sensor) — 14 pairs; the base's three 0.3 mm crush ribs are the only allowed overlap; the CYD sits on the bezel pegs</td>
 <td>PASS</td>
-<td>2026-09-30</td>
+<td>2026-10-04</td>
 <td>same report, "interference"</td>
 </tr>
 <tr>
 <td>R-CAD-5</td>
-<td>Sweep clearance in the model: head + HC-SR04, hub and horn rotated −75°…+75° about the turret axis (commanded travel is ±60°) never overlap keeper, roof, body or servo</td>
+<td>Sweep clearance in the model: head + sensor and horn rotated −75°…+75° (commanded travel is ±60°) never touch the shell or servo</td>
 <td>PASS</td>
-<td>2026-09-30</td>
+<td>2026-10-04</td>
 <td>same report, "sweep"</td>
 </tr>
 <tr>
 <td>R-CAD-6</td>
-<td>Designed clearances: hub axial play 0.4 mm; head rim 8.0 mm above keeper; hub 2.2 mm above servo gear boss; servo 1.3 mm from keeper</td>
+<td>Designed clearances: horn foot 3.7 mm above the roof; screen glass 0.1 mm behind the bezel; CYD 1.8 mm from the shell, 19.4 mm from the servo</td>
 <td>RECORDED</td>
-<td>2026-09-30</td>
+<td>2026-10-04</td>
 <td>same report, "clearances" — all depend on VERIFY values</td>
 </tr>
 <tr>
 <td>R-FW-1</td>
-<td>Firmware compiles for ESP32 Dev Module on Arduino-ESP32 <strong>3.3.12</strong> with <code>--warnings all</code>: 0 warnings, 0 errors (326 215 B flash, 24 504 B RAM)</td>
+<td>Firmware compiles for ESP32 Dev Module on Arduino-ESP32 <strong>3.3.12</strong> with <code>--warnings all</code>: 0 warnings, 0 errors (334 227 B flash, 25 056 B RAM)</td>
 <td>PASS</td>
-<td>2026-10-01</td>
+<td>2026-10-04</td>
 <td><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/validation/compile_core3.txt"><code>validation/compile_core3.txt</code></a></td>
 </tr>
 <tr>
 <td>R-FW-2</td>
-<td>Same sketch on Arduino-ESP32 <strong>2.0.17</strong> (the 2.x LEDC path): 0 warnings, 0 errors (296 905 B flash, 22 624 B RAM)</td>
+<td>Same sketch on Arduino-ESP32 <strong>2.0.17</strong> (the 2.x LEDC path): 0 warnings, 0 errors (304 621 B flash, 23 192 B RAM)</td>
 <td>PASS</td>
-<td>2026-10-01</td>
+<td>2026-10-04</td>
 <td><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/validation/compile_core2.txt"><code>validation/compile_core2.txt</code></a></td>
 </tr>
 <tr>
 <td>R-FW-3</td>
-<td>Screen layout checked in the pixel-level Python port (<code>scripts/sim_display.py</code>); found and fixed range labels clipped at the right edge</td>
+<td>320 × 240 screen layout checked in the pixel-level Python port of the drawing code</td>
 <td>PASS</td>
-<td>2026-09-30</td>
-<td><code>hardware/diagrams/radar_frame.png</code> — synthetic targets only</td>
+<td>2026-10-04</td>
+<td><code>python scripts/sim_display.py</code> → <code>hardware/diagrams/radar_frame.png</code> — synthetic targets only</td>
 </tr>
 <tr>
 <td>R-EQ-1</td>
-<td>18 equation checks: distance, temperature effect, echo timeout, divider incl. worst case, LEDC duty, angle map, clamp, sweep cadence estimate</td>
+<td>19 equation checks: distance, temperature effect, echo timeout, 3.3 V echo level, fallback divider incl. worst case, LEDC duty, angle map, clamp, sweep cadence estimate, dot persistence</td>
 <td>PASS</td>
-<td>2026-09-30</td>
+<td>2026-10-04</td>
 <td><code>python -m pytest tests/test_equations.py</code></td>
 </tr>
 <tr>
 <td>R-SYNC-1</td>
-<td>Firmware pins = WIRING.md pin map = net list; wiring safety rules (fuse first on battery +, ECHO never direct, switch on load side, servo on 5 V, no USB data, no flash/strapping pins)</td>
+<td>Firmware pins = WIRING.md pin map = net list; 7 wires with two ends each; sensor on 3.3 V; servo on VIN; USB serial and backlight pins untouched; no flash pins, no strapping pins on the wires</td>
 <td>PASS</td>
-<td>2026-09-30</td>
+<td>2026-10-04</td>
 <td><code>python -m pytest tests/test_sync.py</code></td>
 </tr>
 <tr>
 <td>R-BOM-1</td>
-<td>Fastener counts in BOM add up to their listed uses</td>
+<td>BOM has 5 required items + 1 optional, no battery or loose screws, sensor must be 3.3 V capable, prices labelled as estimates</td>
 <td>PASS</td>
-<td>2026-09-30</td>
+<td>2026-10-04</td>
 <td><code>python -m pytest tests/test_bom.py</code></td>
 </tr>
 <tr>
 <td>R-APP-1</td>
-<td>Shared serial parser/recorder (web + desktop): 10 checks incl. the firmware's exact <code>printf</code> formats, lines split across chunks, wrong-baud garbage, CSV round-trip</td>
+<td>Shared serial parser/recorder (web + desktop): 10 checks incl. the firmware's exact <code>printf</code> formats</td>
 <td>PASS</td>
-<td>2026-10-02</td>
+<td>2026-10-04</td>
 <td><code>node --test tests/js/*.test.js</code></td>
 </tr>
 <tr>
 <td>R-APP-2</td>
-<td>Web app in headless Chromium: landing simulator, wiring explorer, demo stream, record + save CSV, replay of a saved log, guide images, service worker, offline reload, no page errors — 17 checks</td>
+<td>Web app in headless Chromium: simulator, wiring explorer, demo stream, record + save CSV, replay, guide images, service worker, offline reload, no page errors</td>
 <td>PASS</td>
-<td>2026-10-02</td>
+<td>2026-10-04</td>
 <td><code>python tests/browser/check_site.py</code></td>
 </tr>
 <tr>
 <td>R-APP-3</td>
-<td>Desktop app (Electron 44.5.1) run from source and as the <strong>packaged Linux build</strong>: every main page loads with no errors or broken images, offline KaTeX renders 39 equations, Web Serial API present, demo delivers readings</td>
+<td>Desktop app (Electron) run from source: every main page loads with no errors or broken images, offline KaTeX renders, Web Serial API present, demo delivers readings</td>
 <td>PASS</td>
-<td>2026-10-02</td>
-<td><code>xvfb-run npx electron . --smoke-test</code> and <code>dist/linux-unpacked/ultrasonic-radar-scanner --smoke-test</code></td>
+<td>2026-10-04</td>
+<td><code>xvfb-run npx electron . --smoke-test</code></td>
 </tr>
 <tr>
 <td>R-APP-4</td>
-<td>Linux installers built: AppImage + tar.gz (electron-builder 26.15.3)</td>
-<td>PASS</td>
+<td>Linux installers built: AppImage + tar.gz (electron-builder) — from the V5.2 release build; Windows and macOS installers are built only by <code>.github/workflows/release.yml</code> and have <strong>not</strong> been run</td>
+<td>RECORDED</td>
 <td>2026-10-02</td>
-<td>local build; Windows and macOS installers are built only by <code>.github/workflows/release.yml</code> and have <strong>not</strong> been run</td>
+<td>local build</td>
 </tr>
 <tr>
 <td>R-MFG-1</td>
-<td>Manufacturing exports regenerate identically from the docs (BOM, printed parts, pin list, 28-wire point-to-point list); every pin appears in the wire list; build packet PDF builds (11 pages)</td>
+<td>Manufacturing exports regenerate identically from the docs (BOM, printed parts, pin list, 7-wire list); every pin appears in the wire list; build packet PDF builds</td>
 <td>PASS</td>
-<td>2026-10-02</td>
+<td>2026-10-04</td>
 <td><code>python -m pytest tests/test_mfg.py</code>, <code>python scripts/make_build_packet.py</code></td>
 </tr>
 <tr>
 <td>R-REQ-1</td>
-<td>36 requirements each have a verification method and evidence that exists here; every physical test traces to a requirement</td>
+<td>Every requirement has a verification method and evidence that exists here; every physical test traces to a requirement</td>
 <td>PASS</td>
-<td>2026-10-02</td>
+<td>2026-10-04</td>
 <td><code>python -m pytest tests/test_requirements.py</code></td>
 </tr>
 <tr>
 <td>R-FLS-1</td>
 <td>Browser-flasher payload: merged ESP32 image (offset 0x0) and ESP Web Tools manifest generated from the compiled firmware</td>
 <td>PASS</td>
-<td>2026-10-02</td>
+<td>2026-10-04</td>
 <td><code>python scripts/build_site.py --firmware …merged.bin</code>; flashing itself is T-FLS-1</td>
 </tr>
 <tr>
 <td>R-APP-5</td>
-<td>Electron hardening + listen-only console encoded as tests (context isolation, sandbox, no Node, no preload, permissions refused except serial, external links to system browser, CSP, no serial writes)</td>
+<td>Electron hardening + listen-only console encoded as tests (context isolation, sandbox, no Node, permissions refused except serial, CSP, no serial writes)</td>
 <td>PASS</td>
-<td>2026-10-02</td>
+<td>2026-10-04</td>
 <td><code>python -m pytest tests/test_app.py</code></td>
 </tr>
 </tbody>
 </table></div>
 <p>Notes on R-FW-1/2: built in a sandbox that could not reach <code>downloads.arduino.cc</code>; libraries came
 from their GitHub release tags and the Arduino prototype generator (ctags) was stubbed — the sketch
-declares every function before use, so nothing depended on it. Re-compile on a normal install with
-<code>arduino-cli compile --profile esp32-core3 firmware/Radar_V5</code> before flashing.</p>
+declares every function before use. Re-compile on a normal install with
+<code>arduino-cli compile --profile esp32-core3 firmware/Radar_V6</code> before flashing.</p>
 <h2 id="physical-validation--all-not-established">PHYSICAL validation — all NOT established</h2>
-<p>Fill in <strong>Result</strong>, <strong>Date</strong> and <strong>By</strong> as you go; attach photos or serial logs under
-<code>docs/validation/</code>. A test that fails is still useful — write down what happened.</p>
+<p>Fill in <strong>Result</strong>, <strong>Date</strong> and <strong>By</strong> as you go; put photos or serial logs in <code>docs/validation/</code>.
+A failed test is still useful — write down what happened.</p>
 <div class="tablewrap"><table>
 <thead>
 <tr>
@@ -217,8 +216,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 <tbody>
 <tr>
 <td>T-PRN-1</td>
-<td>Print the fit coupon; tap pilots; try clearances, servo cut-out, switch hole, nut pocket</td>
-<td>chosen sizes recorded; CAD updated if needed</td>
+<td>Print the fit coupon; try the CYD pegs, sensor-can holes and servo-screw pilots</td>
+<td>chosen sizes recorded; <code>PEG_D</code>, <code>CAN_HOLE_D</code>, <code>PILOT_D</code> updated if needed</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -226,8 +225,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-PRN-2</td>
-<td>Print the servo-fit subset (roof, hub, keeper)</td>
-<td>prints without supports or failures</td>
+<td>Print P1 (shell, roof-down)</td>
+<td>no supports, chamfers and grooves clean</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -235,8 +234,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-PRN-3</td>
-<td>Print P1 (body, front panel) and the sensor head</td>
-<td>45° deck and bridges print cleanly</td>
+<td>Print P2 (bezel, base, head)</td>
+<td>no supports; pegs not snapped</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -244,8 +243,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-FIT-1</td>
-<td>LCD in the front-panel locators; display aperture over the active area</td>
-<td>no light leak; active area centred (else set <code>LCD_AA_OFFSET_X/Z</code>)</td>
+<td>CYD pressed onto the bezel pegs</td>
+<td>firm; screen centred in the window (else set <code>CYD_VIEW_DX</code>)</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -253,8 +252,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-FIT-2</td>
-<td>ESP32 on its supports; cell holder on the anchors; USB-C receptacle flush with the rear opening</td>
-<td>plug inserts fully; nothing forced</td>
+<td>Bezel slides into the shell grooves; base presses in; USB plug reaches the board</td>
+<td>nothing forced; base stays in when lifted</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -262,8 +261,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-FIT-3</td>
-<td>Hub on spline under the keeper</td>
-<td>0.2–0.6 mm axial play; turns freely 30°–150°</td>
+<td>Servo screwed under the roof with its own screws; horn pressed into the head foot</td>
+<td>head firm on the spline, no wobble</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -271,8 +270,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-FIT-4</td>
-<td>Head mast in socket, cross-bolt</td>
-<td>no wobble; single orientation</td>
+<td>Sensor cans pressed into the head</td>
+<td>cans hold; PCB not bent</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -280,8 +279,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-PWR-1</td>
-<td>Bench power: no shorts; <code>OUT_5V</code>, <code>LOAD_5V</code> with switch ON/OFF</td>
-<td>≈5 V ON; <code>LOAD_5V</code> 0 V OFF</td>
+<td>P1 VIN voltage with USB in: idle, and while the servo moves</td>
+<td>≈ 4.5–5.2 V; record the dip</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -289,8 +288,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-PWR-2</td>
-<td>Minimum running current of the complete scanner (servo holding, LCD on)</td>
-<td>record mA; compare with the DFR1026 keep-alive (forum reports ~100 mA)</td>
+<td>One-hour run from a ≥ 1 A charger</td>
+<td>no resets, flicker or brown-outs (else add the capacitor and re-test)</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -298,8 +297,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-PWR-3</td>
-<td><strong>Open issue:</strong> OFF → ON after 5 s, 60 s, 10 min; with and without USB-C</td>
-<td>output returns without pressing KEY</td>
+<td>Run from a laptop USB port</td>
+<td>record whether it works; note resets</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -307,17 +306,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-PWR-4</td>
-<td>One-hour run</td>
-<td>no drop-outs or resets</td>
-<td>NOT RUN</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>T-PWR-5</td>
-<td>Charge with scanner OFF; charge while ON</td>
-<td>charging indicated both ways; nothing hot</td>
+<td>Current draw with a USB meter: idle and sweeping</td>
+<td>record mA</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -325,8 +315,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-FW-1</td>
-<td>Flash; splash then grid and sweep</td>
-<td>as described in ASSEMBLY stage 4</td>
+<td>Flash; splash, then grid and sweep</td>
+<td>as described in ASSEMBLY</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -334,8 +324,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-FW-2</td>
-<td>Display orientation and colours</td>
-<td>correct with <code>INITR_GREENTAB</code>, rotation 1, no inversion — else record the settings that work</td>
+<td>Panel detection and colours (<code># board … panel …</code> line)</td>
+<td>correct picture; else record the <code>PANEL</code> / <code>INVERT_OVERRIDE</code> / <code>SWAP_RED_BLUE</code> that work</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -343,8 +333,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-FW-3</td>
-<td><code>CENTER_ONLY</code> horn fit; <code>REVERSE_SERVO</code> direction</td>
-<td>pointer on 90° tick; screen matches head</td>
+<td><code>CENTER_ONLY</code> head fit; <code>REVERSE_SERVO</code> direction</td>
+<td>head faces straight out at 90°; screen matches head</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -353,7 +343,7 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 <tr>
 <td>T-FW-4</td>
 <td>Measured timing from the serial "# measured" line</td>
-<td>record mean step and one-way sweep (estimate: ≈101 ms, ≈4.0 s)</td>
+<td>record mean step and one-way sweep (estimate ≈ 115 ms, ≈ 4.6 s)</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -369,8 +359,26 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 <td></td>
 </tr>
 <tr>
+<td>T-FW-6</td>
+<td>Touch: − / + change the range; tap the fan to pause</td>
+<td>each tap acts once; no false taps</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>T-FW-7</td>
+<td>RGB LED turns red under 30 cm</td>
+<td>as described</td>
+<td>NOT RUN</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
 <td>T-CAL-1</td>
-<td>Servo calibration against keeper ticks without hitting stops</td>
+<td><code>CALIBRATE_SERVO</code> against the roof ticks without hitting the end stops</td>
 <td>record <code>SERVO_US_AT_0/180</code>; no buzzing at ends</td>
 <td>NOT RUN</td>
 <td></td>
@@ -379,7 +387,7 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-SWP-1</td>
-<td>Powered sweep clearance with the sensor cable fitted</td>
+<td>Powered sweep with the sensor cable fitted</td>
 <td>no rubbing, no cable tug at 30° or 150°</td>
 <td>NOT RUN</td>
 <td></td>
@@ -387,18 +395,9 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 <td></td>
 </tr>
 <tr>
-<td>T-RUN-1</td>
-<td>Runtime from full charge</td>
-<td>record hours</td>
-<td>NOT RUN</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
 <td>T-THM-1</td>
-<td>Temperatures after 30 min running and during charging (DFR1026, ESP32 regulator, cell)</td>
-<td>nothing uncomfortable to touch; record °C if you have a thermometer</td>
+<td>Temperatures after 30 min running (board regulator, servo)</td>
+<td>nothing uncomfortable to touch</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -406,8 +405,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-LNK-1</td>
-<td>Live link: telemetry tap (TX0 + GND only) to a 3.3 V adapter; live console connects at 115 200 baud</td>
-<td>readings appear, sweep matches the real head, nothing resets or heats up</td>
+<td>Live console over the scanner's own USB cable at 115 200 baud</td>
+<td>readings appear, sweep matches the head; note whether opening the port resets the board</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -424,8 +423,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-APP-1</td>
-<td>Windows installer + portable build open and connect over the tap</td>
-<td>app opens; port picker lists the adapter</td>
+<td>Windows installer + portable build open and connect</td>
+<td>app opens; port picker lists the board</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -442,8 +441,8 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-FLS-1</td>
-<td>Browser flasher (Flash page, Chrome/Edge) installs the release firmware on a bare ESP32 DevKit (harness unplugged)</td>
-<td>splash screen appears after re-connecting the harness</td>
+<td>Browser flasher (Flash page, Chrome/Edge) installs the release firmware on a CYD</td>
+<td>splash screen appears</td>
 <td>NOT RUN</td>
 <td></td>
 <td></td>
@@ -451,7 +450,7 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </tr>
 <tr>
 <td>T-REL-1</td>
-<td>First tagged release on GitHub carries the source ZIP, manufacturing kit, firmware, desktop apps, SHA256SUMS and attestations</td>
+<td>First tagged release carries the source ZIP, manufacturing kit, firmware, desktop apps, SHA256SUMS and attestations</td>
 <td><code>sha256sum -c</code> and <code>gh attestation verify</code> pass</td>
 <td>NOT RUN</td>
 <td></td>
@@ -472,92 +471,50 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </thead>
 <tbody>
 <tr>
-<td><code>SERVO_BODY_L</code> × <code>SERVO_BODY_W</code></td>
-<td>22.2 × 11.8 mm</td>
-<td>SG90 datasheet overall size</td>
+<td><code>CYD_L</code> × <code>CYD_H</code>, <code>CYD_HOLE_DX/DY</code></td>
+<td>86.6 × 50 mm, holes ±39 × ±21 mm</td>
+<td>community drawings of the ESP32-2432S028R</td>
 <td></td>
 </tr>
 <tr>
-<td><code>SERVO_FLANGE_L</code>, <code>SERVO_FLANGE_T</code></td>
-<td>32.2 mm, 2.5 mm</td>
-<td>typical SG90 drawings</td>
+<td><code>CYD_GLASS_TOP</code>, <code>CYD_BACK_DEPTH</code></td>
+<td>5.1 mm, 4.8 mm</td>
+<td>community STEP model</td>
 <td></td>
 </tr>
 <tr>
-<td><code>SERVO_FLANGE_BELOW</code>, <code>SERVO_CASE_ABOVE</code>, <code>SERVO_BOSS_ABOVE</code>, <code>SERVO_SPLINE_ABOVE</code></td>
-<td>15.9, 6.8, 10.8, 15.1 mm</td>
-<td>typical SG90 drawings (31 mm overall)</td>
+<td><code>CYD_VIEW_DX</code></td>
+<td>−2.5 mm</td>
+<td>community STEP model (active area off-centre)</td>
 <td></td>
 </tr>
 <tr>
-<td><code>SERVO_HOLE_PITCH</code>, <code>SERVO_SHAFT_OFFSET</code></td>
-<td>27.5 mm, 5.5 mm</td>
-<td>typical SG90 drawings</td>
+<td><code>CYD_USB_LY/LZ</code></td>
+<td>−9.3, −1.5 mm</td>
+<td>photos; the CYD2USB board's USB-C sits elsewhere — the 15 × 10 mm opening is generous</td>
 <td></td>
 </tr>
 <tr>
-<td><code>HORN_LEN</code>, <code>HORN_ARM_W</code>, <code>HORN_ARM_T</code>, <code>HORN_COLLAR_D</code>, <code>HORN_SCREW_R</code></td>
-<td>34, 6.2, 1.5, 7.2, 12 mm</td>
-<td>estimate of a stock double-arm horn</td>
+<td><code>SERVO_*</code></td>
+<td>22.2 × 11.8 body, 32.2 mm flange, 27.5 mm hole pitch</td>
+<td>typical TowerPro SG90 drawings</td>
 <td></td>
 </tr>
 <tr>
-<td><code>HUB_BOTTOM_ABOVE_ROOF</code></td>
-<td>13.0 mm</td>
-<td>derived from the servo estimates</td>
+<td><code>HORN_*</code></td>
+<td>34 × 6.2 × 1.5 mm single arm, 7.2 mm collar</td>
+<td>estimate of a stock horn</td>
 <td></td>
 </tr>
 <tr>
-<td><code>SR04_PCB_L/W</code>, <code>SR04_CAN_D/H</code>, <code>SR04_CAN_PITCH</code></td>
-<td>45 × 20, Ø16 × 12, 26 mm</td>
-<td>common HC-SR04 dimensions</td>
+<td><code>SR04_*</code></td>
+<td>45 × 20 mm PCB, Ø16 mm cans, 26 mm pitch</td>
+<td>common HC-SR04 / RCWL-1601 footprint</td>
 <td></td>
 </tr>
 <tr>
-<td><code>SR04_HOLE_X/Y</code></td>
-<td>±21, ±8.5 mm</td>
-<td>estimate — boards vary; some have no holes</td>
-<td></td>
-</tr>
-<tr>
-<td><code>LCD_PCB_L/H</code>, <code>LCD_AA_W/H</code></td>
-<td>56.5 × 34, 35.04 × 28.03 mm</td>
-<td>Waveshare 1.8inch LCD Module wiki</td>
-<td></td>
-</tr>
-<tr>
-<td><code>LCD_AA_OFFSET_X/Z</code></td>
-<td>0, 0</td>
-<td>not known — check against the Waveshare 2D drawing</td>
-<td></td>
-</tr>
-<tr>
-<td><code>SWITCH_PANEL_D</code>, <code>SWITCH_NUT_CLR_D</code></td>
-<td>12.2, 17.0 mm</td>
-<td>typical 12 mm switch</td>
-<td></td>
-</tr>
-<tr>
-<td><code>USBC_PCB_L/D</code>, <code>USBC_PCB_T</code>, <code>USBC_RECEPT_H</code>, <code>USBC_OPEN_W/H</code></td>
-<td>20.4 × 14.2, 1.6, 3.3, 12.5 × 7.0 mm</td>
-<td>Adafruit 4090 listed size (20.4 × 14.2 × 5.0) + estimates</td>
-<td></td>
-</tr>
-<tr>
-<td><code>ESP32_L/W</code></td>
-<td>51.5 × 28.4 mm</td>
-<td>typical 30-pin DevKit</td>
-<td></td>
-</tr>
-<tr>
-<td><code>CELL_HOLDER_L/W</code></td>
-<td>77 × 21 mm</td>
-<td>typical single 18650 holder</td>
-<td></td>
-</tr>
-<tr>
-<td><code>M2_PILOT_D</code>, <code>M2_CLEAR_D</code>, <code>M2_NUT_POCKET_AF</code></td>
-<td>1.70, 2.25, 4.35 mm</td>
+<td><code>PEG_D</code>, <code>CAN_HOLE_D</code>, <code>PILOT_D</code>, <code>HORN_SLOT_CLR</code></td>
+<td>2.9, 16.2, 1.8, 0.15 mm</td>
 <td>print allowances — set from the coupon</td>
 <td></td>
 </tr>
@@ -565,12 +522,12 @@ declares every function before use, so nothing depended on it. Re-compile on a n
 </table></div>
 <h2 id="electrical-assumptions-not-yet-checked-on-hardware">Electrical assumptions not yet checked on hardware</h2>
 <ul>
-<li>The DFR1026 delivers a stable 5 V at the scanner's peak load (servo moving + ESP32 + LCD) — datasheet
-  says up to 2.1 A output; not measured here.</li>
-<li>The DFR1026 restarts after OFF → ON — <strong>open issue</strong>, evidence suggests it may not (see WIRING.md).</li>
-<li>The HC-SR04 variant used gives ECHO ≈ 5 V; some clones differ.</li>
-<li>The chosen ST7735S revision works with <code>INITR_GREENTAB</code> / rotation 1 / no inversion at 15 MHz SPI.</li>
-<li>1000–2000 µs covers 30°–150° of real travel on the chosen servo — probably not exactly; calibrate.</li>
+<li>P1 <strong>VIN</strong> carries USB 5 V and can supply an SG90's start-up current (community pinouts say VIN is
+  the USB 5 V rail; current capability through the board's protection parts is not measured here).</li>
+<li>The RCWL-1601 / HC-SR04P bought works reliably at 3.3 V (datasheets say 3–5.5 V).</li>
+<li>GPIO 27 and 22 on CN1 and GPIO 35 on P3 are free on your board revision (true for the documented
+  ESP32-2432S028R; some clones differ).</li>
+<li>1000–2000 µs covers 30°–150° of real travel on your servo — probably not exactly; calibrate.</li>
 </ul>
 <p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/VALIDATION.md">docs/VALIDATION.md</a> — generated by scripts/build_site.py</p>
 </main></div>

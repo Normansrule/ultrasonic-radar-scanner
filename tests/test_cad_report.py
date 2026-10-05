@@ -6,23 +6,23 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = json.loads((ROOT / "cad" / "geometry_report.json").read_text())
-PARTS = ["01_body", "02_front_panel", "03_roof", "04_rotor_hub", "05_turret_keeper",
-         "06_sensor_head", "07_keeper_shim_0p4mm", "08_fit_test_coupon"]
+PARTS = ["01_shell", "02_bezel", "03_base", "04_head", "05_fit_coupon"]
 
 
 def test_all_recorded_checks_pass():
     failed = [c for c in REPORT["checks"] if not c["pass"]]
     assert not failed, failed
-    assert REPORT["summary"]["passed"] == REPORT["summary"]["total"] >= 70
+    assert REPORT["summary"]["passed"] == REPORT["summary"]["total"] >= 40
 
 
 def test_every_part_exported():
+    assert sorted(REPORT["parts"]) == PARTS
     for p in PARTS:
         assert (ROOT / "cad" / "stl" / f"{p}.stl").exists(), p
         assert (ROOT / "cad" / "step" / f"{p}.step").exists(), p
-    assert (ROOT / "cad" / "step" / "assembly_v5.step").exists()
-    assert (ROOT / "cad" / "3mf" / "radar_v5_a1mini_multiplate.3mf").exists()
-    for plate in ("P1", "P2", "P3_optional_shim", "S1_fit_coupon", "S2_servo_fit_subset"):
+    assert (ROOT / "cad" / "step" / "assembly.step").exists()
+    assert (ROOT / "cad" / "3mf" / "radar_a1mini_multiplate.3mf").exists()
+    for plate in ("P1", "P2", "S1_fit_coupon"):
         assert (ROOT / "cad" / "3mf" / f"plate_{plate}.3mf").exists(), plate
 
 
@@ -35,9 +35,16 @@ def test_stl_files_match_report_hashes():
 
 
 def test_plates_contain_required_parts():
-    assert set(REPORT["plates"]["P1"]) == {"01_body", "02_front_panel"}
-    assert set(REPORT["plates"]["P2"]) == {"03_roof", "04_rotor_hub", "05_turret_keeper",
-                                           "06_sensor_head", "08_fit_test_coupon"}
+    assert set(REPORT["plates"]["P1"]) == {"01_shell"}
+    assert set(REPORT["plates"]["P2"]) == {"02_bezel", "03_base", "04_head"}
+    assert set(REPORT["plates"]["S1_fit_coupon"]) == {"05_fit_coupon"}
+
+
+def test_four_printed_parts_fit_an_a1_mini_and_need_no_supports():
+    for p in PARTS[:4]:
+        b = REPORT["parts"][p]["print_bbox"]
+        assert max(b["x"], b["y"]) <= 168 and b["z"] <= 180, p
+        assert "support" not in REPORT["parts"][p]["print_note"] or "no supports" in REPORT["parts"][p]["print_note"]
 
 
 def test_sweep_was_checked():

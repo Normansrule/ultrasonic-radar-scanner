@@ -1,136 +1,70 @@
-# Assembly
+# Assembly — about 30 minutes
 
-> ⚠️ **Educational instrument, not safety equipment.** It measures with sound, shows a
-> radar-*style* picture, and must never be used for obstacle avoidance, people detection or any
-> safety decision. The angle on screen is the **commanded** servo position, not a measured one.
+![Exploded render](../hardware/diagrams/exploded.png)
 
-Status: this procedure is written from the CAD model and the module datasheets. **It has not yet
-been carried out on a real build** — expect to correct it, and record what you find in
-[`VALIDATION.md`](VALIDATION.md).
+Status: **not yet assembled by anyone** — this is the intended procedure. Record what happens in
+[`VALIDATION.md`](VALIDATION.md); the [build packet](../manufacturing/build_packet.pdf) has the same
+steps with tick boxes.
+
+You need: the four printed parts, the CYD, the sensor, the SG90 (with its horn and two screws), three
+JST-to-Dupont cables, three male-male pins, a small Phillips screwdriver and a USB cable.
 
 ![Build stages](../hardware/diagrams/build_flow.svg)
 
-**Print the [build packet](../manufacturing/build_packet.pdf)** — the same steps as tick boxes, with the wire list, coupon
-sheet and the physical test sheet.
+## 1 · Fit coupon
 
-## Battery and electrical safety (read before stage 3)
+Print `plate_S1_fit_coupon.3mf` and choose the peg, sensor-hole and screw-pilot sizes
+([Printing](PRINTING.md#the-fit-coupon)).
 
-* The **3 A fuse on the battery positive lead is mandatory.** Fit it before anything else touches the cell.
-* Never connect a bare cell to the ESP32 VIN or to the servo. Only the charger module's 5 V output feeds the scanner.
-* Never solder to the cell. Never put two cells in series. Use a **protected** cell.
-* Secure the **holder**, not the cell. No screw tips, sharp leads or zip-tie ends may press on the cell wrapping.
-* Heat-shrink every power joint. Keep power leads short and use 22 AWG.
-* While prototyping, **do not leave it charging unattended**, and charge on a non-flammable surface.
-* If the cell, charger or wiring gets hot, smells, swells or hisses: switch off, unplug USB-C, move it somewhere safe.
+## 2 · Bench test before printing the rest
 
-## Words used on this page
+1. Wire the seven wires on the table ([Wiring](WIRING.md)) — USB unplugged.
+2. Before the servo is connected, plug in USB and measure **P1 VIN ≈ 5 V** to GND (T-PWR-1). Unplug.
+3. Connect the servo, plug in USB and flash: the **Flash** page in Chrome/Edge, or
+   `arduino-cli compile --upload --profile esp32-core3 -p <port> firmware/Radar_V6`.
+4. You should see the splash "EDU SONAR … NOT a safety device", then the green fan and the sweep.
+   Touch **−** / **+** (bottom corners) to change the range; tap the fan to pause.
+5. Point the sensor at a wall at a known distance and compare (T-FW-5).
 
-| Term | Meaning |
+**Wrong picture?** Open the serial monitor (115 200 baud): the `# board … panel …` line says which
+display driver was detected. Then, in `firmware/Radar_V6/Radar_V6.ino`:
+
+| Symptom | Setting |
 |---|---|
-| Spline | The toothed output shaft of the servo. The factory horn grips it. |
-| Horn | The plastic arm that came with the servo. Here it is screwed inside the rotor hub. |
-| Axial play | How far the hub can lift before it touches the keeper lip. |
-| Harness | All the wires that plug onto the ESP32, including the J1 power plug. |
-| VERIFY | A dimension in the CAD file that depends on your exact module — measure it. |
+| garbled or blank | `PANEL = PANEL_ILI9341` or `PANEL_ST7789` instead of `PANEL_AUTO` |
+| colours inverted (black is white) | `INVERT_OVERRIDE = 0` or `1` |
+| red looks blue | `SWAP_RED_BLUE = true` |
+| glitches or stripes | `TFT_SPI_HZ = 27000000` |
+| board resets when the servo starts | better charger (≥ 1 A), then the optional capacitor |
 
-## Stage 1 — fit coupon
-Print and test the coupon as described in [`PRINTING.md`](PRINTING.md#stage-1--the-fit-test-coupon-print-this-first).
-Adjust any VERIFY variable that needs it, re-run `python scripts/render_cad.py`, and only then continue.
+## 3 · Print
 
-## Stage 2 — servo-fit subset
+Plates P1 and P2, no supports ([Printing](PRINTING.md)).
 
-Parts: 03 roof, 04 rotor hub, 05 turret keeper, the servo with its **factory** double-arm horn,
-2× M2×6, 4× M2×8, M2 tap.
+## 4 · Assemble
 
-1. **Tap the pilots** in the roof (servo flange and keeper bosses) and the hub (two horn holes) with the M2 hand tap. Back the tap out often to clear chips.
-2. **Servo into the roof.** From the top, drop the servo body through the rectangular cut-out, cable end first, so the output spline sits in the centre of the turret position. The flange rests on the roof's top face. Fix it with 2× M2×8 through the flange holes.
-3. **Horn into the hub.** Pull the horn off the servo. Lay it in the slot on the underside of the hub and fix it with 2× M2×6 from below through the horn's arm holes (`HORN_SCREW_R` = 12 mm is a VERIFY value — use the holes that line up).
-4. **Centre the servo before fitting the hub.** Flash the firmware with `CENTER_ONLY = true` (stage 4 explains flashing; for this step you can power the ESP32 and servo from a bench 5 V supply). The servo moves to 90° and holds.
-5. **Fit the hub.** Press the hub (with the horn inside) onto the spline so the **pointer groove on the hub faces straight back, toward +Y** (away from where the LCD will be). Drive the servo's own horn screw through the access hole in the middle of the hub's socket.
-6. **Fit the keeper** over the hub and screw it to the roof with 2× M2×8 through the counterbored holes (diagonal corners).
-7. **Gate checks** (record in `VALIDATION.md`, test T-FIT-3):
-   * the hub lifts about 0.2–0.6 mm before touching the keeper lip;
-   * by hand, with the servo unpowered, the hub turns smoothly through the whole tick range (30°–150°);
-   * the pointer groove lines up with the **90°** tick.
-   If it binds, see the shim advice in [`PRINTING.md`](PRINTING.md#stage-2--servo-fit-subset).
+![Section through the assembled scanner](../hardware/diagrams/assembly_section.png)
 
-Set `CENTER_ONLY` back to **false** before the final upload.
+1. **Servo.** With the shell upside down, hold the SG90 against the two bosses under the roof, output
+   shaft up through the turret hole, and fix it with **its own two screws**.
+2. **Centre it.** Flash once with `CENTER_ONLY = true`: the servo holds 90°.
+3. **Sensor into the head.** Press the two transducer cans into the head's holes from behind
+   (pins towards the neck). Plug the four sensor wires on and feed them down through the slot next
+   to the turret hole. Leave a loop of about 60 mm so the head can turn ±60° without tugging.
+4. **Head onto the servo.** Press the single-arm horn into the slot in the head's foot, then press the
+   horn onto the servo spline with the head **facing straight away from the screen**. The small horn
+   screw is optional.
+5. **Screen.** Press the CYD onto the four pegs on the back of the bezel, screen through the window,
+   USB socket towards the shell's side opening.
+6. **Bezel in.** Slide the bezel down into the grooves in the shell's front opening.
+7. **Cables.** Plug the three cables into CN1, P3 and P1 and check them against the [net list](WIRING.md).
+8. **Base.** Press the base into the bottom of the shell; its rim locks the bezel.
+9. **Run.** Flash again with `CENTER_ONLY = false`. If the screen sweeps the opposite way to the head,
+   set `REVERSE_SERVO = true`.
 
-## Stage 3 — bench power (no ESP32 yet)
+## 5 · Calibrate and record
 
-Parts: USB-C breakout, DFR1026, cell holder + protected cell, 3 A fuse and holder, latching switch,
-1000 µF capacitor, multimeter.
-
-Wire **only the power section** of [`WIRING.md`](WIRING.md) (rows P01–P14), following labels, not
-colours. Then:
-
-1. With no cell inserted, check with the multimeter that no power net is shorted to GND.
-2. Insert the cell. Switch ON. Measure `OUT_5V` → `GND` and `LOAD_5V` → `GND` (expect about 5 V).
-3. Switch OFF. `LOAD_5V` should drop to 0 V; `OUT_5V` behaviour is part of the open issue.
-4. Plug in USB-C with the switch OFF — the charger should indicate charging. (T-PWR-5)
-5. Run the open-issue tests T-PWR-3 (OFF → ON restart after 5 s, 60 s and 10 min) and record the
-   results. **If the output does not return by itself, stop and choose Option A or B** in
-   [`WIRING.md`](WIRING.md#open-issue--dfr1026-restart-after-offon-unresolved-must-be-bench-tested).
-
-## Stage 4 — flash and bench run
-
-### Install the toolchain once
-* **Arduino IDE 2:** File → Preferences → *Additional boards manager URLs*:
-  `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`.
-  Boards Manager → install **esp32 by Espressif Systems**. Library Manager → install
-  **Adafruit ST7735 and ST7789 Library** (accept its dependencies **Adafruit GFX Library** and
-  **Adafruit BusIO**).
-* **Or arduino-cli:** `arduino-cli compile --profile esp32-core3 firmware/Radar_V5` installs the exact
-  versions pinned in `firmware/Radar_V5/sketch.yaml`.
-
-### Flash
-Easiest: the web app's **Flash** page (Chrome/Edge) installs the release firmware with one button. Otherwise follow the [programming procedure](WIRING.md#programming-procedure): switch OFF, unplug the whole
-harness from the ESP32 including J1, connect the ESP32's own USB data port, select board
-**ESP32 Dev Module**, upload, unplug, re-connect the harness, switch ON.
-
-### Bench-run gates (T-FW-1 … T-FW-5)
-1. The splash screen appears ("EDU SONAR … NOT a safety device"), then the green fan grid and the sweep.
-   If the picture is shifted, mirrored or has wrong colours, change `TFT_INIT_TAB`, `TFT_ROTATION` or
-   `TFT_INVERT` (screen revisions differ).
-2. If the sweep line moves the opposite way to the head, set `REVERSE_SERVO = true`.
-3. Open the serial monitor at 115 200 baud: each line is `angle_deg,distance_cm` (−1 = no echo). After
-   every pass the firmware prints the **measured** step time — record it (T-FW-4).
-4. Put a flat object (a book) at 30, 100 and 150 cm on the 90° line (tape measure from the sensor
-   face) and record what the screen shows (T-FW-5).
-5. **Calibrate travel without hitting the stops** (T-CAL-1): set `CALIBRATE_SERVO = true`; the head
-   steps 30° → 90° → 150° with 4 s holds and prints each pulse width. Compare with the keeper ticks and
-   nudge `SERVO_US_AT_0` / `SERVO_US_AT_180` in small steps. If you ever hear the servo buzz or strain
-   at an end, you have gone too far — back off. Set `CALIBRATE_SERVO = false` afterwards.
-
-## Stage 5 — full print and final assembly
-
-Print P1 and the rest of P2 (sensor head). Then:
-
-1. **Front panel.** Push the 12 mm switch through the panel and tighten its nut from behind (the body
-   has a Ø17 mm pocket for the nut). Seat the LCD face-first between the four corner locators on the
-   back of the panel; hold it with two strips of double-sided foam tape on the PCB margins (never on
-   the glass). Fix the panel to the body with 4× M2×8.
-2. **Inside the body** (see the layout picture below):
-   * ESP32 on the two end supports, pins **down**, held with foam tape; the header rows hang free
-     between the supports. Its USB port faces the side you can reach with the roof off.
-   * Cell holder across the two zip-tie anchors at the rear; straps or ties go **around the holder**.
-   * USB-C breakout on the rear cradle, receptacle flush with the rear opening; foam tape underneath.
-   * DFR1026 on foam tape near the USB-C breakout. Fuse holder in the positive lead, near the cell.
-   * 1000 µF capacitor at the servo end of its supply branch.
-3. **Sensor head.** Fit the HC-SR04 **header-up** (the header goes through the notch in the top rim),
-   transducers through the two windows, 4× M2×12 from the front with nuts on the back.
-4. **Head onto the hub.** Push the keyed mast into the hub socket (it only fits one way) and fix it
-   with the M2×20 cross-bolt: head on the counterbored side, nut in the hex pocket.
-5. **Sensor cable.** Route the four sensor leads from the header, behind the head, down through the
-   roof slot. Leave a slack loop long enough for the head to reach both 30° and 150° **without
-   tugging** — about 60 mm is a starting point. Nothing may touch the transducers or cross in front of
-   them.
-6. **Roof.** Lower the roof (with servo, hub, keeper, head) into its pocket and fix with 4× M2×8.
-7. Four rubber feet under the body. Check the engraved label on the rear wall is legible.
-8. **Final gates** (T-SWP-1, T-PWR-4, T-RUN-1, T-THM-1): powered sweep clears the keeper and does not
-   snag the cable; one-hour run without drop-outs; runtime on a full charge; charger and ESP32
-   regulator temperatures after 30 minutes.
-
-![Suggested internal layout](../hardware/diagrams/layout_v5.png)
-
-![Assembled view with module envelopes](../hardware/diagrams/assembly_v5.png)
+Set `CALIBRATE_SERVO = true`: the head steps 30° → 90° → 150° with 4 s holds and prints each pulse
+width. Compare with the ticks engraved on the roof and nudge `SERVO_US_AT_0` / `SERVO_US_AT_180` in
+small steps. If the servo buzzes or strains at an end, back off. Set it back to `false`, then fill in
+the test sheet (T-CAL-1, T-SWP-1, T-PWR-2, T-THM-1).

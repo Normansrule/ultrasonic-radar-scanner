@@ -7,64 +7,64 @@
 <circle cx="56" cy="118" r="15" fill="#2f9e44"/>
 <text x="56" y="123" text-anchor="middle" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:15px;font-weight:bold" fill="#fff">1</text>
 <text x="80" y="118" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold" fill="#10331f">Fit coupon</text>
-<text x="80" y="136" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#4b6355">print 08 first</text>
+<text x="80" y="136" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#4b6355">print 05 first (≈ 20 min)</text>
 <text x="44" y="172" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#666">GATE</text>
 <rect x="44" y="184" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="66" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">pilot + clearance holes</text>
+<text x="66" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">CYD pegs: snug, not loose</text>
 <rect x="44" y="214" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="66" y="226" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">servo cut-out + flange</text>
+<text x="66" y="226" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">sensor cans press in</text>
 <rect x="44" y="244" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="66" y="256" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">12 mm switch, M2 nut</text>
+<text x="66" y="256" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">servo screw pilots bite</text>
 <line x1="250" y1="195" x2="270" y2="195" stroke="#2f9e44" stroke-width="3" marker-end="url(#ar)"/>
 <rect x="274" y="90" width="216" height="210" rx="12" fill="#f3faf5" stroke="#2f9e44" stroke-width="2"/>
 <circle cx="300" cy="118" r="15" fill="#2f9e44"/>
 <text x="300" y="123" text-anchor="middle" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:15px;font-weight:bold" fill="#fff">2</text>
-<text x="324" y="118" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold" fill="#10331f">Servo-fit subset</text>
-<text x="324" y="136" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#4b6355">roof + hub + keeper</text>
+<text x="324" y="118" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold" fill="#10331f">Bench: wire + flash</text>
+<text x="324" y="136" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#4b6355">nothing printed yet</text>
 <text x="288" y="172" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#666">GATE</text>
 <rect x="288" y="184" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="310" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">servo drops in, flange flat</text>
+<text x="310" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">P1 VIN ≈ 5 V (meter)</text>
 <rect x="288" y="214" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="310" y="226" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">hub axial play 0.2–0.6 mm</text>
+<text x="310" y="226" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">grid + sweep on screen</text>
 <rect x="288" y="244" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="310" y="256" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">keeper fitted, hub turns</text>
+<text x="310" y="256" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">echo at a known distance</text>
 <line x1="494" y1="195" x2="514" y2="195" stroke="#2f9e44" stroke-width="3" marker-end="url(#ar)"/>
 <rect x="518" y="90" width="216" height="210" rx="12" fill="#f3faf5" stroke="#2f9e44" stroke-width="2"/>
 <circle cx="544" cy="118" r="15" fill="#2f9e44"/>
 <text x="544" y="123" text-anchor="middle" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:15px;font-weight:bold" fill="#fff">3</text>
-<text x="568" y="118" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold" fill="#10331f">Bench power</text>
-<text x="568" y="136" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#4b6355">no ESP32 yet</text>
+<text x="568" y="118" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold" fill="#10331f">Print</text>
+<text x="568" y="136" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#4b6355">P1 shell, P2 bezel/base/head</text>
 <text x="532" y="172" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#666">GATE</text>
 <rect x="532" y="184" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="554" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">fuse in battery +</text>
+<text x="554" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">no supports needed</text>
 <rect x="532" y="214" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="554" y="226" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">OUT 5 V at the switch</text>
+<text x="554" y="226" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">bezel slides in grooves</text>
 <rect x="532" y="244" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="554" y="256" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">OFF→ON restart (open issue)</text>
+<text x="554" y="256" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">base clicks in</text>
 <line x1="738" y1="195" x2="758" y2="195" stroke="#2f9e44" stroke-width="3" marker-end="url(#ar)"/>
 <rect x="762" y="90" width="216" height="210" rx="12" fill="#f3faf5" stroke="#2f9e44" stroke-width="2"/>
 <circle cx="788" cy="118" r="15" fill="#2f9e44"/>
 <text x="788" y="123" text-anchor="middle" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:15px;font-weight:bold" fill="#fff">4</text>
-<text x="812" y="118" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold" fill="#10331f">Flash + bench run</text>
-<text x="812" y="136" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#4b6355">harness off to flash</text>
+<text x="812" y="118" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold" fill="#10331f">Assemble</text>
+<text x="812" y="136" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#4b6355">CENTER_ONLY = true first</text>
 <text x="776" y="172" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#666">GATE</text>
 <rect x="776" y="184" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="798" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">splash, grid, sweep</text>
+<text x="798" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">servo at 90°, fit head</text>
 <rect x="776" y="214" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="798" y="226" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">CENTER_ONLY → horn</text>
+<text x="798" y="226" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">head turns ±60° freely</text>
 <rect x="776" y="244" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="798" y="256" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">echo at a known distance</text>
+<text x="798" y="256" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">cables don't snag</text>
 <line x1="982" y1="195" x2="1002" y2="195" stroke="#2f9e44" stroke-width="3" marker-end="url(#ar)"/>
 <rect x="1006" y="90" width="216" height="210" rx="12" fill="#f3faf5" stroke="#2f9e44" stroke-width="2"/>
 <circle cx="1032" cy="118" r="15" fill="#2f9e44"/>
 <text x="1032" y="123" text-anchor="middle" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:15px;font-weight:bold" fill="#fff">5</text>
-<text x="1056" y="118" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold" fill="#10331f">Full print</text>
-<text x="1056" y="136" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#4b6355">body + front panel</text>
+<text x="1056" y="118" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold" fill="#10331f">Run + record</text>
+<text x="1056" y="136" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#4b6355">CENTER_ONLY = false</text>
 <text x="1020" y="172" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:bold" fill="#666">GATE</text>
 <rect x="1020" y="184" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="1042" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">fit all modules</text>
+<text x="1042" y="196" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">sweep matches roof ticks</text>
 <rect x="1020" y="214" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="1042" y="226" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">sweep clears keeper</text>
+<text x="1042" y="226" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">no resets at servo start</text>
 <rect x="1020" y="244" width="14" height="14" rx="3" fill="#fff" stroke="#2f9e44"/>
-<text x="1042" y="256" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">charge + run log</text>
+<text x="1042" y="256" style="font-family:'DejaVu Sans',Helvetica,Arial,sans-serif;font-size:11.5px" fill="#222">log in VALIDATION.md</text>
 </svg>

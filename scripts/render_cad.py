@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """
-Regenerate every CAD build product from cad/build_radar_v5.py so the files in
+Regenerate every CAD build product from cad/build_radar.py so the files in
 cad/ can never drift from the source:
 
   cad/step/<part>.step            assembly position (design coordinates)
-  cad/step/assembly_v5.step       all printed parts in place
+  cad/step/assembly.step          all printed parts in place
   cad/stl/<part>.stl              print orientation, resting on z = 0
-  cad/3mf/radar_v5_a1mini_multiplate.3mf   ONE file, plates P1 + P2 (experimental Bambu plate metadata)
-  cad/3mf/plate_P1.3mf, plate_P2.3mf, plate_P3_optional_shim.3mf   core-spec fallbacks
-  cad/3mf/plate_S1_fit_coupon.3mf, plate_S2_servo_fit_subset.3mf   build-stage plates
+  cad/3mf/radar_a1mini_multiplate.3mf   ONE file, plates P1 + P2 (experimental Bambu plate metadata)
+  cad/3mf/plate_P1.3mf, plate_P2.3mf, plate_S1_fit_coupon.3mf   core-spec fallbacks
   cad/geometry_report.json        RECORDED geometry checks (not physical validation)
 
 Usage:  python scripts/render_cad.py [--skip-sweep]
@@ -30,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "cad"))
 
 import cadquery as cq  # noqa: E402
-import build_radar_v5 as M  # noqa: E402
+import build_radar as M  # noqa: E402
 
 CAD = ROOT / "cad"
 STL_TOL, STL_ANG = 0.03, 0.15
@@ -120,7 +119,7 @@ def write_3mf(path: Path, objects, plates=None, bambu=False, title=""):
              'xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02"'
              + (' xmlns:BambuStudio="http://schemas.bambulab.com/package/2021"' if bambu else "") + '>']
     meta = {"Title": title, "Designer": "ultrasonic-radar-scanner / render_cad.py",
-            "Description": "Generated from cad/build_radar_v5.py. Educational sonar - not a safety device.",
+            "Description": "Generated from cad/build_radar.py. Educational sonar - not a safety device.",
             "CreationDate": _dt.date.today().isoformat(), "LicenseTerms": "MIT"}
     if bambu:
         meta["Application"] = "BambuStudio-01.10.00.00"
@@ -206,26 +205,16 @@ def main():
                               "print_note": M.PRINT_POSES[n].note}
         check(f"{n}: valid single solid", s.isValid() and nsol == 1, f"solids={nsol}")
 
-    asm = cq.Assembly(name="radar_v5")
+    asm = cq.Assembly(name="radar")
     for n in M.REQUIRED_PARTS:
         asm.add(parts[n], name=n)
-    asm.save(str(CAD / "step" / "assembly_v5.step"))
+    asm.save(str(CAD / "step" / "assembly.step"))
 
-    # ---- nominal dimension checks against the brief ------------------------
-    nominal = {"01_body": (128, 96, 52), "02_front_panel_plate": (118, 52, 2.6),
-               "03_roof_plate": (120, 74, 3), "04_rotor_hub": (38, 38, 15),
-               "05_turret_keeper": (54, 54, 20), "06_sensor_head": (53, 39, 10),
-               "08_fit_test_coupon": (66, 28, 3)}
-    got = {
-        "01_body": sorted(report["parts"]["01_body"]["print_bbox"][k] for k in "xyz"),
-        "02_front_panel_plate": sorted((M.FASCIA_W, M.FASCIA_H, M.FASCIA_T)),
-        "03_roof_plate": sorted((M.ROOF_W, M.ROOF_D, M.ROOF_T)),
-    }
-    for n in ("04_rotor_hub", "05_turret_keeper", "06_sensor_head", "08_fit_test_coupon"):
-        got[n] = sorted(report["parts"][n]["print_bbox"][k] for k in "xyz")
-    for n, nom in nominal.items():
-        ok = all(abs(a - b) <= 0.6 for a, b in zip(got[n], sorted(nom)))
-        check(f"{n}: matches brief {nom}", ok, "got " + " x ".join(f"{v:.1f}" for v in got[n]))
+    # ---- nominal dimension checks ---------------------------------------------
+    for n, nom in M.NOMINAL.items():
+        got = sorted(report["parts"][n]["print_bbox"][k] for k in "xyz")
+        ok = all(abs(a - b) <= 0.6 for a, b in zip(got, sorted(nom)))
+        check(f"{n}: matches design size {tuple(round(v, 1) for v in nom)}", ok, "got " + " x ".join(f"{v:.1f}" for v in got))
 
     # ---- plates -------------------------------------------------------------
     bed_w, bed_d, bed_h = M.A1_MINI_BED
@@ -243,7 +232,6 @@ def main():
         except RuntimeError as e:
             check(f"{pname}: parts fit bed", False, str(e))
             raise
-        # centre the whole group on the bed (A1 mini origin is the front-left corner)
         ext = []
         for n, (cx, cy, rot) in pos.items():
             b = report["parts"][n]["print_bbox"]
@@ -277,37 +265,29 @@ def main():
     except ImportError:
         print("trimesh not installed - skipping mesh checks")
 
+    for old in (CAD / "3mf").glob("*.3mf"):
+        old.unlink()
     multi = objs_for("P1") + objs_for("P2", BAMBU_PLATE_STRIDE)
-    write_3mf(CAD / "3mf" / "radar_v5_a1mini_multiplate.3mf", multi, plates=M.PLATES, bambu=True,
-              title="Radar V5.1 - A1 mini plates P1 + P2")
+    write_3mf(CAD / "3mf" / "radar_a1mini_multiplate.3mf", multi, plates=M.PLATES, bambu=True,
+              title="Radar V6 - A1 mini plates P1 + P2")
     for pname in all_plates:
-        write_3mf(CAD / "3mf" / f"plate_{pname}.3mf", objs_for(pname), title=f"Radar V5.1 - plate {pname}")
+        write_3mf(CAD / "3mf" / f"plate_{pname}.3mf", objs_for(pname), title=f"Radar V6 - plate {pname}")
 
     # ---- static interference (assembly) -------------------------------------
-    S, R = shapes, refs
-    pairs = [
-        ("01_body", "02_front_panel"), ("01_body", "03_roof"), ("03_roof", "05_turret_keeper"),
-        ("04_rotor_hub", "05_turret_keeper"), ("04_rotor_hub", "06_sensor_head"),
-        ("05_turret_keeper", "06_sensor_head"), ("03_roof", "04_rotor_hub"),
-        ("01_body", "ref_servo_sg90"), ("03_roof", "ref_servo_sg90"), ("05_turret_keeper", "ref_servo_sg90"),
-        ("04_rotor_hub", "ref_servo_sg90"), ("05_turret_keeper", "ref_servo_horn"),
-        ("06_sensor_head", "ref_hc_sr04"), ("02_front_panel", "ref_lcd_st7735s"),
-        ("01_body", "ref_lcd_st7735s"), ("01_body", "ref_esp32_devkit"), ("01_body", "ref_18650_holder"),
-        ("01_body", "ref_usbc_breakout"), ("ref_esp32_devkit", "ref_18650_holder"),
-        ("ref_servo_sg90", "ref_18650_holder"), ("ref_servo_sg90", "ref_esp32_devkit"),
-    ]
-    allshapes = {**S, **R}
-    for a, b in pairs:
+    allshapes = {**shapes, **refs}
+    for a, b in M.INTERFERENCE_PAIRS:
         v = inter_volume(allshapes[a], allshapes[b])
         report["interference"][f"{a} x {b}"] = round(v, 3)
-        check(f"no overlap: {a} x {b}", v < 0.5, f"{v:.3f} mm^3")
+        allow = M.INTERFERENCE_ALLOW.get((a, b))
+        if allow:
+            check(f"press fit only: {a} x {b}", 0 < v <= allow, f"{v:.3f} mm^3, designed <= {allow}")
+        else:
+            check(f"no overlap: {a} x {b}", v < 0.5, f"{v:.3f} mm^3")
+    a, b = M.PEG_PAIR
+    v = inter_volume(allshapes[a], allshapes[b])
+    report["interference"][f"{a} x {b} (pegs in holes)"] = round(v, 3)
+    check("CYD sits on the bezel pegs without overlap", v < 0.5, f"{v:.3f} mm^3")
 
-    # the horn sits inside the hub's nest: expect full containment, no overlap
-    v = inter_volume(S["04_rotor_hub"], R["ref_servo_horn"])
-    report["interference"]["04_rotor_hub x ref_servo_horn"] = round(v, 3)
-    check("horn nests in hub without overlap", v < 0.5, f"{v:.3f} mm^3")
-
-    # clearances that matter
     def dist(a, b):
         try:
             return round(allshapes[a].distance(allshapes[b]), 3)
@@ -315,40 +295,40 @@ def main():
             return float("nan")
 
     clear = {
-        "hub flange -> keeper lip (axial play)": M.KEEPER_AXIAL_PLAY,
-        "head lower rim -> keeper top (mm)": round(M.HEAD_Z0 - (M.TURRET_Z0 + M.KEEPER_H), 3),
-        "hub underside -> servo gear boss (mm)": round(M.HUB_BOTTOM_ABOVE_ROOF - M.SERVO_BOSS_ABOVE, 3),
-        "hub (static) -> keeper min distance": dist("04_rotor_hub", "05_turret_keeper"),
-        "servo -> keeper min distance": dist("ref_servo_sg90", "05_turret_keeper"),
-        "LCD -> body min distance": dist("ref_lcd_st7735s", "01_body"),
+        "horn foot -> roof (mm)": round(M.Z_FOOT0 - M.H, 3),
+        "head bottom -> roof (mm)": round(M.Z_HEAD0 - M.H, 3),
+        "screen glass -> bezel back (mm)": round(M.CYD_STANDOFF - (M.CYD_GLASS_TOP - M.CYD_PCB_T), 3),
+        "servo gear boss below roof top (mm)": round(M.H - (M.Z_FLANGE_BOT + M.SERVO_BOSS_ABOVE), 3),
+        "CYD -> servo min distance": dist("ref_cyd", "ref_servo_sg90"),
+        "CYD -> base min distance": dist("ref_cyd", "03_base"),
+        "CYD -> shell min distance": dist("ref_cyd", "01_shell"),
+        "servo -> base min distance": dist("ref_servo_sg90", "03_base"),
     }
     report["clearances"] = clear
     for k, v in clear.items():
-        check(f"clearance > 0: {k}", v == v and v > 0, f"{v}")
+        check(f"clearance >= 0: {k}", v == v and v >= 0, f"{v}")
 
-    # ---- sweep clearance: turret rotated through commanded travel + margin ----
+    # ---- sweep clearance: head rotated through the commanded travel + margin ----
     if not args.skip_sweep:
-        moving = solid(cq.Workplane().add(S["06_sensor_head"]).union(cq.Workplane().add(R["ref_hc_sr04"])))
-        hub = S["04_rotor_hub"]
-        horn = R["ref_servo_horn"]
-        fixed = {"05_turret_keeper": S["05_turret_keeper"], "03_roof": S["03_roof"],
-                 "01_body": S["01_body"], "ref_servo_sg90": R["ref_servo_sg90"]}
-        # the horn rides on the servo spline, so horn-vs-servo is not a clearance pair
-        movers = {"head+sensor": (moving, list(fixed)), "hub": (hub, list(fixed)),
-                  "horn": (horn, ["05_turret_keeper", "03_roof", "01_body"])}
+        ax = cq.Vector(M.SWEEP_AXIS[0], M.SWEEP_AXIS[1], 0)
         worst = {}
-        # commanded 30..150 deg == -60..+60 about the centre; check -75..+75 for margin
-        for deg in range(-75, 76, 15):
-            for label, (shape, against) in movers.items():
-                mv = shape.rotate(cq.Vector(0, 0, 0), cq.Vector(0, 0, 1), deg)
-                for fname in against:
-                    v = inter_volume(mv, fixed[fname])
+        angles = list(range(-M.SWEEP_MARGIN_DEG, M.SWEEP_MARGIN_DEG + 1, 15))
+        for label, names in M.SWEEP_MOVERS.items():
+            mover = cq.Workplane().add(allshapes[names[0]])
+            for n in names[1:]:
+                mover = mover.union(cq.Workplane().add(allshapes[n]))
+            mover = solid(mover)
+            for deg in angles:
+                mv = mover.rotate(ax, ax + cq.Vector(0, 0, 1), deg)
+                for fname in M.SWEEP_FIXED:
+                    if label == "horn" and fname == "ref_servo_sg90":
+                        continue  # the horn rides on the spline
                     key = f"{label} vs {fname}"
-                    worst[key] = max(worst.get(key, 0.0), v)
-        report["sweep"] = {"angles_deg_from_centre": list(range(-75, 76, 15)),
+                    worst[key] = max(worst.get(key, 0.0), inter_volume(mv, allshapes[fname]))
+        report["sweep"] = {"angles_deg_from_centre": angles,
                            "max_overlap_mm3": {k: round(v, 3) for k, v in worst.items()}}
         for k, v in worst.items():
-            check(f"sweep +/-75 deg clear: {k}", v < 0.5, f"max {v:.3f} mm^3")
+            check(f"sweep +/-{M.SWEEP_MARGIN_DEG} deg clear: {k}", v < 0.5, f"max {v:.3f} mm^3")
 
     # ---- checksums ----------------------------------------------------------
     sums = {}

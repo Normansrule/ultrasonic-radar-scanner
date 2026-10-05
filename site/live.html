@@ -46,10 +46,10 @@
       <p class="note" id="serial-note"></p>
       <details class="safety">
         <summary>Before connecting real hardware</summary>
-        <p><b>Never plug the ESP32's own USB port in while the scanner's battery harness is connected.</b>
-          Use the listen-only telemetry tap described in <a href="guide/live-link.html">Live link</a>: a 3.3 V USB-to-serial
-          adapter with only <code>RX ← TX0 (GPIO1)</code> and <code>GND</code> connected, its VCC pin left unconnected.</p>
-        <p>This console only listens; it never sends anything to the scanner. Not physically tested yet.</p>
+        <p>Connect the scanner's own USB cable to this computer — the same cable powers it. Use a port or hub
+          that can supply enough current for the servo (see <a href="guide/live-link.html">Live link</a>).</p>
+        <p>Opening the port may restart the board (the USB chip's reset lines); the sweep simply starts again.
+          This console only listens; it never sends anything to the scanner. Not physically tested yet.</p>
       </details>
     </div>
 
@@ -72,7 +72,7 @@
     <div class="card">
       <h3>View</h3>
       <label class="row">Display range (cm) <input id="i-range" type="number" min="20" max="500" step="10" value="200"></label>
-      <label class="row">Dot persistence (s) <input id="i-ttl" type="range" min="1" max="30" value="9"><span id="i-ttl-v">9</span></label>
+      <label class="row">Dot persistence (s) <input id="i-ttl" type="range" min="1" max="30" value="10"><span id="i-ttl-v">10</span></label>
     </div>
 
     <div class="card">

@@ -12,7 +12,7 @@ content as the repository.
 Usage:
   python scripts/build_site.py                      # web mode -> site/   (GitHub Pages)
   python scripts/build_site.py --app --out app/web  # desktop mode: offline KaTeX, CSP, no service worker
-  python scripts/build_site.py --firmware build/fw/Radar_V5.ino.merged.bin   # web mode + browser flasher payload
+  python scripts/build_site.py --firmware build/fw/Radar_V6.ino.merged.bin   # web mode + browser flasher payload
 Needs: Markdown (requirements-site.txt). Desktop mode also needs `npm ci` in app/ (KaTeX copy).
 """
 from __future__ import annotations
@@ -188,11 +188,11 @@ def flash_block(out: Path, firmware: str, app: bool) -> str:
                 f'publishes it here; it is also attached to every <a href="{REPO_URL}/releases/latest">release</a>.</p>')
     src = Path(firmware)
     fw_dir.mkdir(parents=True, exist_ok=True)
-    name = "radar_v5_esp32_merged.bin"
+    name = "radar_v6_esp32_merged.bin"
     shutil.copy2(src, fw_dir / name)
     digest = hashlib.sha256(src.read_bytes()).hexdigest()
     commit = os.environ.get("GITHUB_SHA", "local build")[:12]
-    manifest = {"name": "Ultrasonic Radar Scanner (Radar V5.1)", "version": APP_VERSION,
+    manifest = {"name": "Ultrasonic Radar Scanner (Radar V6)", "version": APP_VERSION,
                 "new_install_prompt_erase": True,
                 "builds": [{"chipFamily": "ESP32", "parts": [{"path": name, "offset": 0}]}]}
     (fw_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
@@ -272,6 +272,8 @@ def main():
         shutil.copytree(SITE / "assets", out / "assets",
                         ignore=shutil.ignore_patterns("diagrams", "img", "vendor"))
     for d in ("guide", "assets/diagrams", "assets/img"):
+        if (out / d).exists():
+            shutil.rmtree(out / d)  # generated copies only - drop files a previous version left behind
         (out / d).mkdir(parents=True, exist_ok=True)
     for f in (p for p in (ROOT / "hardware" / "diagrams").iterdir() if p.is_file()):
         shutil.copy2(f, out / "assets" / "diagrams" / f.name)
@@ -289,11 +291,11 @@ def main():
         (out / "guide" / f"{slug}.html").write_text(render_page(src, slug, title, a.app), encoding="utf-8")
 
     # landing page: embed the live wiring SVG and the net list
-    svg = (ROOT / "hardware" / "diagrams" / "wiring_full.svg").read_text(encoding="utf-8")
+    svg = (ROOT / "hardware" / "diagrams" / "wiring_picture.svg").read_text(encoding="utf-8")
     wiring = (ROOT / "docs" / "WIRING.md").read_text(encoding="utf-8")
     block = wiring.split("<!-- NETLIST:BEGIN -->")[1].split("<!-- NETLIST:END -->")[0]
     rows = [l for l in block.strip().splitlines() if l.startswith("|")][2:]
-    net = [dict(zip(["id", "pin", "net", "kind", "wire", "notes"], [c.strip() for c in r.strip("|").split("|")]))
+    net = [dict(zip(["id", "wire", "pin", "net", "kind", "notes"], [c.strip() for c in r.strip("|").split("|")]))
            for r in rows]
     extra = {"WIRING_SVG": svg, "NETLIST_JSON": json.dumps(net), "FLASH_BLOCK": flash_block(out, a.firmware, a.app)}
     pages = ("index.html", "live.html") if a.app else ("index.html", "live.html", "flash.html")

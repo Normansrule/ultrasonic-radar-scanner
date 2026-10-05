@@ -1,47 +1,15 @@
-id,pin,net,kind,wire,notes
-P01,USBC.VBUS,USB_5V,POWER,22 AWG,USB-C breakout VBUS to charger input
-P02,DFR1026.VIN,USB_5V,POWER,22 AWG,charger input (4.6–5.4 V)
-P03,USBC.GND,USB_GND,POWER,22 AWG,
-P04,DFR1026.GND_IN,USB_GND,POWER,22 AWG,charger input ground pad
-P05,CELL.+,BAT_RAW,POWER,22 AWG,"cell holder positive lead, keep short"
-P06,FUSE.A,BAT_RAW,POWER,22 AWG,"3 A fuse, insulated holder, mandatory"
-P07,FUSE.B,BAT_POS,POWER,22 AWG,
-P08,DFR1026.BAT+,BAT_POS,POWER,22 AWG,
-P09,CELL.-,BAT_NEG,POWER,22 AWG,cell holder negative lead
-P10,DFR1026.GND_BAT,BAT_NEG,POWER,22 AWG,battery ground pad only; do not tie elsewhere
-P11,DFR1026.OUT_5V,OUT_5V,POWER,22 AWG,regulated 5 V output
-P12,SW.1,OUT_5V,POWER,22 AWG,"latching switch, rated ≥2 A at 5 V"
-P13,SW.2,LOAD_5V,POWER,22 AWG,star point for the load branches
-P14,DFR1026.GND_OUT,GND,POWER,22 AWG,common ground star point
-P15,ESP32.VIN,LOAD_5V,POWER,22–24 AWG,via keyed disconnect J1 pin 1; own branch from the star point
-P16,ESP32.GND,GND,POWER,22–24 AWG,via keyed disconnect J1 pin 2
-P17,SERVO.RED,LOAD_5V,POWER,22 AWG,"own short branch, separate from the ESP32 branch"
-P18,SERVO.BROWN,GND,POWER,22 AWG,brown or black lead
-P19,C1.+,LOAD_5V,POWER,leads,"1000 µF ≥10 V, mounted at the servo end; mind polarity"
-P20,C1.-,GND,POWER,leads,stripe side
-P21,SR04.VCC,LOAD_5V,POWER,jumper,
-P22,SR04.GND,GND,POWER,jumper,
-P23,ESP32.3V3,3V3,POWER,jumper,ESP32 on-board regulator output
-P24,LCD.VCC,3V3,POWER,jumper,
-P25,LCD.BL,3V3,POWER,jumper,backlight always on
-P26,LCD.GND,GND,POWER,jumper,
-S01,ESP32.GPIO27,TRIG,SIGNAL,jumper,10 µs trigger pulse
-S02,SR04.TRIG,TRIG,SIGNAL,jumper,
-S03,SR04.ECHO,ECHO_5V,SIGNAL,jumper,5 V pulse — never straight to a GPIO
-S04,R1.1,ECHO_5V,SIGNAL,leads,R1 = 2.2 kΩ 1 %
-S05,R1.2,ECHO_3V,SIGNAL,leads,divider junction
-S06,R2.1,ECHO_3V,SIGNAL,leads,R2 = 3.3 kΩ 1 %
-S07,R2.2,GND,SIGNAL,leads,
-S08,ESP32.GPIO26,ECHO_3V,SIGNAL,jumper,≈3.0 V high level
-S09,ESP32.GPIO14,SERVO_PWM,SIGNAL,jumper,50 Hz LEDC output
-S10,SERVO.SIGNAL,SERVO_PWM,SIGNAL,jumper,orange/yellow lead
-S11,ESP32.GPIO23,TFT_MOSI,SIGNAL,jumper,LCD pin labelled DIN
-S12,LCD.DIN,TFT_MOSI,SIGNAL,jumper,
-S13,ESP32.GPIO18,TFT_SCK,SIGNAL,jumper,LCD pin labelled CLK
-S14,LCD.CLK,TFT_SCK,SIGNAL,jumper,
-S15,ESP32.GPIO33,TFT_CS,SIGNAL,jumper,not GPIO5 (boot strapping pin)
-S16,LCD.CS,TFT_CS,SIGNAL,jumper,
-S17,ESP32.GPIO17,TFT_DC,SIGNAL,jumper,LCD pin labelled DC (sometimes A0)
-S18,LCD.DC,TFT_DC,SIGNAL,jumper,
-S19,ESP32.GPIO16,TFT_RST,SIGNAL,jumper,
-S20,LCD.RST,TFT_RST,SIGNAL,jumper,
+id,wire,pin,net,kind,notes
+N01,W1,CN1.3V3,3V3,POWER,3.3 V from the CYD regulator
+N02,W1,SENSOR.VCC,3V3,POWER,RCWL-1601 / HC-SR04P runs at 3.3 V
+N03,W2,CN1.IO27,TRIG,SIGNAL,10 µs trigger pulse
+N04,W2,SENSOR.TRIG,TRIG,SIGNAL,
+N05,W3,P3.IO35,ECHO,SIGNAL,"input-only pin; 3.3 V echo, no divider"
+N06,W3,SENSOR.ECHO,ECHO,SIGNAL,
+N07,W4,CN1.GND,GND,POWER,common ground
+N08,W4,SENSOR.GND,GND,POWER,
+N09,W5,CN1.IO22,SERVO_PWM,SIGNAL,"50 Hz pulses, 1000–2000 µs"
+N10,W5,SERVO.SIGNAL,SERVO_PWM,SIGNAL,orange (or yellow/white) lead
+N11,W6,P1.VIN,VIN_5V,POWER,USB 5 V on the board side. VERIFY on your board
+N12,W6,SERVO.+5V,VIN_5V,POWER,red lead (middle)
+N13,W7,P1.GND,GND,POWER,same copper as CN1.GND
+N14,W7,SERVO.GND,GND,POWER,brown (or black) lead

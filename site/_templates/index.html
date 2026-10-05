@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ultrasonic Radar Scanner</title>
-<meta name="description" content="An educational ultrasonic (sonar) desktop scanner with a radar-style display: ESP32, HC-SR04, SG90 servo, ST7735S LCD, CadQuery-printed case.">
+<meta name="description" content="An educational ultrasonic (sonar) desktop scanner with a radar-style display: Cheap Yellow Display (ESP32 + touch screen), 3.3 V ultrasonic sensor, SG90 servo, four printed parts, seven wires.">
 {{HEAD_COMMON}}
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -18,15 +18,16 @@
 
 <section class="hero">
   <div>
-    <div class="kicker">Radar V5.1 · open hardware</div>
-    <h1>Print it, wire it, flash it — and see sound.</h1>
-    <p class="lead">A battery-powered desktop instrument that sweeps an HC-SR04 ultrasonic sensor on a
-      servo and draws what it hears as a green radar-style picture. Every part, pin and number is
-      documented so a first-time maker can build it and understand why it works.</p>
+    <div class="kicker">Radar V6 "Mini" · open hardware</div>
+    <h1>Three parts, seven wires — and you can see sound.</h1>
+    <p class="lead">A desk-sized instrument that sweeps a tiny ultrasonic "two-eye" head on a servo and
+      draws what it hears as a green radar-style picture on a 2.8" touch screen. One USB cable powers it.
+      Every part, pin and number is documented.</p>
+    <img class="heroimg" src="assets/diagrams/hero.png" alt="Render of the Radar V6: ivory console with a tilted touch screen and a mint sensor head">
     <div class="honest"><b>Honest scope.</b> This is ultrasonic <em>sonar</em> with a radar-<em>style</em>
       display — not radio-frequency radar, not a safety or obstacle-avoidance device. It sweeps about
       120°, the angle shown is the commanded servo position, and nothing has been printed, fitted or
-      powered yet.</div>
+      powered yet. The pictures are renders.</div>
     <div class="cta">
       <a class="btn primary" href="guide/overview.html">Start the build guide</a>
       <a class="btn" href="live.html">Live console</a>
@@ -37,12 +38,12 @@
     </div>
   </div>
   <div class="device">
-    <canvas id="screen" width="160" height="128" aria-label="Simulated scanner screen"></canvas>
+    <canvas id="screen" width="320" height="240" aria-label="Simulated scanner screen"></canvas>
     <p class="cap" id="sim-note">Simulation of the firmware's screen with synthetic targets. Click inside the fan to add a target.</p>
     <div class="controls">
       <label>Step (°) <span id="c-step-v"></span><input id="c-step" type="range" min="1" max="10" value="3"></label>
       <label>Settle (ms) <span id="c-settle-v"></span><input id="c-settle" type="range" min="20" max="200" step="5" value="70"></label>
-      <label>Display range (cm) <span id="c-range-v"></span><input id="c-range" type="range" min="50" max="400" step="10" value="200"></label>
+      <label>Display range (cm) <span id="c-range-v"></span><input id="c-range" type="range" min="50" max="400" step="50" value="200"></label>
       <label>Air temperature (°C) <span id="c-temp-v"></span><input id="c-temp" type="range" min="0" max="40" value="20"></label>
     </div>
     <div class="readout">
@@ -56,21 +57,26 @@
 </section>
 
 <section class="band">
-  <h2>Six printed parts, one CadQuery source</h2>
-  <p class="sub">Every STL, STEP and 3MF is regenerated from <code>cad/build_radar_v5.py</code>. Each
-    dimension is a named variable; anything that depends on your exact modules is marked
-    <b>VERIFY</b> and checked with a printed fit coupon first.</p>
+  <h2>The whole kit</h2>
+  <p class="sub">Five things to buy (one optional extra), four printed parts, no battery, no breadboard, no resistors.
+    Prices are rough estimates — see the <a href="guide/bom.html">bill of materials</a>.</p>
+  <img src="assets/diagrams/bom_overview.svg" alt="Parts kit: Cheap Yellow Display, ultrasonic sensor, SG90 servo, cables, jumper pins, optional capacitor">
+</section>
+
+<section class="band">
+  <h2>Four printed parts, one CadQuery source</h2>
+  <p class="sub">Every STL, STEP and 3MF is regenerated from <code>cad/build_radar.py</code>. No supports, no
+    loose screws — press fits plus the two screws that come with the servo. Values that depend on your exact
+    modules are marked <b>VERIFY</b> and checked with a printed fit coupon first.</p>
   <div class="grid2">
-    <img src="assets/diagrams/exploded_v5.png" alt="Exploded view of the six printed parts">
+    <img src="assets/diagrams/exploded.png" alt="Exploded render of the four printed parts">
     <div class="card">
       <ul class="parts">
-        <li><b>01</b><span><b>Body</b> 128 × 96 × 52 mm — electronics bay, side vents, rear USB-C opening, 45° self-supporting deck.</span></li>
-        <li><b>02</b><span><b>Front panel</b> 118 × 52 × 2.6 mm — LCD window, 12 mm switch, corner locators.</span></li>
-        <li><b>03</b><span><b>Roof</b> 120 × 74 × 3 mm — servo mount, vents, sensor-cable slot.</span></li>
-        <li><b>04</b><span><b>Rotor hub</b> — carries the stock servo horn; keyed mast socket.</span></li>
-        <li><b>05</b><span><b>Turret keeper</b> — anti-lift sleeve with engraved 30°–150° ticks.</span></li>
-        <li><b>06</b><span><b>Sensor head</b> — open-backed HC-SR04 shroud and keyed mast, printed face-down.</span></li>
-        <li><b>07</b><span>optional 0.4 mm keeper shim · <b>08</b> fit-test coupon (print first)</span></li>
+        <li><b>01</b><span><b>Shell</b> 104 × 96 × 62 mm — tilted screen opening, roof with turret hole and engraved angle scale, USB opening. Printed roof-down.</span></li>
+        <li><b>02</b><span><b>Bezel</b> — the touch screen presses onto four pegs; slides into grooves in the shell.</span></li>
+        <li><b>03</b><span><b>Base</b> — presses in and locks the bezel.</span></li>
+        <li><b>04</b><span><b>Head</b> — the "two eyes": sensor cans press in; the servo horn presses into its foot.</span></li>
+        <li><b>05</b><span>fit coupon — print first (pegs, sensor holes, screw pilots)</span></li>
       </ul>
       <p class="cta"><a class="btn" href="guide/printing.html">Printing guide</a><a class="btn" href="guide/assembly.html">Assembly</a></p>
     </div>
@@ -79,8 +85,8 @@
 
 <section class="band">
   <h2>Wiring explorer</h2>
-  <p class="sub">Generated from the net list in <code>docs/WIRING.md</code> — the same table the firmware
-    pin test reads. Click a net to isolate it. Follow labels, not wire colours.</p>
+  <p class="sub">Seven wires, generated from the net list in <code>docs/WIRING.md</code> — the same table the
+    firmware pin test reads. Click a net to isolate it. Follow the silkscreen labels, not wire colours.</p>
   <div class="chips" id="netchips"></div>
   <div class="wiring" id="wiring">{{WIRING_SVG}}</div>
   <div class="pinlist card" id="pinlist" style="margin-top:14px"></div>
@@ -98,7 +104,7 @@
       <div class="out" id="q-d"></div>
     </div>
     <div class="card calc">
-      <h3>ECHO divider</h3>
+      <h3>ECHO divider (only for a 5 V HC-SR04)</h3>
       <label>Vin (V) <input id="q-vin" type="number" value="5.0" step="0.05"></label>
       <label>R1 (Ω) <input id="q-r1" type="number" value="2200"></label>
       <label>R2 (Ω) <input id="q-r2" type="number" value="3300"></label>
@@ -120,8 +126,8 @@
   <h2>Validation, honestly</h2>
   <div class="stats">
     <div class="stat"><b>{{RECORDED}}</b><span>recorded checks passing — CAD geometry, firmware compiles (ESP32 core 3.x and 2.x), equations, wiring ↔ firmware sync</span></div>
-    <div class="stat warn"><b>{{PHYS_DONE}} / {{PHYS_TOTAL}}</b><span>physical tests done — print, fit, power, flash, sweep, runtime and thermals are all still to do</span></div>
-    <div class="stat warn"><b>1</b><span>open power issue — does the charger module restart after OFF→ON? <a href="guide/wiring.html#open-issue--dfr1026-restart-after-offon-unresolved-must-be-bench-tested">details</a></span></div>
+    <div class="stat warn"><b>{{PHYS_DONE}} / {{PHYS_TOTAL}}</b><span>physical tests done — print, fit, power, flash, sweep and accuracy are all still to do</span></div>
+    <div class="stat warn"><b>1</b><span>power question to measure first — does the board's VIN pin carry enough USB current for the servo? <a href="guide/wiring.html#power--read-this">details</a></span></div>
   </div>
 </section>
 

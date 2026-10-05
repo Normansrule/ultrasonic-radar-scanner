@@ -28,108 +28,177 @@
 <a href="credits.html">Credits &amp; sources</a>
 <a href="changelog.html">Changelog</a></nav>
 <main class="doc"><h1 id="ultrasonic-radar-scanner">Ultrasonic Radar Scanner</h1>
-<p><strong>A battery-powered desktop instrument that sweeps an ultrasonic sensor on a servo and draws what it hears as a green radar-style picture.</strong>
-Open hardware: 3D files, parts list, pin-by-pin wiring, firmware, a printable build packet, and web and desktop apps.</p>
+<p><strong>A tiny desk console that sweeps an ultrasonic "two-eye" head on a servo and draws what it hears as a green radar-style picture on a 2.8" touch screen.</strong>
+Three modules, seven wires, four printed parts, one USB cable.</p>
 <p><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Normansrule/ultrasonic-radar-scanner/actions/workflows/ci.yml/badge.svg" /></a>
 <a href="https://normansrule.github.io/ultrasonic-radar-scanner/"><img alt="Pages" src="https://github.com/Normansrule/ultrasonic-radar-scanner/actions/workflows/pages.yml/badge.svg" /></a>
 <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/Normansrule/ultrasonic-radar-scanner?label=release" /></a>
 <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/LICENSE"><img alt="Licence: MIT" src="https://img.shields.io/badge/licence-MIT-2f9e44" /></a></p>
 <div class="tablewrap"><table>
 <tr>
-<td width="50%"><img src="../assets/diagrams/radar_sweep.gif" alt="Simulated radar sweep"></td>
-<td width="50%"><img src="../assets/diagrams/exploded_v5.png" alt="Exploded view of the printed parts"></td>
+<td width="62%"><img src="../assets/diagrams/hero.png" alt="Render: ivory console, screen tilted back, mint sensor head on a neck"></td>
+<td width="38%"><img src="../assets/diagrams/radar_sweep.gif" alt="Simulated radar sweep"><br><br><img src="../assets/diagrams/hero_back.png" alt="Render from the scan side: the two ultrasonic eyes"></td>
 </tr>
 <tr>
-<td><sub>The firmware's drawing code on <b>synthetic</b> targets (simulated, not a photo).</sub></td>
-<td><sub>Six printed parts, rendered from the CadQuery source.</sub></td>
+<td><sub>Render of the CadQuery model (Blender Cycles) — not a photo.</sub></td>
+<td><sub>The firmware's drawing code on <b>synthetic</b> targets; the scan side.</sub></td>
 </tr>
 </table></div>
 
 <blockquote>
 <p><strong>Important.</strong> <strong>Educational sonar with a radar-<em>style</em> display. Not radio-frequency radar, and not a safety or obstacle-avoidance device.</strong>
 It sweeps about 120°, and the angle shown is the <em>commanded</em> servo position. The CAD, firmware and apps pass automated checks,
-but <strong>no unit has been printed, wired or powered yet.</strong> <a href="validation.html"><code>docs/VALIDATION.md</code></a> tracks what is proven.</p>
+but <strong>no V6 unit has been printed, wired or powered yet.</strong> <a href="validation.html"><code>docs/VALIDATION.md</code></a> tracks what is proven.</p>
 </blockquote>
-<h2 id="everything-you-need-to-make-one">Everything you need to make one</h2>
-<div class="tablewrap"><table>
-<tr>
-<td width="25%" align="center"><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/cad"><img src="../assets/diagrams/plate_P2.png" width="190" alt="3D files"></a><br><b><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/cad">3D files</a></b><br><sub>3MF plates · STL · STEP · CadQuery source</sub></td>
-<td width="25%" align="center"><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/bom.csv"><img src="../assets/diagrams/bom_overview.svg" width="190" alt="Parts kit"></a><br><b><a href="bom.html">Parts list</a></b><br><sub>27 items · <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/bom.csv">bom.csv</a></sub></td>
-<td width="25%" align="center"><a href="wiring.html"><img src="../assets/diagrams/wiring_full.svg" width="190" alt="Wiring"></a><br><b><a href="wiring.html">Wiring, pin by pin</a></b><br><sub>46 pins · 28 wires · <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/wire_list.csv">wire_list.csv</a></sub></td>
-<td width="25%" align="center"><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/build_packet.pdf"><img src="../assets/diagrams/build_packet_preview.png" width="190" alt="Build packet"></a><br><b><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/build_packet.pdf">Build packet (PDF)</a></b><br><sub>print it · tick every step</sub></td>
-</tr>
-<tr>
-<td align="center"><a href="requirements.html"><img src="../assets/diagrams/requirements_status.svg" width="190" alt="Requirements"></a><br><b><a href="requirements.html">Requirements</a></b><br><sub>36 · traced to tests</sub></td>
-<td align="center"><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/firmware/Radar_V5/Radar_V5.ino"><img src="../assets/diagrams/radar_frame.png" width="190" alt="Firmware"></a><br><b><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/firmware/Radar_V5">Firmware</a></b><br><sub>Arduino · ESP32 · <a href="https://normansrule.github.io/ultrasonic-radar-scanner/flash.html">flash from the browser</a></sub></td>
-<td align="center"><a href="https://normansrule.github.io/ultrasonic-radar-scanner/live.html"><img src="../assets/diagrams/live_console.png" width="190" alt="Apps"></a><br><b><a href="live-link.html">Web + desktop app</a></b><br><sub>guide · simulator · live console</sub></td>
-<td align="center"><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/releases/latest"><img src="../assets/diagrams/layout_v5.png" width="190" alt="Manufacturing kit"></a><br><b><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/releases/latest">Manufacturing kit</a></b><br><sub>one ZIP per release</sub></td>
-</tr>
-</table></div>
-
-<h2 id="build-it-in-five-gated-stages">Build it in five gated stages</h2>
-<p><img alt="Build stages" src="../assets/diagrams/build_flow.svg" /></p>
-<ol>
-<li><strong>Fit coupon:</strong> print <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/cad/3mf"><code>plate_S1_fit_coupon.3mf</code></a> and tune the hole sizes (<a href="printing.html">Printing</a>).</li>
-<li><strong>Servo fit:</strong> print <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/cad/3mf"><code>plate_S2_servo_fit_subset.3mf</code></a>, then fit the servo, hub and keeper (<a href="assembly.html">Assembly</a>).</li>
-<li><strong>Bench power:</strong> wire the charger, fuse, cell and switch only (wires W01–W06), and check the voltages.</li>
-<li><strong>Flash and bench run:</strong> flash the firmware (<a href="https://normansrule.github.io/ultrasonic-radar-scanner/flash.html">Flash page</a> or Arduino), wire the signals, and check the sweep.</li>
-<li><strong>Full print:</strong> print plates P1 and P2, assemble, and record the tests in the <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/build_packet.pdf">build packet</a>.</li>
-</ol>
-<h2 id="safety-first">Safety first</h2>
-<ul>
-<li><strong>The 3 A fuse on the battery positive lead is mandatory.</strong></li>
-<li>Never connect a bare cell to the ESP32 VIN or the servo. Use a <strong>protected</strong> 18650 and never solder to the cell.</li>
-<li>The HC-SR04 <strong>ECHO</strong> pin is 5 V. It goes to GPIO26 <strong>only</strong> through the 2.2 kΩ / 3.3 kΩ divider.</li>
-<li><strong>Never</strong> plug the ESP32's own USB in while the battery harness is connected. Unplug the harness to program it.</li>
-<li>Don't charge unattended while you're prototyping.</li>
-</ul>
-<p><img alt="ECHO divider and fuse" src="../assets/diagrams/callout_echo_divider_fuse.svg" /></p>
-<h2 id="whats-inside">What's inside</h2>
+<h2 id="the-whole-kit">The whole kit</h2>
+<p><img alt="Parts kit" src="../assets/diagrams/bom_overview.svg" /></p>
 <div class="tablewrap"><table>
 <thead>
 <tr>
 <th></th>
 <th>Part</th>
-<th>Wired to</th>
+<th>Est. US$</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>🧠</td>
-<td>ESP32-WROOM-32 DevKit (30-pin)</td>
-<td>the hub of everything</td>
+<td>🖥️</td>
+<td><strong>ESP32-2432S028R "Cheap Yellow Display"</strong> — ESP32, 2.8" 320 × 240 touch screen, RGB LED, USB</td>
+<td>12–20</td>
 </tr>
 <tr>
 <td>🔊</td>
-<td>HC-SR04 ultrasonic sensor</td>
-<td>TRIG → GPIO27 · ECHO → divider → GPIO26</td>
+<td><strong>RCWL-1601 or HC-SR04P</strong> ultrasonic sensor (3.3 V version — no resistors needed)</td>
+<td>2–4</td>
 </tr>
 <tr>
 <td>⚙️</td>
-<td>SG90 positional servo</td>
-<td>signal → GPIO14 · power from the switched 5 V rail</td>
+<td><strong>SG90</strong> micro servo, positional, with horn and its 2 screws</td>
+<td>2–3</td>
 </tr>
 <tr>
-<td>🖥️</td>
-<td>1.8" ST7735S LCD, 160 × 128</td>
-<td>DIN 23 · CLK 18 · CS 33 · DC 17 · RST 16</td>
-</tr>
-<tr>
-<td>🔋</td>
-<td>Protected 18650 → <strong>3 A fuse</strong> → DFR1026 charger/boost → latching switch</td>
-<td>USB-C charges it (5 V only)</td>
+<td>🔌</td>
+<td>3 × JST 1.25 mm 4-pin → Dupont cables, 3 male-male pins</td>
+<td>1–3</td>
 </tr>
 <tr>
 <td>🖨️</td>
-<td>6 PLA parts with M2 screws only</td>
-<td>Bambu Lab A1 mini plates, no supports</td>
+<td>4 printed parts, ≈ 120 g PLA, no supports</td>
+<td>—</td>
 </tr>
 </tbody>
 </table></div>
-<p><img alt="Wiring" src="../assets/diagrams/wiring_full.svg" /></p>
-<blockquote>
-<p><strong>Warning.</strong> <strong>Open power issue:</strong> the DFR1026 charger module may need its on-board button to turn back on after the switch goes OFF → ON. The test for it and two documented fall-backs are in <a href="wiring.html#open-issue--dfr1026-restart-after-offon-unresolved-must-be-bench-tested"><code>docs/WIRING.md</code></a>.</p>
-</blockquote>
+<p>Plus a USB cable and a ≥ 1 A charger or power bank. <strong>About US$18–30 in total</strong> — rough single-unit
+estimates, not quotes. Details and what to check before buying: <a href="bom.html"><code>docs/BOM.md</code></a>.</p>
+<h2 id="wire-it--7-wires">Wire it — 7 wires</h2>
+<p><img alt="Seven wires" src="../assets/diagrams/wiring_picture.svg" /></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Wire</th>
+<th>From (CYD)</th>
+<th>To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>W1</td>
+<td>CN1 3.3V</td>
+<td>sensor VCC</td>
+</tr>
+<tr>
+<td>W2</td>
+<td>CN1 IO27</td>
+<td>sensor TRIG</td>
+</tr>
+<tr>
+<td>W3</td>
+<td>P3 IO35</td>
+<td>sensor ECHO</td>
+</tr>
+<tr>
+<td>W4</td>
+<td>CN1 GND</td>
+<td>sensor GND</td>
+</tr>
+<tr>
+<td>W5</td>
+<td>CN1 IO22</td>
+<td>servo signal (orange)</td>
+</tr>
+<tr>
+<td>W6</td>
+<td>P1 VIN</td>
+<td>servo + (red) — measure ≈ 5 V first</td>
+</tr>
+<tr>
+<td>W7</td>
+<td>P1 GND</td>
+<td>servo − (brown)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Pin by pin, connector pinouts, power notes and the 5 V HC-SR04 fallback: <a href="wiring.html"><code>docs/WIRING.md</code></a>.</p>
+<h2 id="build-it">Build it</h2>
+<p><img alt="Build stages" src="../assets/diagrams/build_flow.svg" /></p>
+<ol>
+<li><strong>Print the fit coupon</strong> — <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/cad/3mf"><code>cad/3mf/plate_S1_fit_coupon.3mf</code></a> — and pick peg, hole and screw sizes (<a href="printing.html">Printing</a>).</li>
+<li><strong>Bench test:</strong> wire the 7 wires on the table and flash — <a id="flash"></a><a href="https://normansrule.github.io/ultrasonic-radar-scanner/flash.html"><strong>Flash page</strong></a> in Chrome/Edge, or <code>arduino-cli compile --upload --profile esp32-core3 -p &lt;port&gt; firmware/Radar_V6</code>.</li>
+<li><strong>Print</strong> <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/cad/3mf"><code>cad/3mf/radar_a1mini_multiplate.3mf</code></a> — plate P1 (shell) and P2 (bezel, base, head).</li>
+<li><strong>Assemble</strong> in about 30 minutes (<a href="assembly.html">Assembly</a>) — press fits and the servo's own two screws.</li>
+<li><strong>Run and record</strong> the tests in the <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/build_packet.pdf">build packet</a>.</li>
+</ol>
+<div class="tablewrap"><table>
+<tr>
+<td width="50%"><img src="../assets/diagrams/exploded.png" alt="Exploded render"></td>
+<td width="50%"><img src="../assets/diagrams/assembly_section.png" alt="Section through the middle"></td>
+</tr>
+<tr><td><sub>Shell · bezel (the CYD presses on) · base · head.</sub></td><td><sub>Section: CYD on the bezel, servo under the roof, sensor in the head.</sub></td></tr>
+</table></div>
+
+<h2 id="everything-you-need-to-make-one">Everything you need to make one</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🧊 <strong>3D files</strong></td>
+<td><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/cad/3mf"><code>cad/3mf</code></a> plates · <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/cad/stl"><code>cad/stl</code></a> · <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/cad/step"><code>cad/step</code></a> · source <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/cad/build_radar.py"><code>cad/build_radar.py</code></a> (every dimension a named variable)</td>
+</tr>
+<tr>
+<td>🧾 <strong>Parts list</strong></td>
+<td><a href="bom.html"><code>docs/BOM.md</code></a> · <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/bom.csv"><code>manufacturing/bom.csv</code></a></td>
+</tr>
+<tr>
+<td>🔌 <strong>Circuit</strong></td>
+<td><a href="wiring.html"><code>docs/WIRING.md</code></a> · <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/wiring_pins.csv"><code>wiring_pins.csv</code></a> · <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/wire_list.csv"><code>wire_list.csv</code></a></td>
+</tr>
+<tr>
+<td>📄 <strong>Build packet</strong></td>
+<td><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/build_packet.pdf"><code>manufacturing/build_packet.pdf</code></a> — print it, tick every step</td>
+</tr>
+<tr>
+<td>✅ <strong>Requirements</strong></td>
+<td><a href="requirements.html"><code>docs/REQUIREMENTS.md</code></a> — 33, each traced to a check or test</td>
+</tr>
+<tr>
+<td>💾 <strong>Firmware</strong></td>
+<td><a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/firmware/Radar_V6"><code>firmware/Radar_V6</code></a> — Arduino, pinned ESP32 core + libraries, compiles with 0 warnings</td>
+</tr>
+<tr>
+<td>🌐 <strong>Apps</strong></td>
+<td><a href="https://normansrule.github.io/ultrasonic-radar-scanner/">web app</a> (guide, simulator, live console, flasher) · desktop app on <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/releases/latest">Releases</a></td>
+</tr>
+<tr>
+<td>📦 <strong>Manufacturing kit</strong></td>
+<td>one ZIP per <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/releases/latest">release</a>: build packet, CSVs, 3MF/STL/STEP, diagrams, firmware</td>
+</tr>
+</tbody>
+</table></div>
 <h2 id="how-it-works">How it works</h2>
 <div class="tablewrap"><table>
 <thead>
@@ -146,11 +215,6 @@ but <strong>no unit has been printed, wired or powered yet.</strong> <a href="va
 <td>5 823 µs at 20 °C → 100 cm</td>
 </tr>
 <tr>
-<td>ECHO divider</td>
-<td>$V_{out} = V_{in} R_2 / (R_1 + R_2)$</td>
-<td>5.0 V → 3.0 V</td>
-</tr>
-<tr>
 <td>Servo</td>
 <td>50 Hz frame, 1.0–2.0 ms pulse, 16-bit duty</td>
 <td>90° → 1500 µs → 4915</td>
@@ -158,34 +222,35 @@ but <strong>no unit has been printed, wired or powered yet.</strong> <a href="va
 <tr>
 <td>Sweep</td>
 <td>$T = N_{moves}(t_{settle} + t_{overhead})$</td>
-<td>40 × ~101 ms ≈ 4.0 s (estimate)</td>
+<td>40 × ~115 ms ≈ 4.6 s one way (estimate)</td>
 </tr>
 </tbody>
 </table></div>
-<p>Intuition, worked examples and plots are in <a href="equations.html"><code>docs/EQUATIONS.md</code></a>. Every number is re-checked by a test.</p>
+<p>Intuition, worked examples and plots: <a href="equations.html"><code>docs/EQUATIONS.md</code></a>. Every number is re-checked by a test.</p>
 <h2 id="use-it">Use it</h2>
 <ul>
-<li><strong>Web app:</strong> <a href="https://normansrule.github.io/ultrasonic-radar-scanner/">normansrule.github.io/ultrasonic-radar-scanner</a>. It has the build guide, simulator, wiring explorer, live console and firmware flasher, and can be installed as an app.</li>
-<li><strong>Desktop app:</strong> download it from <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/releases/latest">Releases</a> (Windows, macOS or Linux). It works fully offline.</li>
-<li><strong>Live console:</strong> watch the real sweep over a two-wire, listen-only serial tap, replay logs and record sessions (<a href="live-link.html"><code>docs/LIVE_LINK.md</code></a>).</li>
+<li><strong>On the device:</strong> tap <strong>−</strong> / <strong>+</strong> to change the range (50–400 cm), tap the radar to pause. The LED turns red under 30 cm.</li>
+<li><strong>Live console:</strong> plug the scanner into a computer — the same USB cable carries the readings — and open the
+  <a href="https://normansrule.github.io/ultrasonic-radar-scanner/live.html">live console</a> or the desktop app. Record and replay sessions (<a href="live-link.html"><code>docs/LIVE_LINK.md</code></a>).</li>
 </ul>
 <h2 id="publish-rebuild-contribute">Publish, rebuild, contribute</h2>
 <ul>
-<li><strong>Put it on GitHub from a fresh Ubuntu terminal:</strong> <a href="publish.html"><code>docs/PUBLISH.md</code></a>. This is one paste, and it also creates the web app and the release.</li>
-<li><strong>Regenerate everything:</strong> run <code>python scripts/render_cad.py</code>, <code>render_previews.py</code>, <code>gen_diagrams.py</code>, <code>export_mfg.py</code>, <code>make_build_packet.py</code>, <code>gen_traceability.py</code> and <code>build_site.py</code>, then <code>python -m pytest tests</code>.</li>
+<li><strong>Put it on GitHub from a fresh Ubuntu terminal:</strong> one paste — <a href="publish.html"><code>docs/PUBLISH.md</code></a>.</li>
+<li><strong>Regenerate everything:</strong> <code>python scripts/render_cad.py</code>, <code>render_previews.py</code>, <code>render_beauty.py</code> (Blender <code>bpy</code>), <code>sim_display.py</code>,
+  <code>gen_diagrams.py</code>, <code>export_mfg.py</code>, <code>make_build_packet.py</code>, <code>gen_traceability.py</code>, <code>build_site.py</code>, then <code>python -m pytest tests</code>.</li>
 <li><strong>Built one?</strong> Fill in the build packet's test sheet and send the results as a pull request to <a href="validation.html"><code>docs/VALIDATION.md</code></a>.</li>
 </ul>
 <details>
 <summary><b>Repository layout</b></summary>
 
 
-<pre><code>cad/build_radar_v5.py        CadQuery source (model of record); every dimension is a named variable
+<pre><code>cad/build_radar.py           CadQuery source (model of record)
 cad/3mf  cad/stl  cad/step    generated print files and editable CAD (never edit by hand)
-firmware/Radar_V5/            Radar_V5.ino + sketch.yaml (pinned ESP32 core and libraries)
+firmware/Radar_V6/            Radar_V6.ino + sketch.yaml (pinned ESP32 core and libraries)
 manufacturing/                bom.csv, printed_parts.csv, wiring_pins.csv, wire_list.csv, build_packet.pdf
 docs/                         REQUIREMENTS, BOM, WIRING, PRINTING, ASSEMBLY, EQUATIONS, LIVE_LINK,
                               VALIDATION, SECURITY, PUBLISH, GLOSSARY
-hardware/diagrams/            generated wiring, callouts, renders, plates, GIF
+hardware/diagrams/            renders, wiring picture, parts kit, plates, GIF (all generated)
 site/                         web app (GitHub Pages): landing, live console, flasher, guide
 app/                          desktop app (Electron)
 scripts/                      every generator, packager and exporter
@@ -195,7 +260,7 @@ sbom/                         CycloneDX toolchain bill of materials
 
 </details>
 
-<p>MIT licence · datasheets and credits in <a href="credits.html"><code>CREDITS.md</code></a> · supply chain and electrical safety in <a href="security.html"><code>docs/SECURITY.md</code></a> · terms in <a href="glossary.html"><code>docs/GLOSSARY.md</code></a></p>
+<p>MIT licence · datasheets and credits in <a href="credits.html"><code>CREDITS.md</code></a> · supply chain and electrical safety in <a href="security.html"><code>docs/SECURITY.md</code></a> · terms in <a href="glossary.html"><code>docs/GLOSSARY.md</code></a> · <a href="changelog.html"><code>CHANGELOG.md</code></a></p>
 <p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/README.md">README.md</a> — generated by scripts/build_site.py</p>
 </main></div>
 <script src="../assets/pwa.js" data-root="../"></script>

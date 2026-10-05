@@ -31,7 +31,7 @@
 <p>Two copy-and-paste blocks for an Ubuntu terminal (native or Windows Subsystem for Linux (WSL)).</p>
 <ol>
 <li><strong>Publish</strong> — pushes the repository, turns on the <strong>web app</strong> (GitHub Pages) and tags release
-   <code>v5.2.0</code>; GitHub Actions then builds the <strong>desktop app</strong> (Windows, macOS, Linux), the <strong>firmware
+   <code>v6.0.0</code>; GitHub Actions then builds the <strong>desktop app</strong> (Windows, macOS, Linux), the <strong>firmware
    images</strong> and the <strong>manufacturing kit</strong> and attaches them to the release.</li>
 <li><strong>Keep building</strong> — sets up a local workspace: tests, the web app, the desktop app from source and
    (optionally) the firmware compile.</li>
@@ -41,7 +41,7 @@ to paste again.</p>
 <h2 id="1--publish-repository-web-app-desktop-app-manufacturing-kit">1 — Publish (repository, web app, desktop app, manufacturing kit)</h2>
 <p>What it does, in order: installs <code>git</code> + GitHub CLI (<code>gh</code>), signs you in, unpacks the newest ZIP from
 Downloads, commits, creates the public repository, pushes, turns on the <strong>web app</strong> (GitHub Pages,
-including the firmware flasher), and tags release <strong>v5.2.0</strong>. The release workflow then builds and
+including the firmware flasher), and tags release <strong>v6.0.0</strong>. The release workflow then builds and
 attaches the <strong>desktop apps</strong>, <strong>firmware images</strong> and the <strong>manufacturing kit</strong>.</p>
 <ul>
 <li>Edit <code>OWNER</code> on the first line if the repository should belong to another GitHub account.</li>
@@ -51,16 +51,16 @@ attaches the <strong>desktop apps</strong>, <strong>firmware images</strong> and
 <li>If <code>~/.ssh/config</code> has <code>Host github-normansrule</code>, it pushes over that SSH alias; otherwise over HTTPS
   through <code>gh</code> (with the <code>workflow</code> scope GitHub requires for <code>.github/workflows/</code>).</li>
 <li>ZIP: newest <code>ultrasonic-radar-scanner*.zip</code> in <code>~/Downloads</code> or the Windows Downloads folders (WSL);
-  unpacked to <code>~/projects/ultrasonic-radar-scanner</code>. It never runs Git in your home folder.</li>
+  mirrored into <code>~/projects/ultrasonic-radar-scanner</code> (files an older version left behind are removed; <code>.git</code>, <code>.venv</code> and <code>node_modules</code> are kept). It never runs Git in your home folder.</li>
 <li><code>sudo</code> is used only for package installation. Safe to paste again.</li>
 <li>Web app: about 5 minutes. Release builds: roughly 15–25 minutes; the block waits up to 40 minutes
   and lists the files — <strong>Ctrl+C is safe</strong> by then, everything is already pushed.</li>
 </ul>
 <pre><code class="language-bash">(
 set -euo pipefail
-OWNER=&quot;Normansrule&quot;; REPO=&quot;ultrasonic-radar-scanner&quot;; TAG=&quot;v5.2.0&quot;; SSH_ALIAS=&quot;github-normansrule&quot;
-# 1. Install git, unzip, curl and the GitHub CLI (Ubuntu's gh if &gt;= 2.40, else GitHub's official apt repo)
-sudo apt-get update -y; sudo apt-get install -y git unzip curl ca-certificates; sudo apt-get install -y gh || true
+OWNER=&quot;Normansrule&quot;; REPO=&quot;ultrasonic-radar-scanner&quot;; TAG=&quot;v6.0.0&quot;; SSH_ALIAS=&quot;github-normansrule&quot;
+# 1. Install git, unzip, rsync, curl and the GitHub CLI (Ubuntu's gh if &gt;= 2.40, else GitHub's official apt repo)
+sudo apt-get update -y; sudo apt-get install -y git unzip rsync curl ca-certificates; sudo apt-get install -y gh || true
 if ! command -v gh &gt;/dev/null || [ &quot;$(printf '%s\n' 2.40.0 "$(gh --version | awk 'NR==1{print $3}')" | sort -V | head -n1)" != "2.40.0" ]; then sudo install -d -m 755 /etc/apt/keyrings; curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg &gt;/dev/null; sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg; echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main&quot; | sudo tee /etc/apt/sources.list.d/github-cli.list &gt;/dev/null; sudo apt-get update -y; sudo apt-get install -y gh; fi; gh --version | head -n1
 # 2. Make sure gh is signed in as $OWNER (switches account if already added; browser sign-in otherwise)
 gh auth switch -h github.com -u &quot;$OWNER&quot; &gt;/dev/null 2&gt;&amp;1 || true
@@ -70,18 +70,19 @@ gh auth switch -h github.com -u &quot;$OWNER&quot; &gt;/dev/null 2&gt;&amp;1 || 
 if grep -qsiE &quot;^[[:space:]]*Host[[:space:]]+$SSH_ALIAS([[:space:]]|$)&quot; ~/.ssh/config; then REMOTE=&quot;git@$SSH_ALIAS:$OWNER/$REPO.git"; export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new"; else REMOTE="https://github.com/$OWNER/$REPO.git&quot;; gh api -i user 2&gt;/dev/null | grep -i '^x-oauth-scopes:' | grep workflow &gt;/dev/null || gh auth refresh -h github.com -s workflow; gh auth setup-git -h github.com; fi; echo &quot;Push route: $REMOTE&quot;
 # 4. Find the newest ZIP (Linux ~/Downloads, then Windows Downloads under WSL) and check it is this version
 ZIP=&quot;$(ls -t ~/Downloads/$REPO*.zip /mnt/c/Users/*/Downloads/$REPO*.zip 2&gt;/dev/null | head -n1 || true)"; [ -n "$ZIP&quot; ] || { echo &quot;No $REPO*.zip in ~/Downloads&quot;; exit 1; }
-unzip -Z1 &quot;$ZIP" | grep -x "$REPO/manufacturing/build_packet.pdf&quot; &gt;/dev/null || { echo &quot;$ZIP is an older ZIP - download the new one&quot;; exit 1; }; echo &quot;Using $ZIP&quot;
-# 5. Unpack into ~/projects/$REPO (overwrites files from the ZIP, keeps .git) and enter it
-mkdir -p ~/projects; unzip -o -q &quot;$ZIP" -d ~/projects; cd ~/projects/"$REPO&quot;
+unzip -Z1 &quot;$ZIP" | grep -x "$REPO/firmware/Radar_V6/Radar_V6.ino&quot; &gt;/dev/null || { echo &quot;$ZIP is an older ZIP - download the new one&quot;; exit 1; }; echo &quot;Using $ZIP&quot;
+# 5. Unpack into ~/projects/$REPO: mirror the ZIP exactly (removes files an older version left behind; keeps .git, .venv, node_modules)
+mkdir -p ~/projects/&quot;$REPO"; TMP="$(mktemp -d)&quot;; unzip -q &quot;$ZIP" -d "$TMP&quot;; [ -f &quot;$TMP/$REPO/README.md&quot; ] || { echo &quot;Unexpected ZIP layout&quot;; exit 1; }
+rsync -a --delete --exclude /.git --exclude /.venv --exclude /app/node_modules --exclude /app/dist &quot;$TMP/$REPO/&quot; ~/projects/&quot;$REPO"/; rm -rf "$TMP&quot;; cd ~/projects/&quot;$REPO&quot;
 # 6. Initialise Git on main (guard: never in your home folder); set a commit identity for this repo only if none is configured
 [ &quot;$PWD" = "$HOME/projects/$REPO" ] || { echo "Not in ~/projects/$REPO - stopping&quot;; exit 1; }
 [ -d .git ] || git init -q -b main
 git config user.name &gt;/dev/null || git config user.name &quot;$(gh api user -q '.name // .login')"; git config user.email &gt;/dev/null || git config user.email "$(gh api user -q .id)+$OWNER@users.noreply.github.com&quot;
 # 7. Commit everything (only when something changed)
-git add -A; git diff --cached --quiet || git commit -q -m &quot;Ultrasonic Radar Scanner $TAG: open-hardware package (CAD, BOM, wiring, build packet, firmware, web + desktop apps)&quot;
+git add -A; git diff --cached --quiet || git commit -q -m &quot;Ultrasonic Radar Scanner $TAG: Radar V6 Mini - 3 modules, 7 wires, 4 printed parts (CAD, BOM, wiring, build packet, firmware, web + desktop apps)&quot;
 # 8. Create the public repository if missing; set description, homepage and topics
-gh repo view &quot;$OWNER/$REPO&quot; &gt;/dev/null 2&gt;&amp;1 || gh repo create &quot;$OWNER/$REPO&quot; --public --description &quot;Open-hardware educational ultrasonic (sonar) scanner with a radar-style display - ESP32, HC-SR04, SG90, 3D-printed, web + desktop app&quot;
-gh repo edit &quot;$OWNER/$REPO&quot; --homepage &quot;https://${OWNER,,}.github.io/$REPO/&quot; --add-topic open-hardware,esp32,ultrasonic,hc-sr04,sonar,cadquery,3d-printing,electron,education &gt;/dev/null
+gh repo view &quot;$OWNER/$REPO&quot; &gt;/dev/null 2&gt;&amp;1 || gh repo create &quot;$OWNER/$REPO&quot; --public --description &quot;Open-hardware educational ultrasonic (sonar) scanner with a radar-style display - Cheap Yellow Display, 3.3 V ultrasonic sensor, SG90, 4 printed parts, 7 wires&quot;
+gh repo edit &quot;$OWNER/$REPO&quot; --homepage &quot;https://${OWNER,,}.github.io/$REPO/&quot; --add-topic open-hardware,esp32,cheap-yellow-display,ultrasonic,sonar,cadquery,3d-printing,electron,education &gt;/dev/null
 # 9. Point 'origin' at the repository and push main
 git remote get-url origin &gt;/dev/null 2&gt;&amp;1 &amp;&amp; git remote set-url origin &quot;$REMOTE" || git remote add origin "$REMOTE&quot;
 git branch -M main; git push -u origin main
@@ -100,7 +101,7 @@ gh release view &quot;$TAG" -R "$OWNER/$REPO" --json assets -q '.assets[].name' 
 </code></pre>
 <p>If the web app is not live, open the repository's <strong>Actions</strong> tab, read the "Pages" run, fix and paste
 again. If a release build failed, re-run it from its run page or with
-<code>gh workflow run release.yml -R Normansrule/ultrasonic-radar-scanner -f tag=v5.2.0</code>.</p>
+<code>gh workflow run release.yml -R Normansrule/ultrasonic-radar-scanner -f tag=v6.0.0</code>.</p>
 <h2 id="2--keep-building-locally">2 — Keep building locally</h2>
 <p>Run this after block 1, in the same terminal or a new one. It:</p>
 <ul>
@@ -126,8 +127,8 @@ cd ~/projects/ultrasonic-radar-scanner
 .venv/bin/python -m pytest -q tests; node --test tests/js/*.test.js
 # 5. Build the web app (site/) and the desktop app's offline bundle (app/web/)
 .venv/bin/python scripts/build_site.py; (cd app; npm ci --no-audit --no-fund; [ -f node_modules/electron/path.txt ] || node node_modules/electron/install.js; ../.venv/bin/python ../scripts/build_site.py --app --out web)
-# 6. Optional: compile the firmware exactly as pinned in firmware/Radar_V5/sketch.yaml
-if [ &quot;$BUILD_FIRMWARE" = 1 ]; then mkdir -p ~/.local/bin; command -v arduino-cli &gt;/dev/null || curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR="$HOME/.local/bin&quot; sh; PATH=&quot;$HOME/.local/bin:$PATH&quot; arduino-cli compile --profile esp32-core3 --warnings all firmware/Radar_V5; fi
+# 6. Optional: compile the firmware exactly as pinned in firmware/Radar_V6/sketch.yaml
+if [ &quot;$BUILD_FIRMWARE" = 1 ]; then mkdir -p ~/.local/bin; command -v arduino-cli &gt;/dev/null || curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR="$HOME/.local/bin&quot; sh; PATH=&quot;$HOME/.local/bin:$PATH&quot; arduino-cli compile --profile esp32-core3 --warnings all firmware/Radar_V6; fi
 # 7. Serve the web app in the background (http://localhost:8000) and open the desktop app (close its window to finish)
 (.venv/bin/python -m http.server 8000 -d site &gt;/dev/null 2&gt;&amp;1 &amp;) ; echo &quot;Web app: http://localhost:8000   (stop later with: pkill -f 'http.server 8000')&quot;
 cd app; npx electron . || npx electron . --no-sandbox
@@ -156,7 +157,7 @@ cd app; npx electron . || npx electron . --no-sandbox
 <ul>
 <li><strong>Protect <code>main</code>:</strong> Settings → Branches → require the <code>CI</code> checks.</li>
 <li><strong>Private vulnerability reporting:</strong> Settings → Code security → enable it (see <a href="security.html"><code>SECURITY.md</code></a>).</li>
-<li><strong>Live link:</strong> wire the optional telemetry tap before connecting real hardware (<a href="live-link.html"><code>LIVE_LINK.md</code></a>).</li>
+<li><strong>Live link:</strong> plug the scanner's own USB cable into the computer and open the live console (<a href="live-link.html"><code>LIVE_LINK.md</code></a>).</li>
 </ul>
 <p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/PUBLISH.md">docs/PUBLISH.md</a> — generated by scripts/build_site.py</p>
 </main></div>

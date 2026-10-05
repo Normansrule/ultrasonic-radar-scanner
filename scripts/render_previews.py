@@ -5,9 +5,9 @@ Render preview images of the CadQuery model with a small pure-numpy rasteriser
 same source as the STL/STEP files.
 
 Outputs (hardware/diagrams/):
-  exploded_v5.png     six required printed parts, exploded along the build axis
-  assembly_v5.png     assembled, with purchased modules as grey reference envelopes
-  plate_P1.png / plate_P2.png   top-down previews of the A1 mini plates
+  parts_labeled.png   the four printed parts, exploded, with labels
+  assembly_section.png  cut through the middle: where the three modules sit
+  plate_P1.png / plate_P2.png / plate_S1_fit_coupon.png   top-down plate previews
 
 Usage: python scripts/render_previews.py
 """
@@ -23,24 +23,21 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "cad"))
-import build_radar_v5 as M  # noqa: E402
+import build_radar as M  # noqa: E402
 
 OUT = ROOT / "hardware" / "diagrams"
 SS = 2  # supersampling
 
 PART_COLORS = {
-    "01_body": (52, 64, 72),
-    "02_front_panel": (30, 38, 44),
-    "03_roof": (70, 84, 92),
-    "04_rotor_hub": (46, 160, 90),
-    "05_turret_keeper": (38, 120, 72),
-    "06_sensor_head": (60, 200, 110),
-    "07_keeper_shim_0p4mm": (200, 160, 60),
-    "08_fit_test_coupon": (200, 160, 60),
+    "01_shell": (214, 206, 188),
+    "02_bezel": (48, 52, 56),
+    "03_base": (70, 74, 78),
+    "04_head": (110, 200, 160),
+    "05_fit_coupon": (200, 160, 60),
 }
 REF_COLOR = (185, 190, 196)
-REF_SPECIAL = {"ref_hc_sr04": (70, 120, 200), "ref_lcd_st7735s": (40, 70, 140),
-               "ref_esp32_devkit": (40, 40, 48), "ref_18650_holder": (35, 35, 35)}
+REF_SPECIAL = {"ref_sensor": (70, 120, 200), "ref_cyd": (232, 200, 60),
+               "ref_servo_sg90": (40, 80, 170), "ref_servo_horn": (235, 235, 235)}
 
 
 def font(size):
@@ -172,60 +169,41 @@ def main():
     parts = M.build_all()
     refs = {n: f() for n, f in M.REFERENCE_BUILDERS.items()}
 
-    # ---------------- exploded view ----------------
-    explode = {"01_body": (0, 0, 0), "02_front_panel": (0, -55, 0), "03_roof": (0, 0, 30),
-               "05_turret_keeper": (0, 0, 55), "04_rotor_hub": (0, 0, 85), "06_sensor_head": (0, 0, 115)}
+    # ---------------- exploded view with labels ----------------
+    explode = {"01_shell": (0, 0, 0), "02_bezel": (0, -70, -4), "03_base": (0, 0, -45), "04_head": (0, 0, 55)}
+    names = {"01_shell": "01 shell", "02_bezel": "02 bezel (CYD presses on)",
+             "03_base": "03 base (press-fit)", "04_head": "04 head (sensor presses in)"}
     items, anchors = [], {}
     for n, dv in explode.items():
         v, t = mesh(parts[n])
         v = v + np.array(dv)
         items.append((v, t, PART_COLORS[n]))
-        c = v.mean(0)
-        anchors[n] = (v, c)
-    im, to_px = render(items, az=-38, el=22, size=(1400, 1060), pad=95)
+        anchors[n] = v.mean(0)
+    im, to_px = render(items, az=-38, el=22, size=(1400, 1060), pad=110)
     d = ImageDraw.Draw(im)
     f = font(22)
-    names = {"01_body": "01 body", "02_front_panel": "02 front panel", "03_roof": "03 roof",
-             "04_rotor_hub": "04 rotor hub", "05_turret_keeper": "05 turret keeper",
-             "06_sensor_head": "06 sensor head"}
-    for n, (v, c) in anchors.items():
+    for n, c in anchors.items():
         a = to_px(c)[0]
-        side = -1 if n in ("02_front_panel", "05_turret_keeper") else 1
-        dx = {"01_body": 330, "03_roof": 290}.get(n, 170)
-        label(d, (a[0] + side * dx, a[1] + {"01_body": 60, "03_roof": 25}.get(n, -20)), tuple(a), names[n], f)
-    title(im, "Radar V5.1 - printed parts (exploded)",
-          "Rendered from cad/build_radar_v5.py - geometry only, not a photo of a printed unit")
-    im.save(OUT / "exploded_v5.png", optimize=True)
+        side = -1 if n == "02_bezel" else 1
+        dx = {"01_shell": 300, "03_base": 230}.get(n, 190)
+        label(d, (a[0] + side * dx, a[1] + (60 if n == "03_base" else -20)), tuple(a), names[n], f)
+    title(im, "Radar V6 - four printed parts",
+          "Rendered from cad/build_radar.py - geometry only, not a photo of a printed unit")
+    im.save(OUT / "parts_labeled.png", optimize=True)
 
-    # ---------------- assembled with reference modules ----------------
+    # ---------------- section: where the modules sit ----------------
     items = []
+    cut = M.box(-200, 0, -200, 200, -10, 200)
     for n in M.REQUIRED_PARTS:
-        v, t = mesh(parts[n])
+        v, t = mesh(parts[n].cut(cut))
         items.append((v, t, PART_COLORS[n]))
     for n, r in refs.items():
-        v, t = mesh(r)
+        v, t = mesh(r.cut(cut))
         items.append((v, t, REF_SPECIAL.get(n, REF_COLOR)))
-    im, _ = render(items, az=-30, el=20, size=(1200, 900), pad=60)
-    title(im, "Radar V5.1 - assembled (reference modules in blue/grey)",
-          "Module envelopes are VERIFY placeholders; nothing here has been printed or fitted")
-    im.save(OUT / "assembly_v5.png", optimize=True)
-
-    # cut-away: body + roof hidden, shows internal layout
-    items = []
-    v, t = mesh(parts["02_front_panel"])
-    items.append((v, t, PART_COLORS["02_front_panel"]))
-    section = parts["01_body"].cut(M.box(-100, 100, -100, 100, 34.0, 100))
-    bv, bt = mesh(section)
-    items.append((bv, bt, (150, 160, 166)))
-    for n, r in refs.items():
-        if n in ("ref_hc_sr04", "ref_servo_horn"):
-            continue
-        v, t = mesh(r)
-        items.append((v, t, REF_SPECIAL.get(n, (225, 150, 60))))
-    im, _ = render(items, az=-20, el=55, size=(1200, 900), pad=60)
-    title(im, "Radar V5.1 - suggested internal layout (body sectioned at z = 34 mm)",
-          "ESP32 on end supports, 18650 holder on zip-tie anchors, USB-C cradle at rear right")
-    im.save(OUT / "layout_v5.png", optimize=True)
+    im, _ = render(items, az=90, el=8, size=(1200, 900), pad=70)
+    title(im, "Radar V6 - section through the middle",
+          "CYD (yellow) on the bezel, SG90 (blue) hanging under the roof, sensor in the head")
+    im.save(OUT / "assembly_section.png", optimize=True)
 
     # ---------------- plates ----------------
     rep = json.loads((ROOT / "cad" / "geometry_report.json").read_text())

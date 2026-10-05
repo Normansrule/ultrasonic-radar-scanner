@@ -29,9 +29,8 @@
 <a href="changelog.html">Changelog</a></nav>
 <main class="doc"><h1 id="credits-and-sources">Credits and sources</h1>
 <p>Every module datasheet the design relies on, and what was taken from it. "Checked" means the value
-was read from the linked source while writing this repository (2026-09-30); "unverified" means it
-is a typical value that could not be confirmed from a primary source — treat it as a VERIFY item.</p>
-<h2 id="module-datasheets-and-product-pages">Module datasheets and product pages</h2>
+was read from the linked source while writing this repository (2026-09-30 to 2026-10-04); "unverified" means it
+is a typical value that could not be confirmed from a primary source — treat it as a ## Module datasheets and product pages</p>
 <div class="tablewrap"><table>
 <thead>
 <tr>
@@ -43,10 +42,16 @@ is a typical value that could not be confirmed from a primary source — treat i
 </thead>
 <tbody>
 <tr>
-<td>ESP32-WROOM-32 module</td>
-<td><a href="https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf">Espressif ESP32-WROOM-32 datasheet</a></td>
-<td>pins, 3.3 V logic, module vs WROVER differences (GPIO16/17)</td>
-<td>checked (link); pin rules also encoded in <code>tests/test_sync.py</code></td>
+<td>ESP32-2432S028R "Cheap Yellow Display"</td>
+<td><a href="https://github.com/witnessmenow/ESP32-Cheap-Yellow-Display">witnessmenow/ESP32-Cheap-Yellow-Display</a> (MIT) — <code>PINS.md</code>, schematics, community 3D model</td>
+<td>display SPI (14/12/13/15/2, backlight 21), touch SPI (25/39/32/33/36), RGB LED (4/16/17, active low), connectors CN1 (GND/IO22/IO27/3.3V), P3 (GND/IO35/IO22/IO21), P1 (VIN/TX/RX/GND), board outline and holes</td>
+<td>checked from the community documentation; <strong>not</strong> a manufacturer datasheet — clones vary, VERIFY</td>
+</tr>
+<tr>
+<td>CYD pinout cross-checks</td>
+<td><a href="https://randomnerdtutorials.com/esp32-cheap-yellow-display-cyd-pinout-esp32-2432s028r/">Random Nerd Tutorials — CYD pinout</a> · <a href="https://mischianti.org/esp32-2432s028-cheap-yellow-display-high-resolution-pinout-datasheet-schema-and-specs/">Mischianti — ESP32-2432S028 pinout and schema</a></td>
+<td>same pins from independent write-ups; CYD2USB (ST7789) variant notes</td>
+<td>cross-checked</td>
 </tr>
 <tr>
 <td>ESP32 chip</td>
@@ -55,40 +60,28 @@ is a typical value that could not be confirmed from a primary source — treat i
 <td>values as commonly quoted — confirm in the DC-characteristics table</td>
 </tr>
 <tr>
-<td>HC-SR04</td>
+<td>RCWL-1601 ultrasonic sensor</td>
+<td><a href="https://www.adafruit.com/product/4007">Adafruit 4007 — Ultrasonic Distance Sensor, 3 V or 5 V</a></td>
+<td>runs from 3–5 V, so at 3.3 V its ECHO is 3.3 V logic; HC-SR04 footprint</td>
+<td>checked (product page)</td>
+</tr>
+<tr>
+<td>HC-SR04 (footprint and fallback)</td>
 <td><a href="https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf">ElecFreaks HC-SR04 datasheet (SparkFun mirror)</a></td>
-<td>5 V supply, 10 µs trigger, ECHO pulse width ∝ distance, ≥60 ms measurement cycle, 45 × 20 × 15 mm</td>
-<td>datasheet located; mounting-hole positions <strong>unverified</strong> (boards vary)</td>
+<td>10 µs trigger, ECHO pulse width ∝ distance, ≥ 60 ms cycle, 45 × 20 mm board, 5 V ECHO on the classic part</td>
+<td>datasheet located; can diameter and pitch <strong>unverified</strong> across clones</td>
 </tr>
 <tr>
-<td>ST7735S controller</td>
-<td><a href="https://cdn.sparkfun.com/assets/9/0/2/5/8/ST7735S_v1.1.pdf">Sitronix ST7735S v1.1 datasheet (SparkFun mirror)</a></td>
-<td>serial write clock cycle ≥ 66 ns → firmware uses 15 MHz SPI</td>
-<td>checked (TSCYCW = 66 ns)</td>
+<td>ILI9341 controller</td>
+<td><a href="https://github.com/adafruit/Adafruit_ILI9341">Adafruit ILI9341 library</a></td>
+<td>panel ID read (0xD3 → 0x93 0x41) for auto-detection</td>
+<td>used as implemented in the library</td>
 </tr>
 <tr>
-<td>Waveshare 1.8" LCD module</td>
-<td><a href="https://www.waveshare.com/wiki/1.8inch_LCD_Module">Waveshare wiki — 1.8inch LCD Module</a></td>
-<td>56.5 × 34 mm board, 35.04 × 28.03 mm active area, 128 × 160, pin names, 3.3 V/5 V</td>
-<td>checked; active-area offset on the board <strong>unverified</strong></td>
-</tr>
-<tr>
-<td>DFRobot DFR1026</td>
-<td><a href="https://www.dfrobot.com/product-2632.html">DFRobot product page — DC-DC Charge Discharge Integrated Module (5V 2A)</a></td>
-<td>4.6–5.4 V input, 0–2.1 A charge, 5 V 0–2.1 A output, 25 × 16 mm, 2.54 mm pads, KEY: short press enables output, ~10 s press disables</td>
-<td>checked</td>
-</tr>
-<tr>
-<td>DFR1026 field reports</td>
-<td><a href="https://forum.core-electronics.com.au/t/dc-dc-charge-discharge-integrated-module-5v-2a-dfr1026/18135">Core Electronics forum thread on the DFR1026</a></td>
-<td>reports of output shutting off at light load after ~30 s and needing KEY; keep-alive nearer 100 mA</td>
-<td>user reports, <strong>not</strong> manufacturer data — basis of the open issue</td>
-</tr>
-<tr>
-<td>Adafruit 4090 USB-C breakout</td>
-<td><a href="https://www.adafruit.com/product/4090">Adafruit product 4090</a> · <a href="https://thepihut.com/products/adafruit-usb-c-breakout-board-downstream-connection-ada4090">The Pi Hut listing</a></td>
-<td>20.4 × 14.2 × 5.0 mm, 5.1 kΩ CC pull-downs so a USB-C source supplies 5 V</td>
-<td>size checked via retailer; that <strong>both</strong> CC1 and CC2 carry 5.1 kΩ should be confirmed on the board/schematic</td>
+<td>XPT2046 touch controller</td>
+<td><a href="https://github.com/PaulStoffregen/XPT2046_Touchscreen">PaulStoffregen/XPT2046_Touchscreen</a></td>
+<td>touch on its own SPI bus</td>
+<td>used as implemented</td>
 </tr>
 <tr>
 <td>SG90 servo</td>
@@ -96,14 +89,9 @@ is a typical value that could not be confirmed from a primary source — treat i
 <td>22.2 × 11.8 × 31 mm, 4.8–5 V, 0.1 s/60°, 10 µs dead band</td>
 <td>overall size checked; flange, hole pitch, shaft offset and horn dimensions <strong>unverified</strong></td>
 </tr>
-<tr>
-<td>Adafruit PowerBoost 1000C (Option B only)</td>
-<td><a href="https://learn.adafruit.com/adafruit-powerboost-1000c-load-share-usb-charge-boost/pinouts">Adafruit learn guide — pinouts</a></td>
-<td>EN pulled high by default; tie EN to GND to turn the boost off; USB pad is the charge input</td>
-<td>checked; charging with EN low and current headroom <strong>unverified</strong></td>
-</tr>
 </tbody>
 </table></div>
+<p>verified** |</p>
 <h2 id="software-and-references">Software and references</h2>
 <div class="tablewrap"><table>
 <thead>
@@ -132,6 +120,18 @@ is a typical value that could not be confirmed from a primary source — treat i
 <tr>
 <td>Adafruit GFX Library 1.12.6</td>
 <td><a href="https://github.com/adafruit/Adafruit-GFX-Library">github.com/adafruit/Adafruit-GFX-Library</a> (BSD licence)</td>
+</tr>
+<tr>
+<td>Adafruit ILI9341 1.6.4</td>
+<td><a href="https://github.com/adafruit/Adafruit_ILI9341">github.com/adafruit/Adafruit_ILI9341</a> (MIT licence)</td>
+</tr>
+<tr>
+<td>XPT2046_Touchscreen 1.4</td>
+<td><a href="https://github.com/PaulStoffregen/XPT2046_Touchscreen">github.com/PaulStoffregen/XPT2046_Touchscreen</a></td>
+</tr>
+<tr>
+<td>Blender 4.2 (<code>bpy</code>, renders)</td>
+<td><a href="https://www.blender.org/">blender.org</a> (GPL; used as a tool, nothing redistributed)</td>
 </tr>
 <tr>
 <td>Adafruit ST7735 and ST7789 Library 1.11.0</td>

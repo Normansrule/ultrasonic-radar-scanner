@@ -3,7 +3,7 @@
 Two copy-and-paste blocks for an Ubuntu terminal (native or Windows Subsystem for Linux (WSL)).
 
 1. **Publish** — pushes the repository, turns on the **web app** (GitHub Pages) and tags release
-   `v5.2.0`; GitHub Actions then builds the **desktop app** (Windows, macOS, Linux), the **firmware
+   `v6.0.0`; GitHub Actions then builds the **desktop app** (Windows, macOS, Linux), the **firmware
    images** and the **manufacturing kit** and attaches them to the release.
 2. **Keep building** — sets up a local workspace: tests, the web app, the desktop app from source and
    (optionally) the firmware compile.
@@ -15,7 +15,7 @@ to paste again.
 
 What it does, in order: installs `git` + GitHub CLI (`gh`), signs you in, unpacks the newest ZIP from
 Downloads, commits, creates the public repository, pushes, turns on the **web app** (GitHub Pages,
-including the firmware flasher), and tags release **v5.2.0**. The release workflow then builds and
+including the firmware flasher), and tags release **v6.0.0**. The release workflow then builds and
 attaches the **desktop apps**, **firmware images** and the **manufacturing kit**.
 
 * Edit `OWNER` on the first line if the repository should belong to another GitHub account.
@@ -25,7 +25,7 @@ attaches the **desktop apps**, **firmware images** and the **manufacturing kit**
 * If `~/.ssh/config` has `Host github-normansrule`, it pushes over that SSH alias; otherwise over HTTPS
   through `gh` (with the `workflow` scope GitHub requires for `.github/workflows/`).
 * ZIP: newest `ultrasonic-radar-scanner*.zip` in `~/Downloads` or the Windows Downloads folders (WSL);
-  unpacked to `~/projects/ultrasonic-radar-scanner`. It never runs Git in your home folder.
+  mirrored into `~/projects/ultrasonic-radar-scanner` (files an older version left behind are removed; `.git`, `.venv` and `node_modules` are kept). It never runs Git in your home folder.
 * `sudo` is used only for package installation. Safe to paste again.
 * Web app: about 5 minutes. Release builds: roughly 15–25 minutes; the block waits up to 40 minutes
   and lists the files — **Ctrl+C is safe** by then, everything is already pushed.
@@ -33,9 +33,9 @@ attaches the **desktop apps**, **firmware images** and the **manufacturing kit**
 ```bash
 (
 set -euo pipefail
-OWNER="Normansrule"; REPO="ultrasonic-radar-scanner"; TAG="v5.2.0"; SSH_ALIAS="github-normansrule"
-# 1. Install git, unzip, curl and the GitHub CLI (Ubuntu's gh if >= 2.40, else GitHub's official apt repo)
-sudo apt-get update -y; sudo apt-get install -y git unzip curl ca-certificates; sudo apt-get install -y gh || true
+OWNER="Normansrule"; REPO="ultrasonic-radar-scanner"; TAG="v6.0.0"; SSH_ALIAS="github-normansrule"
+# 1. Install git, unzip, rsync, curl and the GitHub CLI (Ubuntu's gh if >= 2.40, else GitHub's official apt repo)
+sudo apt-get update -y; sudo apt-get install -y git unzip rsync curl ca-certificates; sudo apt-get install -y gh || true
 if ! command -v gh >/dev/null || [ "$(printf '%s\n' 2.40.0 "$(gh --version | awk 'NR==1{print $3}')" | sort -V | head -n1)" != "2.40.0" ]; then sudo install -d -m 755 /etc/apt/keyrings; curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null; sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg; echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null; sudo apt-get update -y; sudo apt-get install -y gh; fi; gh --version | head -n1
 # 2. Make sure gh is signed in as $OWNER (switches account if already added; browser sign-in otherwise)
 gh auth switch -h github.com -u "$OWNER" >/dev/null 2>&1 || true
@@ -45,18 +45,19 @@ gh auth switch -h github.com -u "$OWNER" >/dev/null 2>&1 || true
 if grep -qsiE "^[[:space:]]*Host[[:space:]]+$SSH_ALIAS([[:space:]]|$)" ~/.ssh/config; then REMOTE="git@$SSH_ALIAS:$OWNER/$REPO.git"; export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new"; else REMOTE="https://github.com/$OWNER/$REPO.git"; gh api -i user 2>/dev/null | grep -i '^x-oauth-scopes:' | grep workflow >/dev/null || gh auth refresh -h github.com -s workflow; gh auth setup-git -h github.com; fi; echo "Push route: $REMOTE"
 # 4. Find the newest ZIP (Linux ~/Downloads, then Windows Downloads under WSL) and check it is this version
 ZIP="$(ls -t ~/Downloads/$REPO*.zip /mnt/c/Users/*/Downloads/$REPO*.zip 2>/dev/null | head -n1 || true)"; [ -n "$ZIP" ] || { echo "No $REPO*.zip in ~/Downloads"; exit 1; }
-unzip -Z1 "$ZIP" | grep -x "$REPO/manufacturing/build_packet.pdf" >/dev/null || { echo "$ZIP is an older ZIP - download the new one"; exit 1; }; echo "Using $ZIP"
-# 5. Unpack into ~/projects/$REPO (overwrites files from the ZIP, keeps .git) and enter it
-mkdir -p ~/projects; unzip -o -q "$ZIP" -d ~/projects; cd ~/projects/"$REPO"
+unzip -Z1 "$ZIP" | grep -x "$REPO/firmware/Radar_V6/Radar_V6.ino" >/dev/null || { echo "$ZIP is an older ZIP - download the new one"; exit 1; }; echo "Using $ZIP"
+# 5. Unpack into ~/projects/$REPO: mirror the ZIP exactly (removes files an older version left behind; keeps .git, .venv, node_modules)
+mkdir -p ~/projects/"$REPO"; TMP="$(mktemp -d)"; unzip -q "$ZIP" -d "$TMP"; [ -f "$TMP/$REPO/README.md" ] || { echo "Unexpected ZIP layout"; exit 1; }
+rsync -a --delete --exclude /.git --exclude /.venv --exclude /app/node_modules --exclude /app/dist "$TMP/$REPO/" ~/projects/"$REPO"/; rm -rf "$TMP"; cd ~/projects/"$REPO"
 # 6. Initialise Git on main (guard: never in your home folder); set a commit identity for this repo only if none is configured
 [ "$PWD" = "$HOME/projects/$REPO" ] || { echo "Not in ~/projects/$REPO - stopping"; exit 1; }
 [ -d .git ] || git init -q -b main
 git config user.name >/dev/null || git config user.name "$(gh api user -q '.name // .login')"; git config user.email >/dev/null || git config user.email "$(gh api user -q .id)+$OWNER@users.noreply.github.com"
 # 7. Commit everything (only when something changed)
-git add -A; git diff --cached --quiet || git commit -q -m "Ultrasonic Radar Scanner $TAG: open-hardware package (CAD, BOM, wiring, build packet, firmware, web + desktop apps)"
+git add -A; git diff --cached --quiet || git commit -q -m "Ultrasonic Radar Scanner $TAG: Radar V6 Mini - 3 modules, 7 wires, 4 printed parts (CAD, BOM, wiring, build packet, firmware, web + desktop apps)"
 # 8. Create the public repository if missing; set description, homepage and topics
-gh repo view "$OWNER/$REPO" >/dev/null 2>&1 || gh repo create "$OWNER/$REPO" --public --description "Open-hardware educational ultrasonic (sonar) scanner with a radar-style display - ESP32, HC-SR04, SG90, 3D-printed, web + desktop app"
-gh repo edit "$OWNER/$REPO" --homepage "https://${OWNER,,}.github.io/$REPO/" --add-topic open-hardware,esp32,ultrasonic,hc-sr04,sonar,cadquery,3d-printing,electron,education >/dev/null
+gh repo view "$OWNER/$REPO" >/dev/null 2>&1 || gh repo create "$OWNER/$REPO" --public --description "Open-hardware educational ultrasonic (sonar) scanner with a radar-style display - Cheap Yellow Display, 3.3 V ultrasonic sensor, SG90, 4 printed parts, 7 wires"
+gh repo edit "$OWNER/$REPO" --homepage "https://${OWNER,,}.github.io/$REPO/" --add-topic open-hardware,esp32,cheap-yellow-display,ultrasonic,sonar,cadquery,3d-printing,electron,education >/dev/null
 # 9. Point 'origin' at the repository and push main
 git remote get-url origin >/dev/null 2>&1 && git remote set-url origin "$REMOTE" || git remote add origin "$REMOTE"
 git branch -M main; git push -u origin main
@@ -76,7 +77,7 @@ gh release view "$TAG" -R "$OWNER/$REPO" --json assets -q '.assets[].name' 2>/de
 
 If the web app is not live, open the repository's **Actions** tab, read the "Pages" run, fix and paste
 again. If a release build failed, re-run it from its run page or with
-`gh workflow run release.yml -R Normansrule/ultrasonic-radar-scanner -f tag=v5.2.0`.
+`gh workflow run release.yml -R Normansrule/ultrasonic-radar-scanner -f tag=v6.0.0`.
 
 ## 2 — Keep building locally
 
@@ -105,8 +106,8 @@ cd ~/projects/ultrasonic-radar-scanner
 .venv/bin/python -m pytest -q tests; node --test tests/js/*.test.js
 # 5. Build the web app (site/) and the desktop app's offline bundle (app/web/)
 .venv/bin/python scripts/build_site.py; (cd app; npm ci --no-audit --no-fund; [ -f node_modules/electron/path.txt ] || node node_modules/electron/install.js; ../.venv/bin/python ../scripts/build_site.py --app --out web)
-# 6. Optional: compile the firmware exactly as pinned in firmware/Radar_V5/sketch.yaml
-if [ "$BUILD_FIRMWARE" = 1 ]; then mkdir -p ~/.local/bin; command -v arduino-cli >/dev/null || curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR="$HOME/.local/bin" sh; PATH="$HOME/.local/bin:$PATH" arduino-cli compile --profile esp32-core3 --warnings all firmware/Radar_V5; fi
+# 6. Optional: compile the firmware exactly as pinned in firmware/Radar_V6/sketch.yaml
+if [ "$BUILD_FIRMWARE" = 1 ]; then mkdir -p ~/.local/bin; command -v arduino-cli >/dev/null || curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR="$HOME/.local/bin" sh; PATH="$HOME/.local/bin:$PATH" arduino-cli compile --profile esp32-core3 --warnings all firmware/Radar_V6; fi
 # 7. Serve the web app in the background (http://localhost:8000) and open the desktop app (close its window to finish)
 (.venv/bin/python -m http.server 8000 -d site >/dev/null 2>&1 &) ; echo "Web app: http://localhost:8000   (stop later with: pkill -f 'http.server 8000')"
 cd app; npx electron . || npx electron . --no-sandbox
@@ -136,4 +137,4 @@ The Release workflow refuses a tag that does not match `app/package.json`.
 
 * **Protect `main`:** Settings → Branches → require the `CI` checks.
 * **Private vulnerability reporting:** Settings → Code security → enable it (see [`SECURITY.md`](SECURITY.md)).
-* **Live link:** wire the optional telemetry tap before connecting real hardware ([`LIVE_LINK.md`](LIVE_LINK.md)).
+* **Live link:** plug the scanner's own USB cable into the computer and open the live console ([`LIVE_LINK.md`](LIVE_LINK.md)).

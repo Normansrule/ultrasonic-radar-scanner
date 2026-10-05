@@ -26,25 +26,25 @@ def test_wire_list_covers_every_pin():
     assert pins == wired
 
 
-def test_every_wire_joins_one_net_once():
-    seen = set()
-    for w in rows("wire_list.csv"):
+def test_seven_wires():
+    wires = rows("wire_list.csv")
+    assert [w["wire"] for w in wires] == [f"W{i}" for i in range(1, 8)]
+    for w in wires:
         assert w["from"] != w["to"]
-        key = frozenset((w["from"], w["to"]))
-        assert key not in seen
-        seen.add(key)
 
 
-def test_bom_has_safety_parts_and_fasteners():
+def test_bom_core_parts():
     bom = {r["id"]: r for r in rows("bom.csv")}
-    assert "fuse" in bom["E10"]["part"].lower()
-    assert "protected" in bom["E7"]["part"].lower()
-    assert sum(1 for k in bom if k.startswith("F")) == 7
+    assert "ESP32-2432S028R" in bom["E1"]["part"]
+    assert "RCWL-1601" in bom["E2"]["part"]
+    assert "SG90" in bom["E3"]["part"]
+    assert bom["E6"]["optional"] == "yes"
+    assert all(r["est_usd"] for r in bom.values())
 
 
 def test_printed_parts_point_at_real_files():
     parts = rows("printed_parts.csv")
-    assert len(parts) == 8
+    assert len(parts) == 5
     for p in parts:
         assert (ROOT / p["stl"]).exists() and (ROOT / p["step"]).exists()
 

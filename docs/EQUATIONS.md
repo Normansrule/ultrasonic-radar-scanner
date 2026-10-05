@@ -12,7 +12,7 @@ Run the checks: `python -m pytest tests/test_equations.py -v`
 
 ## 1. Ultrasonic distance
 
-**Intuition.** The HC-SR04 clicks out a short burst of 40 kHz sound and holds its ECHO pin HIGH
+**Intuition.** The sensor (RCWL-1601 / HC-SR04P) clicks out a short burst of 40 kHz sound and holds its ECHO pin HIGH
 until the echo comes back. Sound travels to the object *and back*, so the object is half as far
 away as the total path the sound covered.
 
@@ -42,13 +42,15 @@ because there is no temperature sensor in this build.
 
 ---
 
-## 2. ECHO voltage divider
+## 2. ECHO level — why V6 needs no divider
 
-**Intuition.** ECHO swings to 5 V, but the ESP32's pins are 3.3 V parts. Two resistors in series
-share the 5 V in proportion to their values; tapping the junction gives a safe, still clearly HIGH,
-~3 V signal.
+**Intuition.** The ESP32's pins are 3.3 V parts. The 3.3 V-capable sensor (RCWL-1601 / HC-SR04P) is
+powered from the board's 3.3 V, so its ECHO pin can never go above 3.3 V: it connects straight to
+IO35. Above the logic-HIGH threshold $0.75\,V_{DD} \approx 2.48$ V, below the absolute maximum
+$V_{DD} + 0.3 \approx 3.6$ V.
 
-**Equation.**
+**Fallback (only with a 5 V-only HC-SR04).** Its ECHO swings to 5 V. Two resistors share that in
+proportion to their values:
 
 $$V_{out} = V_{in} \cdot \frac{R_2}{R_1 + R_2}$$
 
@@ -57,14 +59,10 @@ $$V_{out} = V_{in} \cdot \frac{R_2}{R_1 + R_2}$$
 | $V_{in}$ | ECHO high level | 5.0 V nominal |
 | $R_1$ | top resistor (ECHO → junction) | 2.2 kΩ |
 | $R_2$ | bottom resistor (junction → GND) | 3.3 kΩ |
-| $V_{out}$ | voltage at GPIO26 | V |
+| $V_{out}$ | voltage at IO35 | V |
 
-**Worked example.** $V_{out} = 5.0 \times 3.3 / (2.2 + 3.3) = 3.00$ V. Current through the pair is
-$5.0 / 5500 \approx 0.91$ mA — small.
-
-**Worst case.** With the USB supply at its 5.25 V upper limit and 1 % resistors, $V_{out}$ stays
-between 3.12 V and 3.18 V — below the ESP32's ≈3.6 V absolute maximum ($V_{DD} + 0.3$). At the
-4.75 V lower limit it is still ≥ 2.82 V, above the 2.475 V logic-HIGH threshold ($0.75\,V_{DD}$).
+**Worked example.** $V_{out} = 5.0 \times 3.3 / (2.2 + 3.3) = 3.00$ V, about 0.91 mA through the pair.
+With 5.25 V and 1 % resistors it stays between 3.12 V and 3.18 V; at 4.75 V it is still ≥ 2.82 V.
 
 ![Divider transfer line with the ESP32 limits](img/eq_divider.svg)
 
@@ -98,7 +96,7 @@ $\lfloor 1500 \times 65535 / 20000 \rfloor = 4915$ (7.5 % of the frame). 30° �
 
 **Why 1000–2000 µs is only a starting point.** Many SG90s travel further than 90° for 1.0–2.0 ms,
 so the *real* head angle may not equal the *commanded* angle on screen. Use `CALIBRATE_SERVO` and the
-tick marks on the turret keeper to adjust `SERVO_US_AT_0` / `SERVO_US_AT_180`, and **never widen the
+tick marks engraved on the roof to adjust `SERVO_US_AT_0` / `SERVO_US_AT_180`, and **never widen the
 map so far that the servo buzzes against its internal stops**. A hard clamp (`SERVO_US_GUARD_MIN/MAX`,
 900–2100 µs) protects against a bad edit.
 
@@ -124,18 +122,18 @@ $$f_{refresh} = \frac{1}{T_{step}} \quad\text{(one full frame is drawn per readi
 | $\Delta\theta$ | step | 3° |
 | $\theta_{min}, \theta_{max}$ | sweep limits (commanded) | 30°, 150° |
 | $t_{settle}$ | wait after each move | 70 ms |
-| $t_{overhead}$ | ping + draw + SPI frame push | **≈31 ms — ESTIMATE** |
+| $t_{overhead}$ | ping + draw + SPI frame push | **≈45 ms — ESTIMATE** |
 
 **Worked example.** $N = 120/3 = 40$ moves (41 readings per pass). The screen push alone is
-$160 \times 128 \times 16\ \text{bit} / 15\ \text{MHz} \approx 21.8$ ms; add ≈3 ms drawing and ≈6 ms
-for a ~1 m echo → $t_{overhead} \approx 31$ ms, $T_{step} \approx 101$ ms, one way ≈ **4.0 s**, a full
-round trip ≈ 8.1 s, screen refresh ≈ 9.9 frames/s. Detections live for 9 s, longer than one round
+$320 \times 240 \times 16\ \text{bit} / 40\ \text{MHz} \approx 30.7$ ms; add ≈8 ms drawing and ≈6 ms
+for a ~1 m echo → $t_{overhead} \approx 45$ ms, $T_{step} \approx 115$ ms, one way ≈ **4.6 s**, a full
+round trip ≈ 9.2 s, screen refresh ≈ 8.7 frames/s. Detections live for 10 s, longer than one round
 trip, so each dot stays until its angle is revisited.
 
 **This is an estimate, not a measurement.** The firmware prints the measured mean step time and
 one-way sweep time over serial after every pass — record the real numbers in
 [`VALIDATION.md`](VALIDATION.md) (test T-FW-4). Two sanity checks that *are* derived: a 3° move at
 the SG90's ~0.1 s/60° takes ~5 ms (well inside the 70 ms settle), and the ≥70 ms cycle respects the
-common HC-SR04 guidance of ≥60 ms between pings so old echoes die away.
+common HC-SR04-family guidance of ≥60 ms between pings so old echoes die away.
 
 ![Sweep period against settle time for three step sizes](img/eq_sweep_cadence.svg)

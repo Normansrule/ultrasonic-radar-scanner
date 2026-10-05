@@ -4,10 +4,10 @@ Export the manufacturing data as spreadsheet-friendly CSV files and draw the
 "what you need" picture — all generated from the documentation, so nothing is
 typed twice:
 
-  manufacturing/bom.csv            every purchased part + fastener (from docs/BOM.md)
+  manufacturing/bom.csv            every purchased part (from docs/BOM.md)
   manufacturing/printed_parts.csv  every printed part, plate, size, PLA estimate (from cad/geometry_report.json)
   manufacturing/wiring_pins.csv    pin-by-pin net list (from docs/WIRING.md)
-  manufacturing/wire_list.csv      point-to-point wires W01…, one row per physical wire to cut and fit
+  manufacturing/wire_list.csv      the 7 wires W1-W7, one row per physical wire
   hardware/diagrams/bom_overview.svg   visual parts kit for the README
 
 Usage: python scripts/export_mfg.py [--check]
@@ -28,15 +28,9 @@ DIAG = ROOT / "hardware" / "diagrams"
 FONT = "font-family:'DejaVu Sans',Helvetica,Arial,sans-serif"
 PLA_G_PER_CM3 = 1.24
 
-CATEGORY = {
-    **{f"E{i}": "Electronics" for i in (1, 2, 3, 4)},
-    **{f"E{i}": "Power and protection" for i in (5, 6, 7, 8, 9, 10, 11)},
-    "E12": "Passive parts", "E13": "Passive parts",
-    "E14": "Wiring and mounting", "E15": "Wiring and mounting", "E16": "Wiring and mounting",
-    "E17": "Cables", "E18": "Cables", "E19": "Consumables", "E20": "Optional (live link)",
-}
-STAGE = {"E1": 4, "E2": 5, "E3": 2, "E4": 5, "E5": 3, "E6": 3, "E7": 3, "E8": 3, "E9": 3, "E10": 3,
-         "E11": 3, "E12": 4, "E13": 4, "E14": 3, "E15": 4, "E16": 5, "E17": 3, "E18": 4, "E19": 1, "E20": 5}
+CATEGORY = {"E1": "Electronics", "E2": "Electronics", "E3": "Electronics",
+            "E4": "Cables", "E5": "Cables", "E6": "Optional"}
+STAGE = {"E1": 2, "E2": 2, "E3": 2, "E4": 2, "E5": 2, "E6": 5}
 
 
 def plain(md: str) -> str:
@@ -61,14 +55,15 @@ def bom_rows():
     out = []
     for r in md_table(text, "## Electronics"):
         rid = r["#"]
-        out.append({"id": rid, "category": CATEGORY.get(rid, "Other"), "qty": plain(r["Qty"]),
+        out.append({"id": rid, "category": CATEGORY.get(rid, "Other"), "qty": plain(r["Qty"]).split(" ")[0],
                     "part": plain(r["Part"]), "check_before_buying": plain(r["What to check before you buy"]),
-                    "reference_candidate": plain(r["Reference candidate"]),
+                    "reference_candidate": plain(r["Reference candidate"]), "est_usd": r["Est. US$"],
                     "needed_from_stage": STAGE.get(rid, ""), "optional": "yes" if "optional" in r["Qty"] else "no"})
     for i, r in enumerate(md_table(text, "<!-- FASTENERS:BEGIN -->", "<!-- FASTENERS:END -->"), start=1):
-        out.append({"id": f"F{i}", "category": "Fasteners (M2 only)", "qty": r["Qty"], "part": plain(r["Item"]),
-                    "check_before_buying": plain(r["Used for"]), "reference_candidate": "ISO metric M2",
-                    "needed_from_stage": 2, "optional": "no"})
+        out.append({"id": f"F{i}", "category": "Fasteners (included with the servo)", "qty": r["Qty"],
+                    "part": plain(r["Item"]), "check_before_buying": plain(r["Used for"]),
+                    "reference_candidate": "SG90 accessory bag", "est_usd": "0",
+                    "needed_from_stage": 4, "optional": "yes" if "optional" in r["Item"] else "no"})
     return out
 
 
@@ -78,25 +73,16 @@ def wiring_rows():
 
 
 def wire_list(rows):
-    """Star wiring from the first pin listed on each net (matches WIRING.md's star points)."""
-    nets: dict[str, list[dict]] = {}
+    """One row per physical wire (the Wire column of the NETLIST)."""
+    wires: dict[str, list[dict]] = {}
     for r in rows:
-        nets.setdefault(r["Net"], []).append(r)
-    wires, n = [], 0
-    for net, members in nets.items():
-        src = members[0]
-        for dst in members[1:]:
-            n += 1
-            a, b = src["Wire"], dst["Wire"]
-            if a == "leads" and b == "leads":
-                kind = "component leads"
-            elif "leads" in (a, b):
-                kind = f"{b if a == 'leads' else a} to component lead"
-            else:
-                kind = b or a
-            wires.append({"wire": f"W{n:02d}", "net": net, "kind": src["Kind"], "from": src["Pin"], "to": dst["Pin"],
-                          "wire_type": kind, "notes": plain(dst["Notes"]), "done": ""})
-    return wires
+        wires.setdefault(r["Wire"], []).append(r)
+    out = []
+    for w, ends in wires.items():
+        a, b = ends
+        out.append({"wire": w, "net": a["Net"], "kind": a["Kind"], "from": a["Pin"], "to": b["Pin"],
+                    "notes": "; ".join(x for x in (plain(a["Notes"]), plain(b["Notes"])) if x), "done": ""})
+    return out
 
 
 def printed_rows():
@@ -104,14 +90,14 @@ def printed_rows():
     plate_of = {}
     for pname, members in rep["plates"].items():
         for part in members:
-            if pname in ("P1", "P2", "P3_optional_shim"):
+            if pname in ("P1", "P2", "S1_fit_coupon"):
                 plate_of[part] = pname
     out = []
     for part, info in rep["parts"].items():
         b = info["print_bbox"]
         cm3 = info["volume_mm3"] / 1000
         out.append({"part": part,
-                    "role": "optional" if part.startswith("07") else ("print first - test piece" if part.startswith("08") else "required"),
+                    "role": "print first - test piece" if part.startswith("05") else "required",
                     "plate": plate_of.get(part, ""), "print_size_mm": f"{b['x']:.1f} x {b['y']:.1f} x {b['z']:.1f}",
                     "solid_volume_cm3": f"{cm3:.1f}", "pla_g_upper_bound": f"{cm3 * PLA_G_PER_CM3:.1f}",
                     "orientation": info["print_note"], "stl": f"cad/stl/{part}.stl", "step": f"cad/step/{part}.step"})
@@ -129,85 +115,79 @@ def to_csv(rows) -> str:
 # --------------------------------------------------------------------------- BOM picture
 def icon(kind: str, x: float, y: float) -> str:
     g = [f'<g transform="translate({x},{y})">']
-    if kind == "Electronics":
-        g += ['<rect x="4" y="10" width="44" height="30" rx="3" fill="#1c6f3a"/>',
-              *[f'<rect x="{8 + i * 8}" y="4" width="3" height="8" fill="#adb5bd"/>' for i in range(5)],
-              *[f'<rect x="{8 + i * 8}" y="38" width="3" height="8" fill="#adb5bd"/>' for i in range(5)],
-              '<rect x="16" y="17" width="20" height="16" rx="2" fill="#0d2a18"/>']
-    elif kind == "Power and protection":
-        g += ['<rect x="4" y="14" width="40" height="22" rx="9" fill="#3b82c4"/>',
-              '<rect x="44" y="20" width="5" height="10" rx="1" fill="#868e96"/>',
-              '<path d="M24 16 L18 26 H25 L21 35 L31 23 H24 Z" fill="#ffd43b"/>']
-    elif kind == "Passive parts":
-        g += ['<line x1="2" y1="25" x2="50" y2="25" stroke="#adb5bd" stroke-width="2"/>',
-              '<rect x="12" y="18" width="28" height="14" rx="6" fill="#e2c38c"/>',
-              '<rect x="17" y="18" width="3" height="14" fill="#d11f1f"/><rect x="23" y="18" width="3" height="14" fill="#d11f1f"/>',
-              '<rect x="29" y="18" width="3" height="14" fill="#111"/>']
-    elif kind == "Wiring and mounting":
-        g += ['<path d="M4 34 C 16 6, 30 46, 48 14" stroke="#e03131" stroke-width="3.5" fill="none"/>',
-              '<path d="M4 40 C 18 14, 32 52, 48 22" stroke="#111" stroke-width="3.5" fill="none"/>']
-    elif kind == "Cables":
-        g += ['<rect x="6" y="16" width="18" height="14" rx="3" fill="#495057"/>',
-              '<path d="M24 23 C 34 23, 34 36, 46 36" stroke="#495057" stroke-width="4" fill="none"/>']
-    elif kind == "Consumables":
-        g += ['<circle cx="26" cy="25" r="19" fill="#2f9e44"/><circle cx="26" cy="25" r="7" fill="#fff"/>']
-    elif kind.startswith("Fasteners"):
-        g += ['<rect x="10" y="8" width="18" height="8" rx="2" fill="#868e96"/>',
-              '<rect x="16" y="16" width="6" height="28" fill="#adb5bd"/>',
-              *[f'<line x1="15" y1="{20 + i * 5}" x2="23" y2="{18 + i * 5}" stroke="#6c757d" stroke-width="1.2"/>' for i in range(5)],
-              '<polygon points="34,20 42,15 50,20 50,30 42,35 34,30" fill="#868e96"/><circle cx="42" cy="25" r="3.5" fill="#fff"/>']
-    else:
-        g += ['<rect x="6" y="10" width="40" height="30" rx="6" fill="#ced4da"/>']
+    if kind == "CYD":
+        g += ['<rect x="0" y="0" width="150" height="104" rx="8" fill="#e8c22a" stroke="#a8840c" stroke-width="2"/>',
+              '<rect x="10" y="10" width="118" height="84" rx="3" fill="#0b1a10"/>',
+              '<path d="M69 86 L69 30" stroke="#2f9e44" stroke-width="1.5"/>',
+              '<path d="M69 86 A 50 50 0 0 1 24 64" stroke="#2f9e44" stroke-width="1.2" fill="none"/>',
+              '<path d="M69 86 A 50 50 0 0 0 114 64" stroke="#2f9e44" stroke-width="1.2" fill="none"/>',
+              '<path d="M69 86 L 100 46 L 112 58 Z" fill="#69db7c" opacity="0.7"/>',
+              '<rect x="134" y="40" width="12" height="22" rx="2" fill="#adb5bd"/>']
+    elif kind == "SENSOR":
+        g += ['<rect x="0" y="14" width="150" height="70" rx="6" fill="#1f63a8"/>',
+              '<circle cx="38" cy="49" r="27" fill="#ced4da" stroke="#495057" stroke-width="2"/>',
+              '<circle cx="38" cy="49" r="18" fill="#343a40"/>',
+              '<circle cx="112" cy="49" r="27" fill="#ced4da" stroke="#495057" stroke-width="2"/>',
+              '<circle cx="112" cy="49" r="18" fill="#343a40"/>',
+              *[f'<rect x="{57 + i * 11}" y="84" width="4" height="14" fill="#adb5bd"/>' for i in range(4)]]
+    elif kind == "SERVO":
+        g += ['<rect x="30" y="30" width="90" height="62" rx="5" fill="#2a56b4"/>',
+              '<rect x="14" y="44" width="122" height="10" rx="3" fill="#1c3f8f"/>',
+              '<circle cx="95" cy="30" r="14" fill="#1c3f8f"/>',
+              '<rect x="50" y="10" width="68" height="10" rx="5" fill="#f8f9fa" stroke="#adb5bd"/>',
+              '<path d="M30 80 C 10 80, 10 96, 0 96" stroke="#e67700" stroke-width="3" fill="none"/>']
+    elif kind == "CABLE":
+        g += [*[f'<path d="M10 {30 + i * 8} C 60 {30 + i * 8}, 80 {60 + i * 8}, 140 {60 + i * 8}" stroke="{c}" '
+                f'stroke-width="3" fill="none"/>' for i, c in enumerate(("#111", "#e03131", "#1c7ed6", "#2f9e44"))],
+              '<rect x="0" y="22" width="16" height="36" rx="2" fill="#f8f9fa" stroke="#495057"/>',
+              '<rect x="134" y="52" width="16" height="36" rx="2" fill="#212529"/>']
+    elif kind == "PINS":
+        g += [*[f'<rect x="{30 + i * 34}" y="20" width="10" height="62" rx="2" fill="#212529"/>'
+                f'<rect x="{33 + i * 34}" y="6" width="4" height="90" fill="#ced4da"/>' for i in range(3)]]
+    elif kind == "CAP":
+        g += ['<rect x="50" y="10" width="50" height="70" rx="8" fill="#1c3f8f"/>',
+              '<rect x="88" y="10" width="12" height="70" fill="#adb5bd"/>',
+              '<rect x="62" y="80" width="3" height="18" fill="#adb5bd"/><rect x="84" y="80" width="3" height="18" fill="#adb5bd"/>']
     g.append("</g>")
     return "\n".join(g)
 
 
+def price(e: str) -> str:
+    e = e.strip()
+    return f"< ${e[1:].strip()}" if e.startswith("<") else f"≈ ${e}"
+
+
 def bom_svg(bom) -> str:
-    order = ["Electronics", "Power and protection", "Passive parts", "Wiring and mounting", "Cables",
-             "Consumables", "Fasteners (M2 only)", "Optional (live link)"]
-    groups = {k: [b for b in bom if b["category"] == k] for k in order}
-    W, colw, rowh, top = 1200, 290, 22, 110
-    cols = 4
-    heights = []
-    for k in order:
-        heights.append(70 + rowh * len(groups[k]))
-    rows_of = [heights[i:i + cols] for i in range(0, len(order), cols)]
-    H = top + sum(max(r) + 24 for r in rows_of) + 40
-    short = {
-        "E1": "ESP32-WROOM-32 DevKit, 30-pin", "E2": "HC-SR04 ultrasonic sensor", "E3": "SG90 positional servo + horn",
-        "E4": "1.8\" ST7735S LCD (Waveshare)", "E5": "DFRobot DFR1026 charger/boost", "E6": "USB-C breakout, 5.1 kΩ CC×2",
-        "E7": "Protected 18650 cell", "E8": "18650 holder with leads", "E9": "12 mm latching switch ≥2 A",
-        "E10": "3 A fuse + inline holder", "E11": "1000 µF ≥10 V capacitor", "E12": "2.2 kΩ 1 % resistor",
-        "E13": "3.3 kΩ 1 % resistor", "E14": "jumper leads + 22 AWG wire", "E15": "Keyed 2-pin plug (J1)",
-        "E16": "Heat-shrink, tape, ties, feet", "E17": "5 V 3 A USB-C supply + cable", "E18": "USB data cable (ESP32)",
-        "E19": "PLA filament", "E20": "3.3 V USB-serial adapter",
-    }
+    cards = [("E1", "CYD", "CYD board", ["ESP32 + 2.8\" touch", "screen in one"]),
+             ("E2", "SENSOR", "Sensor", ["RCWL-1601 or", "HC-SR04P (3.3 V)"]),
+             ("E3", "SERVO", "SG90 servo", ["positional 180°,", "horn + 2 screws"]),
+             ("E4", "CABLE", "Cables", ["JST 1.25 mm 4-pin", "→ Dupont female"]),
+             ("E5", "PINS", "Jumper pins", ["male-male, join", "the servo plug"]),
+             ("E6", "CAP", "Capacitor", ["470–1000 µF,", "optional"])]
+    qty = {b["id"]: b["qty"] for b in bom}
+    est = {b["id"]: b.get("est_usd", "") for b in bom}
+    W, H = 1200, 360
+    cw = (W - 60) / len(cards)
     o = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
-         'aria-label="Parts kit overview">',
+         'aria-label="Parts kit: five parts to buy, one optional">',
          f'<rect width="{W}" height="{H}" fill="#fbfaf7"/>',
-         f'<text x="30" y="42" style="{FONT};font-size:24px;font-weight:bold" fill="#111">What you need — the parts kit</text>',
-         f'<text x="30" y="68" style="{FONT};font-size:13px" fill="#555">Generated from docs/BOM.md by scripts/export_mfg.py · '
-         'quantities in brackets · full details and checks in manufacturing/bom.csv</text>']
-    y = top - 20
-    i = 0
-    for r in rows_of:
-        x = 30
-        for h in r:
-            k = order[i]
-            items = groups[k]
-            o.append(f'<rect x="{x}" y="{y}" width="{colw - 16}" height="{h}" rx="12" fill="#fff" stroke="#e1e6e2"/>')
-            o.append(icon(k, x + 12, y + 8))
-            o.append(f'<text x="{x + 72}" y="{y + 37}" style="{FONT};font-size:14.5px;font-weight:bold" fill="#1f3b2d">{escape(k)}</text>')
-            for j, b in enumerate(items):
-                label = short.get(b["id"], b["part"])
-                q = b["qty"].replace("(optional)", "").strip()
-                o.append(f'<text x="{x + 16}" y="{y + 78 + j * rowh}" style="{FONT};font-size:12.5px" fill="#222">'
-                         f'<tspan fill="#2f9e44" font-weight="bold">[{escape(q)}]</tspan> {escape(label)}</text>')
-            x += colw
-            i += 1
-        y += max(r) + 24
-    o.append(f'<text x="30" y="{H - 18}" style="{FONT};font-size:12px" fill="#888">Plus the six printed parts and the fit coupon '
-             '(manufacturing/printed_parts.csv). Recheck every listing before buying; safety parts are not optional.</text>')
+         f'<text x="30" y="42" style="{FONT};font-size:24px;font-weight:bold" fill="#111">The whole kit — 5 parts to buy, '
+         '1 optional</text>',
+         f'<text x="30" y="68" style="{FONT};font-size:13px" fill="#555">Plus a USB cable, a ≥ 1 A charger and ≈ 120 g PLA. '
+         'Prices are rough single-unit estimates (US$), not quotes. Generated from docs/BOM.md.</text>']
+    for i, (rid, kind, name, sub) in enumerate(cards):
+        x = 30 + i * cw
+        opt = rid == "E6"
+        dash = ' stroke-dasharray="6 5"'
+        o.append(f'<rect x="{x}" y="90" width="{cw - 14}" height="250" rx="14" fill="#fff" stroke="{"#ced4da" if opt else "#cfe8d6"}" '
+                 f'stroke-width="1.6"{dash if opt else ""}/>')
+        o.append(icon(kind, x + (cw - 14) / 2 - 75, 112))
+        o.append(f'<text x="{x + 14}" y="256" style="{FONT};font-size:15px;font-weight:bold" fill="#1f3b2d">'
+                 f'<tspan fill="#2f9e44">{escape(qty.get(rid, "1"))}×</tspan> {escape(name)}</text>')
+        for j, line in enumerate(sub):
+            o.append(f'<text x="{x + 14}" y="{278 + j * 17}" style="{FONT};font-size:12px" fill="#555">{escape(line)}</text>')
+        o.append(f'<text x="{x + 14}" y="326" style="{FONT};font-size:12.5px;font-weight:bold" fill="#868e96">'
+                 f'{rid} · {escape(price(est.get(rid, "")))}</text>')
     o.append("</svg>\n")
     return "\n".join(o)
 

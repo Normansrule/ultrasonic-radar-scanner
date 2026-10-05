@@ -1,228 +1,144 @@
 {
-  "generated": "2026-10-01T00:03:46+00:00",
+  "generated": "2026-10-04T03:44:46+00:00",
   "status": "RECORDED geometry checks only - nothing here is physical validation",
   "cadquery": "2.8.0",
   "parts": {
-    "01_body": {
+    "01_shell": {
       "assembly_bbox": {
-        "xmin": -64.0,
-        "xmax": 64.0,
-        "ymin": -48.0,
+        "xmin": -52.0,
+        "xmax": 52.0,
+        "ymin": -46.945,
         "ymax": 48.0,
-        "zmin": 0.0,
-        "zmax": 52.0,
-        "x": 128.0,
-        "y": 96.0,
-        "z": 52.0
+        "zmin": -0.0,
+        "zmax": 62.0,
+        "x": 104.0,
+        "y": 94.945,
+        "z": 62.0
       },
       "print_bbox": {
-        "xmin": -64.0,
-        "xmax": 64.0,
-        "ymin": -48.0,
-        "ymax": 48.0,
+        "xmin": -52.0,
+        "xmax": 52.0,
+        "ymin": -47.473,
+        "ymax": 47.473,
         "zmin": 0.0,
-        "zmax": 52.0,
-        "x": 128.0,
-        "y": 96.0,
-        "z": 52.0
+        "zmax": 62.0,
+        "x": 104.0,
+        "y": 94.945,
+        "z": 62.0
       },
-      "volume_mm3": 114459.7,
+      "volume_mm3": 51753.9,
       "valid": true,
       "solids": 1,
-      "print_note": "floor on the plate; 45-degree deck needs no supports"
+      "print_note": "roof on the plate; 45-degree chamfers, no supports"
     },
-    "02_front_panel": {
+    "02_bezel": {
       "assembly_bbox": {
-        "xmin": -59.0,
-        "xmax": 59.0,
-        "ymin": -50.6,
-        "ymax": -44.0,
-        "zmin": -0.0,
-        "zmax": 52.0,
-        "x": 118.0,
-        "y": 6.6,
-        "z": 52.0
+        "xmin": -50.35,
+        "xmax": 50.35,
+        "ymin": -43.562,
+        "ymax": -16.555,
+        "zmin": 2.6,
+        "zmax": 59.4,
+        "x": 100.7,
+        "y": 27.007,
+        "z": 56.8
       },
       "print_bbox": {
-        "xmin": -59.0,
-        "xmax": 59.0,
-        "ymin": -26.0,
+        "xmin": -50.35,
+        "xmax": 50.35,
+        "ymin": -29.786,
+        "ymax": 29.786,
+        "zmin": 0.0,
+        "zmax": 8.4,
+        "x": 100.7,
+        "y": 59.572,
+        "z": 8.4
+      },
+      "volume_mm3": 8695.2,
+      "valid": true,
+      "solids": 1,
+      "print_note": "viewer face on the plate; pegs up"
+    },
+    "03_base": {
+      "assembly_bbox": {
+        "xmin": -49.75,
+        "xmax": 49.75,
+        "ymin": -44.334,
+        "ymax": 45.75,
+        "zmin": 0.0,
+        "zmax": 7.4,
+        "x": 99.5,
+        "y": 90.084,
+        "z": 7.4
+      },
+      "print_bbox": {
+        "xmin": -49.75,
+        "xmax": 49.75,
+        "ymin": -45.042,
+        "ymax": 45.042,
+        "zmin": 0.0,
+        "zmax": 7.4,
+        "x": 99.5,
+        "y": 90.084,
+        "z": 7.4
+      },
+      "volume_mm3": 22795.4,
+      "valid": true,
+      "solids": 1,
+      "print_note": "flat; rim up"
+    },
+    "04_head": {
+      "assembly_bbox": {
+        "xmin": -28.0,
+        "xmax": 28.0,
+        "ymin": 6.0,
         "ymax": 26.0,
-        "zmin": -0.0,
-        "zmax": 6.6,
-        "x": 118.0,
-        "y": 52.0,
-        "z": 6.6
-      },
-      "volume_mm3": 13241.5,
-      "valid": true,
-      "solids": 1,
-      "print_note": "viewer face on the plate; locators up"
-    },
-    "03_roof": {
-      "assembly_bbox": {
-        "xmin": -60.0,
-        "xmax": 60.0,
-        "ymin": -37.0,
-        "ymax": 37.0,
-        "zmin": 44.0,
-        "zmax": 52.0,
-        "x": 120.0,
-        "y": 74.0,
-        "z": 8.0
+        "zmin": 65.7,
+        "zmax": 105.2,
+        "x": 56.0,
+        "y": 20.0,
+        "z": 39.5
       },
       "print_bbox": {
-        "xmin": -60.0,
-        "xmax": 60.0,
-        "ymin": -37.0,
-        "ymax": 37.0,
-        "zmin": -0.0,
-        "zmax": 8.0,
-        "x": 120.0,
-        "y": 74.0,
-        "z": 8.0
-      },
-      "volume_mm3": 24690.1,
-      "valid": true,
-      "solids": 1,
-      "print_note": "top face on the plate; bosses up"
-    },
-    "04_rotor_hub": {
-      "assembly_bbox": {
-        "xmin": -19.0,
-        "xmax": 19.0,
-        "ymin": -18.994,
-        "ymax": 18.994,
-        "zmin": 65.0,
-        "zmax": 80.0,
-        "x": 38.0,
-        "y": 37.988,
-        "z": 15.0
-      },
-      "print_bbox": {
-        "xmin": -19.0,
-        "xmax": 19.0,
-        "ymin": -19.0,
-        "ymax": 19.0,
+        "xmin": -28.0,
+        "xmax": 28.0,
+        "ymin": -19.75,
+        "ymax": 19.75,
         "zmin": 0.0,
-        "zmax": 15.0,
-        "x": 38.0,
-        "y": 38.0,
-        "z": 15.0
-      },
-      "volume_mm3": 8601.7,
-      "valid": true,
-      "solids": 1,
-      "print_note": "flange on the plate; horn nest bridges"
-    },
-    "05_turret_keeper": {
-      "assembly_bbox": {
-        "xmin": -27.0,
-        "xmax": 27.0,
-        "ymin": -27.0,
-        "ymax": 27.0,
-        "zmin": 52.0,
-        "zmax": 72.0,
-        "x": 54.0,
-        "y": 54.0,
-        "z": 20.0
-      },
-      "print_bbox": {
-        "xmin": -27.0,
-        "xmax": 27.0,
-        "ymin": -27.0,
-        "ymax": 27.0,
-        "zmin": -0.0,
         "zmax": 20.0,
-        "x": 54.0,
-        "y": 54.0,
+        "x": 56.0,
+        "y": 39.5,
         "z": 20.0
       },
-      "volume_mm3": 34267.1,
+      "volume_mm3": 10496.4,
       "valid": true,
       "solids": 1,
-      "print_note": "lip/top face on the plate"
+      "print_note": "face on the plate; neck and foot lie flat"
     },
-    "06_sensor_head": {
+    "05_fit_coupon": {
       "assembly_bbox": {
-        "xmin": -26.5,
-        "xmax": 26.5,
-        "ymin": -5.2,
-        "ymax": 4.8,
-        "zmin": 70.0,
-        "zmax": 109.0,
-        "x": 53.0,
-        "y": 10.0,
-        "z": 39.0
+        "xmin": -46.0,
+        "xmax": 46.0,
+        "ymin": -21.0,
+        "ymax": 21.0,
+        "zmin": 0.0,
+        "zmax": 8.99,
+        "x": 92.0,
+        "y": 42.0,
+        "z": 8.99
       },
       "print_bbox": {
-        "xmin": -26.5,
-        "xmax": 26.5,
-        "ymin": -19.5,
-        "ymax": 19.5,
+        "xmin": -46.0,
+        "xmax": 46.0,
+        "ymin": -21.0,
+        "ymax": 21.0,
         "zmin": 0.0,
-        "zmax": 10.0,
-        "x": 53.0,
-        "y": 39.0,
-        "z": 10.0
+        "zmax": 8.99,
+        "x": 92.0,
+        "y": 42.0,
+        "z": 8.99
       },
-      "volume_mm3": 7635.1,
-      "valid": true,
-      "solids": 1,
-      "print_note": "face-down; mast lies on the plate"
-    },
-    "07_keeper_shim_0p4mm": {
-      "assembly_bbox": {
-        "xmin": -27.0,
-        "xmax": 27.0,
-        "ymin": -27.0,
-        "ymax": 27.0,
-        "zmin": 52.0,
-        "zmax": 52.4,
-        "x": 54.0,
-        "y": 54.0,
-        "z": 0.4
-      },
-      "print_bbox": {
-        "xmin": -27.0,
-        "xmax": 27.0,
-        "ymin": -27.0,
-        "ymax": 27.0,
-        "zmin": 0.0,
-        "zmax": 0.4,
-        "x": 54.0,
-        "y": 54.0,
-        "z": 0.4
-      },
-      "volume_mm3": 648.0,
-      "valid": true,
-      "solids": 1,
-      "print_note": "flat; two layers at 0.2 mm"
-    },
-    "08_fit_test_coupon": {
-      "assembly_bbox": {
-        "xmin": -33.0,
-        "xmax": 33.0,
-        "ymin": -14.0,
-        "ymax": 14.0,
-        "zmin": 0.0,
-        "zmax": 3.0,
-        "x": 66.0,
-        "y": 28.0,
-        "z": 3.0
-      },
-      "print_bbox": {
-        "xmin": -33.0,
-        "xmax": 33.0,
-        "ymin": -14.0,
-        "ymax": 14.0,
-        "zmin": 0.0,
-        "zmax": 3.0,
-        "x": 66.0,
-        "y": 28.0,
-        "z": 3.0
-      },
-      "volume_mm3": 4227.6,
+      "volume_mm3": 9679.8,
       "valid": true,
       "solids": 1,
       "print_note": "flat; print this first"
@@ -230,123 +146,62 @@
   },
   "plates": {
     "P1": {
-      "01_body": {
+      "01_shell": {
         "center_xy": [
           90.0,
-          61.0
-        ],
-        "turned_90": false
-      },
-      "02_front_panel": {
-        "center_xy": [
-          85.0,
-          141.0
+          90.0
         ],
         "turned_90": false
       }
     },
     "P2": {
-      "03_roof": {
+      "02_bezel": {
         "center_xy": [
-          71.5,
-          60.0
+          59.0,
+          41.96
         ],
         "turned_90": false
       },
-      "08_fit_test_coupon": {
+      "03_base": {
         "center_xy": [
-          151.5,
-          56.0
-        ],
-        "turned_90": true
-      },
-      "05_turret_keeper": {
-        "center_xy": [
-          38.5,
-          130.0
+          58.4,
+          122.79
         ],
         "turned_90": false
       },
-      "06_sensor_head": {
+      "04_head": {
         "center_xy": [
-          98.0,
-          122.5
-        ],
-        "turned_90": false
-      },
-      "04_rotor_hub": {
-        "center_xy": [
-          149.5,
-          122.0
-        ],
-        "turned_90": false
-      }
-    },
-    "P3_optional_shim": {
-      "07_keeper_shim_0p4mm": {
-        "center_xy": [
-          90.0,
-          90.0
+          143.35,
+          31.92
         ],
         "turned_90": false
       }
     },
     "S1_fit_coupon": {
-      "08_fit_test_coupon": {
+      "05_fit_coupon": {
         "center_xy": [
           90.0,
           90.0
-        ],
-        "turned_90": false
-      }
-    },
-    "S2_servo_fit_subset": {
-      "03_roof": {
-        "center_xy": [
-          68.0,
-          60.0
-        ],
-        "turned_90": false
-      },
-      "05_turret_keeper": {
-        "center_xy": [
-          35.0,
-          130.0
-        ],
-        "turned_90": false
-      },
-      "04_rotor_hub": {
-        "center_xy": [
-          153.0,
-          42.0
         ],
         "turned_90": false
       }
     }
   },
   "interference": {
-    "01_body x 02_front_panel": 0.0,
-    "01_body x 03_roof": 0.0,
-    "03_roof x 05_turret_keeper": 0.0,
-    "04_rotor_hub x 05_turret_keeper": 0.0,
-    "04_rotor_hub x 06_sensor_head": 0.0,
-    "05_turret_keeper x 06_sensor_head": 0.0,
-    "03_roof x 04_rotor_hub": 0.0,
-    "01_body x ref_servo_sg90": 0.0,
-    "03_roof x ref_servo_sg90": 0.0,
-    "05_turret_keeper x ref_servo_sg90": 0.0,
-    "04_rotor_hub x ref_servo_sg90": 0.0,
-    "05_turret_keeper x ref_servo_horn": 0.0,
-    "06_sensor_head x ref_hc_sr04": 0.408,
-    "02_front_panel x ref_lcd_st7735s": 0.0,
-    "01_body x ref_lcd_st7735s": 0.0,
-    "01_body x ref_esp32_devkit": 0.0,
-    "01_body x ref_18650_holder": 0.0,
-    "01_body x ref_usbc_breakout": 0.0,
-    "ref_esp32_devkit x ref_18650_holder": 0.0,
-    "ref_servo_sg90 x ref_18650_holder": 0.0,
-    "ref_servo_sg90 x ref_esp32_devkit": 0.0,
-    "04_rotor_hub x ref_servo_horn": 0.0
+    "01_shell x 02_bezel": 0.0,
+    "01_shell x 03_base": 9.0,
+    "02_bezel x 03_base": 0.0,
+    "01_shell x 04_head": 0.0,
+    "01_shell x ref_servo_sg90": 0.0,
+    "01_shell x ref_cyd": 0.0,
+    "03_base x ref_cyd": 0.0,
+    "03_base x ref_servo_sg90": 0.0,
+    "ref_cyd x ref_servo_sg90": 0.0,
+    "02_bezel x ref_servo_sg90": 0.0,
+    "04_head x ref_sensor": 0.0,
+    "04_head x ref_servo_sg90": 0.0,
+    "04_head x ref_servo_horn": 0.0,
+    "02_bezel x ref_cyd (pegs in holes)": 0.0
   },
   "sweep": {
     "angles_deg_from_centre": [
@@ -363,104 +218,51 @@
       75
     ],
     "max_overlap_mm3": {
-      "head+sensor vs 05_turret_keeper": 0.0,
-      "head+sensor vs 03_roof": 0.0,
-      "head+sensor vs 01_body": 0.0,
+      "head+sensor vs 01_shell": 0.0,
       "head+sensor vs ref_servo_sg90": 0.0,
-      "hub vs 05_turret_keeper": 0.0,
-      "hub vs 03_roof": 0.0,
-      "hub vs 01_body": 0.0,
-      "hub vs ref_servo_sg90": 0.0,
-      "horn vs 05_turret_keeper": 0.0,
-      "horn vs 03_roof": 0.0,
-      "horn vs 01_body": 0.0
+      "horn vs 01_shell": 0.0
     }
   },
   "checks": [
     {
-      "check": "01_body: valid single solid",
+      "check": "01_shell: valid single solid",
       "pass": true,
       "detail": "solids=1"
     },
     {
-      "check": "02_front_panel: valid single solid",
+      "check": "02_bezel: valid single solid",
       "pass": true,
       "detail": "solids=1"
     },
     {
-      "check": "03_roof: valid single solid",
+      "check": "03_base: valid single solid",
       "pass": true,
       "detail": "solids=1"
     },
     {
-      "check": "04_rotor_hub: valid single solid",
+      "check": "04_head: valid single solid",
       "pass": true,
       "detail": "solids=1"
     },
     {
-      "check": "05_turret_keeper: valid single solid",
+      "check": "05_fit_coupon: valid single solid",
       "pass": true,
       "detail": "solids=1"
     },
     {
-      "check": "06_sensor_head: valid single solid",
+      "check": "01_shell: matches design size (104.0, 94.9, 62.0)",
       "pass": true,
-      "detail": "solids=1"
+      "detail": "got 62.0 x 94.9 x 104.0"
     },
     {
-      "check": "07_keeper_shim_0p4mm: valid single solid",
+      "check": "05_fit_coupon: matches design size (92.0, 42.0, 9.0)",
       "pass": true,
-      "detail": "solids=1"
+      "detail": "got 9.0 x 42.0 x 92.0"
     },
     {
-      "check": "08_fit_test_coupon: valid single solid",
+      "check": "P1/01_shell: height fits A1 mini",
       "pass": true,
-      "detail": "solids=1"
-    },
-    {
-      "check": "01_body: matches brief (128, 96, 52)",
-      "pass": true,
-      "detail": "got 52.0 x 96.0 x 128.0"
-    },
-    {
-      "check": "02_front_panel_plate: matches brief (118, 52, 2.6)",
-      "pass": true,
-      "detail": "got 2.6 x 52.0 x 118.0"
-    },
-    {
-      "check": "03_roof_plate: matches brief (120, 74, 3)",
-      "pass": true,
-      "detail": "got 3.0 x 74.0 x 120.0"
-    },
-    {
-      "check": "04_rotor_hub: matches brief (38, 38, 15)",
-      "pass": true,
-      "detail": "got 15.0 x 38.0 x 38.0"
-    },
-    {
-      "check": "05_turret_keeper: matches brief (54, 54, 20)",
-      "pass": true,
-      "detail": "got 20.0 x 54.0 x 54.0"
-    },
-    {
-      "check": "06_sensor_head: matches brief (53, 39, 10)",
-      "pass": true,
-      "detail": "got 10.0 x 39.0 x 53.0"
-    },
-    {
-      "check": "08_fit_test_coupon: matches brief (66, 28, 3)",
-      "pass": true,
-      "detail": "got 3.0 x 28.0 x 66.0"
-    },
-    {
-      "check": "P1/01_body: height fits A1 mini",
-      "pass": true,
-      "detail": "z=52.0"
-    },
-    {
-      "check": "P1/02_front_panel: height fits A1 mini",
-      "pass": true,
-      "detail": "z=6.6"
+      "detail": "z=62.0"
     },
     {
       "check": "P1: parts fit 180x180 with 6.0 mm margin",
@@ -468,29 +270,19 @@
       "detail": ""
     },
     {
-      "check": "P2/03_roof: height fits A1 mini",
+      "check": "P2/02_bezel: height fits A1 mini",
       "pass": true,
-      "detail": "z=8.0"
+      "detail": "z=8.4"
     },
     {
-      "check": "P2/04_rotor_hub: height fits A1 mini",
+      "check": "P2/03_base: height fits A1 mini",
       "pass": true,
-      "detail": "z=15.0"
+      "detail": "z=7.4"
     },
     {
-      "check": "P2/05_turret_keeper: height fits A1 mini",
+      "check": "P2/04_head: height fits A1 mini",
       "pass": true,
       "detail": "z=20.0"
-    },
-    {
-      "check": "P2/06_sensor_head: height fits A1 mini",
-      "pass": true,
-      "detail": "z=10.0"
-    },
-    {
-      "check": "P2/08_fit_test_coupon: height fits A1 mini",
-      "pass": true,
-      "detail": "z=3.0"
     },
     {
       "check": "P2: parts fit 180x180 with 6.0 mm margin",
@@ -498,19 +290,9 @@
       "detail": ""
     },
     {
-      "check": "P3_optional_shim/07_keeper_shim_0p4mm: height fits A1 mini",
+      "check": "S1_fit_coupon/05_fit_coupon: height fits A1 mini",
       "pass": true,
-      "detail": "z=0.4"
-    },
-    {
-      "check": "P3_optional_shim: parts fit 180x180 with 6.0 mm margin",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "check": "S1_fit_coupon/08_fit_test_coupon: height fits A1 mini",
-      "pass": true,
-      "detail": "z=3.0"
+      "detail": "z=9.0"
     },
     {
       "check": "S1_fit_coupon: parts fit 180x180 with 6.0 mm margin",
@@ -518,217 +300,142 @@
       "detail": ""
     },
     {
-      "check": "S2_servo_fit_subset/03_roof: height fits A1 mini",
+      "check": "01_shell: print mesh watertight, outward normals",
       "pass": true,
-      "detail": "z=8.0"
+      "detail": "volume 51751 mm^3"
     },
     {
-      "check": "S2_servo_fit_subset/04_rotor_hub: height fits A1 mini",
+      "check": "02_bezel: print mesh watertight, outward normals",
       "pass": true,
-      "detail": "z=15.0"
+      "detail": "volume 8695 mm^3"
     },
     {
-      "check": "S2_servo_fit_subset/05_turret_keeper: height fits A1 mini",
+      "check": "03_base: print mesh watertight, outward normals",
       "pass": true,
-      "detail": "z=20.0"
+      "detail": "volume 22795 mm^3"
     },
     {
-      "check": "S2_servo_fit_subset: parts fit 180x180 with 6.0 mm margin",
+      "check": "04_head: print mesh watertight, outward normals",
       "pass": true,
-      "detail": ""
+      "detail": "volume 10495 mm^3"
     },
     {
-      "check": "01_body: print mesh watertight, outward normals",
+      "check": "05_fit_coupon: print mesh watertight, outward normals",
       "pass": true,
-      "detail": "volume 114460 mm^3"
+      "detail": "volume 9681 mm^3"
     },
     {
-      "check": "02_front_panel: print mesh watertight, outward normals",
-      "pass": true,
-      "detail": "volume 13242 mm^3"
-    },
-    {
-      "check": "03_roof: print mesh watertight, outward normals",
-      "pass": true,
-      "detail": "volume 24690 mm^3"
-    },
-    {
-      "check": "04_rotor_hub: print mesh watertight, outward normals",
-      "pass": true,
-      "detail": "volume 8593 mm^3"
-    },
-    {
-      "check": "05_turret_keeper: print mesh watertight, outward normals",
-      "pass": true,
-      "detail": "volume 34273 mm^3"
-    },
-    {
-      "check": "06_sensor_head: print mesh watertight, outward normals",
-      "pass": true,
-      "detail": "volume 7636 mm^3"
-    },
-    {
-      "check": "07_keeper_shim_0p4mm: print mesh watertight, outward normals",
-      "pass": true,
-      "detail": "volume 648 mm^3"
-    },
-    {
-      "check": "08_fit_test_coupon: print mesh watertight, outward normals",
-      "pass": true,
-      "detail": "volume 4228 mm^3"
-    },
-    {
-      "check": "no overlap: 01_body x 02_front_panel",
+      "check": "no overlap: 01_shell x 02_bezel",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 01_body x 03_roof",
+      "check": "press fit only: 01_shell x 03_base",
+      "pass": true,
+      "detail": "9.000 mm^3, designed <= 20.0"
+    },
+    {
+      "check": "no overlap: 02_bezel x 03_base",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 03_roof x 05_turret_keeper",
+      "check": "no overlap: 01_shell x 04_head",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 04_rotor_hub x 05_turret_keeper",
+      "check": "no overlap: 01_shell x ref_servo_sg90",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 04_rotor_hub x 06_sensor_head",
+      "check": "no overlap: 01_shell x ref_cyd",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 05_turret_keeper x 06_sensor_head",
+      "check": "no overlap: 03_base x ref_cyd",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 03_roof x 04_rotor_hub",
+      "check": "no overlap: 03_base x ref_servo_sg90",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 01_body x ref_servo_sg90",
+      "check": "no overlap: ref_cyd x ref_servo_sg90",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 03_roof x ref_servo_sg90",
+      "check": "no overlap: 02_bezel x ref_servo_sg90",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 05_turret_keeper x ref_servo_sg90",
+      "check": "no overlap: 04_head x ref_sensor",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 04_rotor_hub x ref_servo_sg90",
+      "check": "no overlap: 04_head x ref_servo_sg90",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 05_turret_keeper x ref_servo_horn",
+      "check": "no overlap: 04_head x ref_servo_horn",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 06_sensor_head x ref_hc_sr04",
-      "pass": true,
-      "detail": "0.408 mm^3"
-    },
-    {
-      "check": "no overlap: 02_front_panel x ref_lcd_st7735s",
+      "check": "CYD sits on the bezel pegs without overlap",
       "pass": true,
       "detail": "0.000 mm^3"
     },
     {
-      "check": "no overlap: 01_body x ref_lcd_st7735s",
+      "check": "clearance >= 0: horn foot -> roof (mm)",
       "pass": true,
-      "detail": "0.000 mm^3"
+      "detail": "3.7"
     },
     {
-      "check": "no overlap: 01_body x ref_esp32_devkit",
+      "check": "clearance >= 0: head bottom -> roof (mm)",
       "pass": true,
-      "detail": "0.000 mm^3"
+      "detail": "13.2"
     },
     {
-      "check": "no overlap: 01_body x ref_18650_holder",
+      "check": "clearance >= 0: screen glass -> bezel back (mm)",
       "pass": true,
-      "detail": "0.000 mm^3"
+      "detail": "0.1"
     },
     {
-      "check": "no overlap: 01_body x ref_usbc_breakout",
+      "check": "clearance >= 0: servo gear boss below roof top (mm)",
       "pass": true,
-      "detail": "0.000 mm^3"
+      "detail": "0.1"
     },
     {
-      "check": "no overlap: ref_esp32_devkit x ref_18650_holder",
+      "check": "clearance >= 0: CYD -> servo min distance",
       "pass": true,
-      "detail": "0.000 mm^3"
+      "detail": "19.395"
     },
     {
-      "check": "no overlap: ref_servo_sg90 x ref_18650_holder",
+      "check": "clearance >= 0: CYD -> base min distance",
       "pass": true,
-      "detail": "0.000 mm^3"
+      "detail": "6.678"
     },
     {
-      "check": "no overlap: ref_servo_sg90 x ref_esp32_devkit",
+      "check": "clearance >= 0: CYD -> shell min distance",
       "pass": true,
-      "detail": "0.000 mm^3"
+      "detail": "1.811"
     },
     {
-      "check": "horn nests in hub without overlap",
+      "check": "clearance >= 0: servo -> base min distance",
       "pass": true,
-      "detail": "0.000 mm^3"
+      "detail": "29.999"
     },
     {
-      "check": "clearance > 0: hub flange -> keeper lip (axial play)",
-      "pass": true,
-      "detail": "0.4"
-    },
-    {
-      "check": "clearance > 0: head lower rim -> keeper top (mm)",
-      "pass": true,
-      "detail": "8.0"
-    },
-    {
-      "check": "clearance > 0: hub underside -> servo gear boss (mm)",
-      "pass": true,
-      "detail": "2.2"
-    },
-    {
-      "check": "clearance > 0: hub (static) -> keeper min distance",
-      "pass": true,
-      "detail": "0.4"
-    },
-    {
-      "check": "clearance > 0: servo -> keeper min distance",
-      "pass": true,
-      "detail": "1.3"
-    },
-    {
-      "check": "clearance > 0: LCD -> body min distance",
-      "pass": true,
-      "detail": "2.4"
-    },
-    {
-      "check": "sweep +/-75 deg clear: head+sensor vs 05_turret_keeper",
-      "pass": true,
-      "detail": "max 0.000 mm^3"
-    },
-    {
-      "check": "sweep +/-75 deg clear: head+sensor vs 03_roof",
-      "pass": true,
-      "detail": "max 0.000 mm^3"
-    },
-    {
-      "check": "sweep +/-75 deg clear: head+sensor vs 01_body",
+      "check": "sweep +/-75 deg clear: head+sensor vs 01_shell",
       "pass": true,
       "detail": "max 0.000 mm^3"
     },
@@ -738,76 +445,40 @@
       "detail": "max 0.000 mm^3"
     },
     {
-      "check": "sweep +/-75 deg clear: hub vs 05_turret_keeper",
-      "pass": true,
-      "detail": "max 0.000 mm^3"
-    },
-    {
-      "check": "sweep +/-75 deg clear: hub vs 03_roof",
-      "pass": true,
-      "detail": "max 0.000 mm^3"
-    },
-    {
-      "check": "sweep +/-75 deg clear: hub vs 01_body",
-      "pass": true,
-      "detail": "max 0.000 mm^3"
-    },
-    {
-      "check": "sweep +/-75 deg clear: hub vs ref_servo_sg90",
-      "pass": true,
-      "detail": "max 0.000 mm^3"
-    },
-    {
-      "check": "sweep +/-75 deg clear: horn vs 05_turret_keeper",
-      "pass": true,
-      "detail": "max 0.000 mm^3"
-    },
-    {
-      "check": "sweep +/-75 deg clear: horn vs 03_roof",
-      "pass": true,
-      "detail": "max 0.000 mm^3"
-    },
-    {
-      "check": "sweep +/-75 deg clear: horn vs 01_body",
+      "check": "sweep +/-75 deg clear: horn vs 01_shell",
       "pass": true,
       "detail": "max 0.000 mm^3"
     }
   ],
   "clearances": {
-    "hub flange -> keeper lip (axial play)": 0.4,
-    "head lower rim -> keeper top (mm)": 8.0,
-    "hub underside -> servo gear boss (mm)": 2.2,
-    "hub (static) -> keeper min distance": 0.4,
-    "servo -> keeper min distance": 1.3,
-    "LCD -> body min distance": 2.4
+    "horn foot -> roof (mm)": 3.7,
+    "head bottom -> roof (mm)": 13.2,
+    "screen glass -> bezel back (mm)": 0.1,
+    "servo gear boss below roof top (mm)": 0.1,
+    "CYD -> servo min distance": 19.395,
+    "CYD -> base min distance": 6.678,
+    "CYD -> shell min distance": 1.811,
+    "servo -> base min distance": 29.999
   },
   "sha256": {
-    "cad/stl/01_body.stl": "600debb959cd86f913cc7bd51eeb6c5bbc9a8d88af988062e59ad17814336239",
-    "cad/stl/02_front_panel.stl": "88ca0fea8eae1b800b89f296f7ca6953331a4795b32f4753cd00099f1321229b",
-    "cad/stl/03_roof.stl": "981bacbdae124bb43233edc9b5e016d1c0f5d51795d70b29ce885b83e19ca7f8",
-    "cad/stl/04_rotor_hub.stl": "4a7c5012b02fd6b510a3e8b35eb3ed2de49978bacd481c1d022dbe8a45c111f6",
-    "cad/stl/05_turret_keeper.stl": "11092b7932f76a0c8c07324169671d7795ad6428bf7ff99e4b832a4a7f795403",
-    "cad/stl/06_sensor_head.stl": "ded35e169ff5bf53c754622d00adaa23edc4f60e3439e419ffc61587aa3a8bb5",
-    "cad/stl/07_keeper_shim_0p4mm.stl": "d3848c5659291d99f976b263ca2b96d931e5b7efb03fcda284500387fdd11277",
-    "cad/stl/08_fit_test_coupon.stl": "20244b70055c21c4893346afc5b5e963b0b0602fea60a334676725f1845ba2c5",
-    "cad/step/01_body.step": "9ee28a30fb3656cec936a1b5137342afe7ebcd22efb8c42ec3d357773df08484",
-    "cad/step/02_front_panel.step": "8377d89fad97611a086d38f3311feefa4638df78fa696f4de78fb0ac241264e0",
-    "cad/step/03_roof.step": "aa1b90132ff037a213a2fc1c15fd243626ee353347f8c5189bd5e6c3dadefaf8",
-    "cad/step/04_rotor_hub.step": "9fe2c7fa5d6898ca3ad32bdca210aa97e65ea73e8f936cf21f0fa1fea0e65edc",
-    "cad/step/05_turret_keeper.step": "ae59055acd9d15970a37608af8e113a4fa81e6d78332ce13b23a311839e1e2da",
-    "cad/step/06_sensor_head.step": "50c7a2c15ff4a936bde77a801b0e1d589e93e6f54e32907a58ef298fc1bbd12f",
-    "cad/step/07_keeper_shim_0p4mm.step": "3b1eccc7fc8520d076bea1ad0b6b2af6577e962084372d82a3a556664b40271f",
-    "cad/step/08_fit_test_coupon.step": "ddc73eca7aa00020e6eced0d1ab2e6365bd6c60d762592fbaab5de59203046a4",
-    "cad/step/assembly_v5.step": "a354dc0352bd634227e5a6bf7c6929eea77aef95b325af751cbba016e5acdf64",
-    "cad/3mf/plate_P1.3mf": "3897b7ec696106826bbb2c342b9c2326b04c0e357342f069e4b66e3a17999272",
-    "cad/3mf/plate_P2.3mf": "54fbe6586dc0e9f14fd1d80655a62440b6bfcf7523b9984a81616595872435f7",
-    "cad/3mf/plate_P3_optional_shim.3mf": "a19e8a9bfa9900e981a313d55f220526a8c07ea5e0b10b066ae77bddc315da0d",
-    "cad/3mf/plate_S1_fit_coupon.3mf": "c979be078f250445617735c782e21c585f09803f2846c58198a261363586b1cf",
-    "cad/3mf/plate_S2_servo_fit_subset.3mf": "e00f7427efb0680e9196c98231ce55d0cc4fd9970e82694a3e4a39b3986b3cf7",
-    "cad/3mf/radar_v5_a1mini_multiplate.3mf": "a46aba6f0b63918bdcd61f8e7fd865a3b9381da3ef7e9d77d6ca7bfaa58b6738"
+    "cad/stl/01_shell.stl": "0e6ed7994b7951f02211c64fb15f69151f60d6170e62dd5243785315749d7b19",
+    "cad/stl/02_bezel.stl": "fb11a46d1718fd08fcae2fe3f243e914bbac827eb10d25397a7c89523d1b2aa5",
+    "cad/stl/03_base.stl": "f404297c288c26673bdb3fe1509d39df5001c68ed577ae018cdccad37b509e47",
+    "cad/stl/04_head.stl": "640ba0222b7cc4ff702551dca48aef9776e50d191fa9144b7ee9838cbe8b12f5",
+    "cad/stl/05_fit_coupon.stl": "6549e614ba9551de1da3e92b619c97d37858d559055a4986651d12fcf2e16773",
+    "cad/step/01_shell.step": "6498a24a0f061d64ca26ddcf79ec5c139668432b78ec029367b9d47dd5adbd3e",
+    "cad/step/02_bezel.step": "99bfdf2c6063fb89e345062d5dfc68d7b1e0931bf5444ac962f47b49b611a1af",
+    "cad/step/03_base.step": "eb62e225016e16fe77fea32f095f1f07697a6de1b4e86669c301bc742beb8642",
+    "cad/step/04_head.step": "39973c330471c3810ad2a027c83094c31f3d6973527597b523cfd73eed999ea8",
+    "cad/step/05_fit_coupon.step": "1175c292b97a7b8bb129685a2c9915b9dfb758863e2bc14c11b139f5992a33d8",
+    "cad/step/assembly.step": "d3005698c7b544c30f1e1f1545f69d66687f80fea07d2c289c596bdfb92c3c5e",
+    "cad/3mf/plate_P1.3mf": "aff642ecc3c8270735aecdaa2b225cffaca317e371f0fd1dce2b779a8563d40b",
+    "cad/3mf/plate_P2.3mf": "161b08d6643ef9c871099a5cefbbf9196744b5ce97618a3bfb256ad5267c247c",
+    "cad/3mf/plate_S1_fit_coupon.3mf": "1cb43f227da231158e1ce90e168712462365ba51c69e9602ee536af3b7b39377",
+    "cad/3mf/radar_a1mini_multiplate.3mf": "f8c03e6b64ed07e65be6491360c0a34ad860be122994b4a227d1bf109a6313ab"
   },
   "summary": {
-    "total": 79,
-    "passed": 79
+    "total": 45,
+    "passed": 45
   }
 }

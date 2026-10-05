@@ -16,44 +16,28 @@ The console has three sources, all decoded by the same parser
 * **Demo** — synthetic targets, clearly labelled, for trying the console without hardware.
 
 It can **record** a session and save it as CSV (`host_ms,angle_deg,distance_cm`) — use this for the
-validation tests T-FW-4 and T-FW-5. The console **only listens**: it never sends a byte to the scanner.
+validation tests T-FW-4, T-FW-5 and T-LNK-1. The console **only listens**: it never sends a byte to the scanner.
 
 Status: the parser, renderer, replay and demo are tested automatically (see
 [`VALIDATION.md`](VALIDATION.md)); **the live serial link has never been connected to a real
 scanner.** The desktop app has been built and smoke-tested on Linux only; the Windows and macOS
 builds are produced by GitHub Actions on each release and are unsigned.
 
-## Wiring the live link safely
+## Connecting the scanner
 
-The rule from [`WIRING.md`](WIRING.md) still holds: **never plug the ESP32's own USB port in while the
-battery harness is connected** (external 5 V/VIN and USB together). So the live link does not use that
-port. Instead, add a listen-only telemetry tap:
+![Live console](../hardware/diagrams/live_console.png)
 
-| Tap wire | From (scanner) | To (adapter) |
-|---|---|---|
-| L1 | ESP32 **TX0 / GPIO1** (header pin often labelled `TX0`, `TXD` or `TX`) | adapter **RX** (`RXD`) |
-| L2 | common **GND** | adapter **GND** |
-| — | nothing | adapter **VCC / 5V / 3V3** — leave unconnected |
-| — | nothing | adapter **TX** — leave unconnected |
+The Cheap Yellow Display has a USB-to-serial chip on board, so the **same USB cable that powers the
+scanner** carries its readings. No extra wires or adapters.
 
-Adapter: any **3.3 V-logic** USB-to-serial adapter (CP2102, CH340 or FT232 type; set its voltage
-jumper to 3.3 V if it has one). With VCC unconnected, the adapter cannot back-power anything; with its
-TX unconnected, it cannot fight the ESP32's on-board USB bridge. GPIO1 already carries the firmware's
-serial output whenever the scanner runs, so the firmware does not change.
-
-![Telemetry tap](../hardware/diagrams/live_link_tap.svg)
-
-Then: switch the scanner ON from its battery, plug the adapter into the computer, open the live console,
-press **Connect scanner** and pick the adapter's port.
-
-* **Windows:** the port appears as `COMx`. CH340 adapters may need the vendor driver.
-* **Linux:** add yourself to the `dialout` group once (`sudo usermod -aG dialout "$USER"`, then log out and in).
-* **Windows Subsystem for Linux (WSL):** USB serial ports are not visible inside WSL by default — use the
-  Windows desktop app or Chrome/Edge on Windows instead.
-* **macOS:** the port appears as `/dev/cu.usbserial-…` or `/dev/cu.wchusbserial…`.
-
-If the console shows text but no readings, the baud rate or the TX/RX wire is wrong; if it shows
-nothing, check that the scanner is ON and that L2 (GND) is connected.
+1. Plug the scanner into the computer. Use a port or powered hub that can supply about 1 A; a weak
+   port may make the board reset when the servo starts (see [Wiring → Power](WIRING.md#power--read-this)).
+2. Open the **Live console** (web app in Chrome/Edge, or the desktop app) → **Connect scanner** →
+   pick the port (CH340 or CP210x, depending on your board). Linux: if the port is refused, add yourself
+   to the `dialout` group (`sudo usermod -aG dialout $USER`, then log out and in).
+3. Opening the port may **restart** the board (the USB chip's reset lines). The sweep just starts again.
+4. Nothing appears? Check the baud rate is 115 200 and that no other program (Arduino serial monitor)
+   has the port open.
 
 ## Installing the desktop app
 

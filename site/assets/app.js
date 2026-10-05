@@ -9,8 +9,8 @@
   const vSound = (T) => 331.3 + 0.606 * T;                 // m/s
   const cmPerUs = (T) => vSound(T) / 10000;
   const echoTimeoutUs = (maxCm, T) => Math.trunc((2 * maxCm * 1.1) / cmPerUs(T)) + 1000;
-  const FRAME_PUSH_MS = (160 * 128 * 16) / 15e6 * 1000;    // 15 MHz SPI full frame
-  const DRAW_MS = 3;                                       // estimate
+  const FRAME_PUSH_MS = (320 * 240 * 16) / 40e6 * 1000;    // 40 MHz SPI full frame (CYD)
+  const DRAW_MS = 8;                                       // estimate
   const pulseUs = (deg, us0 = 1000, us180 = 2000) => {
     deg = Math.max(0, Math.min(180, deg));
     return Math.max(900, Math.min(2100, us0 + Math.trunc(((us180 - us0) * deg) / 180)));
@@ -21,7 +21,7 @@
   const cv = document.getElementById("screen");
   if (cv) {
     const g = cv.getContext("2d");
-    const W = 160, H = 128, CX = 80, CY = 125, R = 88, MIN = 30, MAX = 150;
+    const W = 320, H = 240, CX = 160, CY = 236, R = 176, MIN = 30, MAX = 150;
     const el = (id) => document.getElementById(id);
     const state = { step: 3, settle: 70, range: 200, temp: 20, deg: MIN, dir: 1, trail: [], dets: new Map(), clock: 0 };
     const targets = [
@@ -49,35 +49,44 @@
     }
 
     function draw(cm) {
-      g.fillStyle = "#000"; g.fillRect(0, 0, W, H);
+      g.fillStyle = "rgb(0,8,0)"; g.fillRect(0, 0, W, H);
       g.lineWidth = 1;
-      g.font = "7px monospace"; g.textBaseline = "top";
+      g.font = "8px monospace"; g.textBaseline = "top";
       for (let q = 1; q <= 4; q++) {
         const r = (R * q) / 4;
-        g.strokeStyle = "rgb(0,90,20)"; g.beginPath();
+        g.strokeStyle = "rgb(0,80,32)"; g.beginPath();
         for (let d = MIN; d <= MAX; d += 2) { const [x, y] = polar(d, r); d === MIN ? g.moveTo(x, y) : g.lineTo(x, y); }
         g.stroke();
-        g.fillStyle = "rgb(0,150,40)"; g.fillText(String(Math.trunc((state.range * q) / 4)), CX + 3, CY - Math.trunc(r) + 2);
+        g.fillStyle = "rgb(40,160,88)"; g.fillText(String(Math.trunc((state.range * q) / 4)), CX + 4, CY - Math.trunc(r) + 3);
       }
-      for (let d = MIN; d <= MAX; d += 30) { const [x, y] = polar(d, R); line(CX + 0.5, CY + 0.5, x, y, "rgb(0,90,20)"); }
-      const ttl = 9000;
+      for (let d = MIN; d <= MAX; d += 30) { const [x, y] = polar(d, R); line(CX + 0.5, CY + 0.5, x, y, "rgb(0,80,32)"); }
+      state.trail.forEach((d, i) => {
+        const a0 = i === 0 ? state.deg : state.trail[i - 1];
+        const [x0, y0] = polar(a0, R), [x1, y1] = polar(d, R);
+        g.fillStyle = green((0.22 * (6 - i)) / 6); g.beginPath(); g.moveTo(CX, CY); g.lineTo(x0, y0); g.lineTo(x1, y1); g.fill();
+      });
+      const ttl = 10000;
       for (const [deg, v] of state.dets) {
         const age = state.clock - v.t;
         if (age > ttl) { state.dets.delete(deg); continue; }
         const [x, y] = polar(deg, (R * v.cm) / state.range);
-        g.fillStyle = green(0.25 + 0.75 * (1 - age / ttl));
-        g.beginPath(); g.arc(x, y, 2.2, 0, Math.PI * 2); g.fill();
+        g.fillStyle = green(0.35 + 0.65 * (1 - age / ttl));
+        g.beginPath(); g.arc(x, y, 3.2, 0, Math.PI * 2); g.fill();
       }
-      state.trail.forEach((d, i) => { const [x, y] = polar(d, R); line(CX + 0.5, CY + 0.5, x, y, green((0.15 * (4 - i)) / 4)); });
-      const [sx, sy] = polar(state.deg, R); line(CX + 0.5, CY + 0.5, sx, sy, "rgb(80,255,110)");
-      g.fillStyle = "rgb(0,150,40)"; g.font = "7px monospace";
-      g.fillText("ANGLE", 4, 2); g.fillText("DIST", 84, 2); g.fillText("EDU", 132, 2);
-      g.fillStyle = "rgb(170,255,180)"; g.font = "bold 15px monospace";
-      g.fillText(String(state.deg).padStart(3, "0"), 4, 12);
-      g.font = "7px monospace"; g.fillText("deg", 42, 20);
-      g.font = "bold 15px monospace";
-      if (cm === null) g.fillText("---", 84, 12);
-      else { g.fillText(String(Math.round(cm)).padStart(3, " "), 84, 12); g.font = "7px monospace"; g.fillText("cm", 122, 20); }
+      const [sx, sy] = polar(state.deg, R); line(CX + 0.5, CY + 0.5, sx, sy, "rgb(120,255,160)");
+      g.fillStyle = "rgb(90,150,115)"; g.font = "8px monospace";
+      g.fillText("ANGLE (commanded)", 8, 6); g.fillText("DISTANCE", 128, 6); g.fillText("RANGE", 236, 6); g.fillText("LIVE", 282, 6);
+      g.fillStyle = "rgb(200,255,215)"; g.font = "bold 24px monospace";
+      g.fillText(String(state.deg).padStart(3, " "), 8, 18);
+      g.font = "bold 24px monospace";
+      if (cm === null) g.fillText("---", 128, 18);
+      else { g.fillText(String(Math.round(cm)).padStart(3, " "), 128, 18); g.font = "14px monospace"; g.fillText("cm", 184, 26); }
+      g.font = "bold 16px monospace"; g.fillText(String(state.range), 236, 22);
+      for (const [x, lab] of [[6, "−"], [258, "+"]]) {
+        g.fillStyle = "rgb(20,60,36)"; g.strokeStyle = "rgb(0,80,32)";
+        g.beginPath(); g.roundRect ? g.roundRect(x, 198, 55, 35, 8) : g.rect(x, 198, 55, 35); g.fill(); g.stroke();
+        g.fillStyle = "rgb(200,255,215)"; g.font = "bold 22px monospace"; g.fillText(lab, x + 21, 204);
+      }
     }
 
     function stepMs(cm) {
@@ -99,7 +108,7 @@
       const bin = state.deg;
       if (cm === null) state.dets.delete(bin); else state.dets.set(bin, { cm, t: state.clock });
       draw(cm);
-      state.trail.unshift(state.deg); state.trail = state.trail.slice(0, 4);
+      state.trail.unshift(state.deg); state.trail = state.trail.slice(0, 6);
       let next = state.deg + state.dir * state.step;
       if (next > MAX || next < MIN) { state.dir = -state.dir; next = state.deg + state.dir * state.step; }
       state.deg = Math.max(MIN, Math.min(MAX, next));
@@ -137,8 +146,8 @@
       box.querySelectorAll(".net").forEach((n) => n.classList.toggle("on", n.dataset.net === active));
       chips.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.net === active)));
       const rows = window.NETLIST.filter((r) => !active || r.net === active);
-      list.innerHTML = "<table><thead><tr><th>ID</th><th>Pin</th><th>Net</th><th>Notes</th></tr></thead><tbody>" +
-        rows.map((r) => `<tr><td>${r.id}</td><td><code>${r.pin}</code></td><td>${r.net}</td><td>${r.notes}</td></tr>`).join("") +
+      list.innerHTML = "<table><thead><tr><th>Wire</th><th>Pin</th><th>Net</th><th>Notes</th></tr></thead><tbody>" +
+        rows.map((r) => `<tr><td>${r.wire}</td><td><code>${r.pin}</code></td><td>${r.net}</td><td>${r.notes}</td></tr>`).join("") +
         "</tbody></table>";
     };
     nets.forEach((n) => {

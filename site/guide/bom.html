@@ -27,17 +27,12 @@
 <a href="publish.html">Publishing</a>
 <a href="credits.html">Credits &amp; sources</a>
 <a href="changelog.html">Changelog</a></nav>
-<main class="doc"><h1 id="bill-of-materials-bom">Bill of materials (BOM)</h1>
-<p>Spreadsheet version: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/bom.csv"><code>manufacturing/bom.csv</code></a> (generated from this page). Visual overview:</p>
+<main class="doc"><h1 id="bill-of-materials-bom--radar-v6">Bill of materials (BOM) — Radar V6</h1>
 <p><img alt="Parts kit" src="../assets/diagrams/bom_overview.svg" /></p>
-<p><strong>Reference candidates, not endorsements.</strong> Prices, stock and exact variants change — recheck
-every item live before buying, and compare the listing's own datasheet against the "what to
-check" column. Datasheet links are in <a href="credits.html"><code>CREDITS.md</code></a>.</p>
-<p><strong>Do not cheapen the safety parts.</strong> The cell, its protection, the switch rating, the fuse and the
-power-wire gauge are not places to save money.</p>
-<p><strong>Not in this project (on purpose):</strong> custom printed circuit board (PCB), decorative LEDs, battery
-fuel gauge, external display, Wi-Fi or Bluetooth inside the scanner. (The optional live console in the web/desktop app reads the existing serial output through a two-wire tap; see <a href="live-link.html"><code>LIVE_LINK.md</code></a>.) The firmware never enables Wi-Fi and does not
-show a measured battery percentage.</p>
+<p><strong>Five things to buy, one optional.</strong> No battery, charger, fuse, switch, breadboard, resistors
+or screws beyond the two that come with the servo. Spreadsheet: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/bom.csv"><code>manufacturing/bom.csv</code></a>.</p>
+<p>Prices are <strong>rough single-unit marketplace estimates (US$, late 2026)</strong> to show the order of
+magnitude — not quotes. Check current listings yourself.</p>
 <h2 id="electronics">Electronics</h2>
 <div class="tablewrap"><table>
 <thead>
@@ -47,152 +42,103 @@ show a measured battery percentage.</p>
 <th>Part</th>
 <th>What to check before you buy</th>
 <th>Reference candidate</th>
+<th>Est. US$</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>E1</td>
 <td>1</td>
-<td>ESP32-WROOM-32 development board ("DevKit"), classic <strong>30-pin</strong>, headers <strong>already soldered</strong></td>
-<td>Module marking says WROOM-32 (not WROVER); pins labelled GPIO16/17/18/23/26/27/33/14; a USB data port. <strong>Do not substitute</strong> an ESP32-C3, ESP32-S3 or a WROVER board without re-checking every pin and the firmware — GPIO16/17 are used for PSRAM on WROVER.</td>
-<td>Generic "ESP32 DevKit V1 (30-pin)"</td>
+<td><strong>ESP32-2432S028R "Cheap Yellow Display" (CYD)</strong> — ESP32 + 2.8" 320×240 touch screen</td>
+<td>Exact name <code>ESP32-2432S028R</code>. Both the ILI9341 version and the two-USB "CYD2USB" (ST7789) version work — the firmware detects the panel.</td>
+<td><a href="https://github.com/witnessmenow/ESP32-Cheap-Yellow-Display">witnessmenow/ESP32-Cheap-Yellow-Display</a></td>
+<td>12–20</td>
 </tr>
 <tr>
 <td>E2</td>
 <td>1</td>
-<td>HC-SR04 ultrasonic sensor</td>
-<td>5 V part with 4-pin header VCC/TRIG/ECHO/GND; four corner mounting holes (the sensor head expects them — <code>SR04_HOLE_X/Y</code> in the CAD are VERIFY values).</td>
-<td>Generic HC-SR04</td>
+<td><strong>Ultrasonic sensor, 3.3 V capable</strong>: RCWL-1601 or HC-SR04P</td>
+<td>Listing must say it works from <strong>3 V–5.5 V</strong>. A plain 5 V-only HC-SR04 needs the <a href="wiring.html#fallback-you-only-have-a-5-v-hc-sr04">fallback divider</a>.</td>
+<td><a href="https://www.adafruit.com/product/4007">Adafruit 4007</a> (RCWL-1601)</td>
+<td>2–4</td>
 </tr>
 <tr>
 <td>E3</td>
 <td>1</td>
-<td>SG90-size <strong>positional</strong> micro servo <strong>with its factory double-arm horn</strong></td>
-<td>180°-type positional servo, <strong>not</strong> continuous-rotation ("360°") — those cannot hold an angle. Keep the factory horn and spline.</td>
+<td><strong>SG90 micro servo, positional (180°)</strong>, with horns and its 2 screws</td>
+<td><strong>Not</strong> "360°" or "continuous rotation". The single-arm horn must come in the bag.</td>
 <td>TowerPro SG90</td>
+<td>2–3</td>
 </tr>
 <tr>
 <td>E4</td>
-<td>1</td>
-<td>Waveshare 1.8" SPI LCD, ST7735S, 128×160</td>
-<td>Pins VCC/GND/DIN/CLK/CS/DC/RST/BL; board 56.5 × 34 mm (check your revision).</td>
-<td>Waveshare 1.8inch LCD Module</td>
+<td>3</td>
+<td><strong>JST 1.25 mm 4-pin → Dupont female cable</strong></td>
+<td>Often one is in the CYD box — you need three (CN1, P3, P1).</td>
+<td>"1.25 mm 4 pin to Dupont"</td>
+<td>1–2</td>
 </tr>
 <tr>
 <td>E5</td>
-<td>1</td>
-<td>DFRobot DFR1026 charge/discharge module (5 V / 2 A output)</td>
-<td>Accepts 4.6–5.4 V input, ~2 A charge. It has <strong>no USB connector</strong> — needs E6. See the <a href="wiring.html#open-issue--dfr1026-restart-after-offon-unresolved-must-be-bench-tested">open issue</a> before committing to it.</td>
-<td>DFRobot DFR1026</td>
+<td>3</td>
+<td><strong>Male-male Dupont jumper pins</strong> (or 3 short male-male jumpers)</td>
+<td>Join the servo plug to the cable.</td>
+<td>any</td>
+<td>&lt; 1</td>
 </tr>
 <tr>
 <td>E6</td>
-<td>1</td>
-<td>USB-C female <strong>power-input</strong> breakout with <strong>5.1 kΩ pull-downs on both CC1 and CC2</strong></td>
-<td>The two 5.1 kΩ resistors (one per CC pin) are what make a USB-C charger switch on 5 V. <strong>No</strong> Power Delivery (PD) trigger board — this project must never receive 9 V or 12 V.</td>
-<td>Adafruit 4090 (USB-C breakout, downstream)</td>
-</tr>
-<tr>
-<td>E7</td>
-<td>1</td>
-<td>Protected 18650 lithium-ion cell, ~2600–3500 mAh</td>
-<td><strong>Protected</strong> (built-in protection circuit). Check the datasheet for <strong>≥2.1 A charge</strong> and <strong>≥3 A continuous discharge</strong> — capacity alone is not enough. Buy from a reputable supplier; protected cells are slightly longer than bare ones, so check the holder fits.</td>
-<td>Any reputable protected 18650 meeting both current ratings</td>
-</tr>
-<tr>
-<td>E8</td>
-<td>1</td>
-<td>Wired single-cell 18650 holder</td>
-<td>Flying leads (no soldering to the cell), fits a <em>protected</em> cell's length.</td>
-<td>Generic 1 × 18650 holder with leads</td>
-</tr>
-<tr>
-<td>E9</td>
-<td>1</td>
-<td>12 mm latching push-on/push-off button, 2 terminals, single-pole single-throw (SPST)</td>
-<td>Rated <strong>≥2 A at 5 V DC</strong> (check the DC rating, not only the AC one). Panel hole 12 mm; fascia is 2.6 mm thick.</td>
-<td>Generic 12 mm latching metal push button</td>
-</tr>
-<tr>
-<td>E10</td>
-<td>1</td>
-<td>3 A fuse + insulated inline holder</td>
-<td>On battery positive, as close to the holder as practical. Blade (ATM/mini) or 5 × 20 mm glass both fine.</td>
-<td>Inline mini-blade holder + 3 A fuse</td>
-</tr>
-<tr>
-<td>E11</td>
-<td>1</td>
-<td>1000 µF electrolytic capacitor, ≥10 V (16 V gives margin)</td>
-<td>Polarised: stripe = negative. Mounted at the servo end of its supply branch.</td>
-<td>Any 1000 µF 16 V radial</td>
-</tr>
-<tr>
-<td>E12</td>
-<td>1</td>
-<td>2.2 kΩ resistor, 1 %, ¼ W</td>
-<td>ECHO divider R1.</td>
-<td>Metal-film 1 %</td>
-</tr>
-<tr>
-<td>E13</td>
-<td>1</td>
-<td>3.3 kΩ resistor, 1 %, ¼ W</td>
-<td>ECHO divider R2.</td>
-<td>Metal-film 1 %</td>
-</tr>
-<tr>
-<td>E14</td>
-<td>~20</td>
-<td>Jumper leads, mostly female–female, plus short 22–24 AWG stranded power wire</td>
-<td>Power branches (charger → switch → load) in 22 AWG; signal leads can be jumpers.</td>
-<td>Assorted Dupont leads + 22 AWG silicone wire</td>
-</tr>
-<tr>
-<td>E15</td>
-<td>≥1</td>
-<td>Keyed two-pin power disconnect (J1)</td>
-<td>Polarised so it cannot be reversed (for example JST-XH 2.54 mm). Lets the ESP32's power lead unplug for programming.</td>
-<td>JST-XH 2-pin pair (or similar)</td>
-</tr>
-<tr>
-<td>E16</td>
-<td>1 lot</td>
-<td>Heat-shrink, double-sided foam tape, 2 battery straps or zip ties (≤3.6 mm wide), 4 rubber feet</td>
-<td>Straps go round the <strong>holder</strong>, not the bare cell.</td>
-<td>—</td>
-</tr>
-<tr>
-<td>E17</td>
-<td>1</td>
-<td>5 V / 3 A USB-C wall supply + USB-C cable</td>
-<td>Plain 5 V is enough; a PD charger also works because the breakout only asks for 5 V.</td>
-<td>Any reputable 5 V 3 A USB-C supply</td>
-</tr>
-<tr>
-<td>E18</td>
-<td>1</td>
-<td>USB <strong>data</strong> cable for the ESP32 board</td>
-<td>Micro-USB or USB-C to match E1. Charge-only cables will not program.</td>
-<td>—</td>
-</tr>
-<tr>
-<td>E19</td>
-<td>~260 g max</td>
-<td>PLA filament</td>
-<td>257 g is the solid-volume upper bound for all required parts plus the coupon (from <code>cad/geometry_report.json</code>); your slicer's figure with walls + infill will be lower.</td>
-<td>Any PLA</td>
-</tr>
-<tr>
-<td>E20</td>
 <td>1 (optional)</td>
-<td>3.3 V-logic USB-to-serial adapter + 2 female jumper leads</td>
-<td>Only for the live console. CP2102, CH340 or FT232 type, voltage set to <strong>3.3 V</strong>. Only its RX and GND are used; VCC stays unconnected. See <a href="live-link.html"><code>LIVE_LINK.md</code></a>.</td>
-<td>Generic CP2102 USB-UART module</td>
+<td>470–1000 µF, ≥ 6.3 V electrolytic capacitor</td>
+<td>Only if the board resets when the servo moves.</td>
+<td>any</td>
+<td>&lt; 1</td>
 </tr>
 </tbody>
 </table></div>
-<h2 id="fasteners--m2-only-no-m3m4">Fasteners — M2 only (no M3/M4)</h2>
+<p>You also need a <strong>USB cable</strong> that fits your CYD (micro-USB, or USB-C on CYD2USB boards) with data
+lines for flashing, and a <strong>USB charger or power bank rated ≥ 1 A</strong>. Most people already have both.</p>
+<p><strong>Estimated total: about US$18–30</strong> for E1–E5 plus ≈ 120 g of PLA.</p>
+<h2 id="printed-parts">Printed parts</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Plate</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>05 fit coupon</td>
+<td>S1</td>
+<td>print first (≈ 10 cm³) — checks pegs, sensor holes, servo pilots</td>
+</tr>
+<tr>
+<td>01 shell</td>
+<td>P1</td>
+<td>roof-down, no supports</td>
+</tr>
+<tr>
+<td>02 bezel</td>
+<td>P2</td>
+<td>face-down</td>
+</tr>
+<tr>
+<td>03 base</td>
+<td>P2</td>
+<td>flat</td>
+</tr>
+<tr>
+<td>04 head</td>
+<td>P2</td>
+<td>face-down</td>
+</tr>
+</tbody>
+</table></div>
+<p>Sizes, volumes and PLA estimates: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/printed_parts.csv"><code>manufacturing/printed_parts.csv</code></a>.
+Settings: <a href="printing.html"><code>PRINTING.md</code></a>.</p>
+<h2 id="fasteners">Fasteners</h2>
 <div class="tablewrap"><table>
 <thead>
 <tr>
@@ -204,54 +150,50 @@ show a measured battery percentage.</p>
 <tbody>
 <tr>
 <td>2</td>
-<td>M2×6 screw</td>
-<td>horn → rotor hub (from below, through the horn arm holes)</td>
-</tr>
-<tr>
-<td>12</td>
-<td>M2×8 screw</td>
-<td>4 roof → body, 4 front panel → body, 2 servo flange → roof, 2 turret keeper → roof</td>
-</tr>
-<tr>
-<td>4</td>
-<td>M2×12 screw</td>
-<td>HC-SR04 board → sensor head (nuts on the back)</td>
+<td>self-tapping screws that come with the SG90</td>
+<td>servo flange → the two bosses under the roof</td>
 </tr>
 <tr>
 <td>1</td>
-<td>M2×20 screw</td>
-<td>cross-bolt through the rotor hub and the sensor-head mast</td>
-</tr>
-<tr>
-<td>6</td>
-<td>M2 hex nut</td>
-<td>4 sensor + 1 cross-bolt + 1 spare — buy extras</td>
-</tr>
-<tr>
-<td>8</td>
-<td>M2 washer</td>
-<td>6–10 under screw heads on printed plastic</td>
-</tr>
-<tr>
-<td>1</td>
-<td>M2 hand tap</td>
-<td>cuts threads in the 1.70 mm printed pilot holes</td>
+<td>small screw that comes with the SG90 horn (optional)</td>
+<td>horn → head foot, only if the press fit is loose</td>
 </tr>
 </tbody>
 </table></div>
-<p>Screws are machine screws (pan or socket head). Holes in the prints are <strong>1.70 mm pilots</strong> (tap
-M2) and <strong>2.25 mm clearances</strong> (screw passes through). Print the fit-test coupon first and adjust
-<code>M2_PILOT_D</code> / <code>M2_CLEAR_D</code> in the CAD source if your printer runs tight or loose — see
-<a href="printing.html"><code>PRINTING.md</code></a>.</p>
-<h2 id="tools-you-will-need">Tools you will need</h2>
-<p>Soldering iron (for the charger pads, fuse holder leads, resistors and capacitor — <strong>never</strong> the
-cell), wire strippers, small cross-head and hex drivers, multimeter (required for the bench-power
-stage), calipers (required for the VERIFY measurements), tweezers, a heat source for heat-shrink.</p>
-<h2 id="if-the-power-open-issue-forces-a-change">If the power open issue forces a change</h2>
-<p><a href="wiring.html#open-issue--dfr1026-restart-after-offon-unresolved-must-be-bench-tested"><code>WIRING.md</code> → Open issue</a>
-lists two documented fall-backs: <strong>Option A</strong> adds a small momentary push button for the DFR1026
-KEY (fits the rear knock-out); <strong>Option B</strong> replaces the DFR1026 with an Adafruit PowerBoost 1000C.
-Neither has been tested. Update this BOM in the same commit as the wiring change.</p>
+<h2 id="tools">Tools</h2>
+<p>Small Phillips screwdriver, side cutters, a multimeter (to check P1 VIN before connecting the
+servo), and a 3D printer with a ≥ 105 × 100 mm bed (made for a Bambu Lab A1 mini, 180 × 180 mm).</p>
+<h2 id="what-v6-removed-and-why-it-is-cheaper">What V6 removed (and why it is cheaper)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>V5.1 needed</th>
+<th>V6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ESP32 DevKit + separate 1.8" LCD + 8 display wires</td>
+<td>one CYD board (screen, touch, ESP32, RGB LED, USB)</td>
+</tr>
+<tr>
+<td>18650 cell, holder, charger/boost board, USB-C breakout, fuse, switch, 1000 µF capacitor</td>
+<td>one USB cable from a charger or power bank</td>
+</tr>
+<tr>
+<td>2.2 kΩ + 3.3 kΩ divider</td>
+<td>3.3 V sensor — no divider</td>
+</tr>
+<tr>
+<td>M2 screws, nuts, standoffs</td>
+<td>press fits + the servo's own screws</td>
+</tr>
+<tr>
+<td>20 purchased line items, 28 wires, six printed parts</td>
+<td>5 line items, 7 wires, four printed parts</td>
+</tr>
+</tbody>
+</table></div>
 <p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/BOM.md">docs/BOM.md</a> — generated by scripts/build_site.py</p>
 </main></div>
 <script src="../assets/pwa.js" data-root="../"></script>

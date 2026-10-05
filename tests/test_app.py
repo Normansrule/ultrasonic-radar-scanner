@@ -51,7 +51,7 @@ def test_app_pages_have_csp():
     assert "Content-Security-Policy" in bs and "object-src \\'none\\'" in bs
 
 
-def test_live_link_docs_keep_the_usb_rule():
+def test_live_link_docs_describe_the_single_usb_cable():
     doc = (ROOT / "docs" / "LIVE_LINK.md").read_text()
-    assert "never plug the ESP32's own USB port in while the" in doc
-    assert "VCC / 5V / 3V3** — leave unconnected" in doc
+    assert "same USB cable that powers the" in doc and "115 200" in doc
+    assert "may **restart** the board" in doc  # honest about the auto-reset on port open

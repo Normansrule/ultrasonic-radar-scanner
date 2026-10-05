@@ -1,7 +1,7 @@
 """
 Reference implementation of every equation in docs/EQUATIONS.md.
 
-The integer maths deliberately mirrors firmware/Radar_V5/Radar_V5.ino (C
+The integer maths deliberately mirrors firmware/Radar_V6/Radar_V6.ino (C
 integer division truncates), so the tests can check the firmware formulas and
 the documentation numbers against one source.
 """
@@ -14,15 +14,18 @@ SWEEP_STEP_DEG = 3
 SETTLE_MS = 70
 MAX_RANGE_CM = 200.0
 AIR_TEMP_C = 20.0
+DETECTION_TTL_MS = 10000
 SERVO_FREQ_HZ = 50
 SERVO_RES_BITS = 16
 SERVO_US_AT_0 = 1000
 SERVO_US_AT_180 = 2000
 SERVO_US_GUARD_MIN = 900
 SERVO_US_GUARD_MAX = 2100
-TFT_SPI_HZ = 15_000_000
-SCREEN_W, SCREEN_H = 160, 128
+TFT_SPI_HZ = 40_000_000
+SCREEN_W, SCREEN_H = 320, 240
+SENSOR_VCC = 3.3                 # RCWL-1601 / HC-SR04P powered from the CYD's 3.3 V
 
+# Only for the fallback with a 5 V-only HC-SR04 (docs/WIRING.md): ECHO divider
 R1_OHM = 2200.0
 R2_OHM = 3300.0
 ESP32_VDD = 3.3
@@ -31,7 +34,7 @@ ESP32_VIN_ABS_MAX = ESP32_VDD + 0.3
 
 # ---- ESTIMATES (not measurements) used only for the sweep-cadence figure ----
 FRAME_PUSH_MS = SCREEN_W * SCREEN_H * 16 / TFT_SPI_HZ * 1000   # full-frame SPI transfer
-DRAW_EST_MS = 3.0                                             # canvas drawing, rough guess
+DRAW_EST_MS = 8.0                                             # 4 canvas bands, rough guess
 ECHO_TYP_MS = 6.0                                             # ~1 m target round trip
 OVERHEAD_EST_MS = FRAME_PUSH_MS + DRAW_EST_MS + ECHO_TYP_MS
 

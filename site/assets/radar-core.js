@@ -1,8 +1,8 @@
 /*
   radar-core.js — shared by the web live console, the desktop app and the Node tests.
 
-  Parses the firmware's serial output (firmware/Radar_V5/Radar_V5.ino, 115 200 baud):
-    # Radar V5.1 - educational ultrasonic sonar, radar-style display
+  Parses the firmware's serial output (firmware/Radar_V6/Radar_V6.ino, 115 200 baud):
+    # Radar V6 - educational ultrasonic sonar, radar-style display
     # sweep 30..150 deg, step 3, settle 70 ms, range 200 cm, echo timeout 13812 us
     angle_deg,distance_cm   (-1 = no valid echo)
     90,57.3
@@ -163,7 +163,7 @@
 
   /** High-resolution radar-style renderer. */
   function createView(canvas, opts) {
-    const o = Object.assign({ ttlMs: 9000, trail: 6 }, opts || {});
+    const o = Object.assign({ ttlMs: 10000, trail: 6 }, opts || {});
     const ctx = canvas.getContext("2d");
     const dets = new Map(); // deg -> {cm, t}
     let cfg = { ...DEFAULTS };

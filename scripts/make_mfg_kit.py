@@ -8,11 +8,11 @@ without the source tree.
     build_packet.pdf            printable traveller with tick boxes
     bom.csv, printed_parts.csv, wiring_pins.csv, wire_list.csv
     3mf/  stl/  step/           print-ready plates, single parts, editable CAD
-    diagrams/                   wiring (SVG + PNG), ECHO/fuse callout, parts kit, plates, exploded view
+    diagrams/                   renders, wiring (SVG + PNG), parts kit, plates
     firmware/                   ESP32 images (only when --firmware-dir has them)
     LICENSE, CREDITS.md, REQUIREMENTS.md, VALIDATION.md
 
-Usage: python scripts/make_mfg_kit.py --version v5.2.0 --out dist [--firmware-dir dist]
+Usage: python scripts/make_mfg_kit.py --version v6.0.0 --out dist [--firmware-dir dist]
 """
 from __future__ import annotations
 
@@ -22,41 +22,40 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-DIAGRAMS = ["wiring_full.svg", "wiring_power.svg", "wiring_signal.svg", "callout_echo_divider_fuse.svg",
-            "bom_overview.svg", "build_flow.svg", "live_link_tap.svg", "exploded_v5.png", "assembly_v5.png",
-            "layout_v5.png", "plate_P1.png", "plate_P2.png", "plate_S1_fit_coupon.png", "plate_S2_servo_fit_subset.png",
-            "png/wiring_full.png", "png/callout_echo_divider_fuse.png", "png/bom_overview.png", "png/build_flow.png"]
+DIAGRAMS = ["hero.png", "hero_back.png", "exploded.png", "parts_labeled.png", "assembly_section.png",
+            "wiring_picture.svg", "wiring_full.svg", "bom_overview.svg", "build_flow.svg",
+            "plate_P1.png", "plate_P2.png", "plate_S1_fit_coupon.png",
+            "png/wiring_picture.png", "png/wiring_full.png", "png/bom_overview.png", "png/build_flow.png"]
 
 README = """ULTRASONIC RADAR SCANNER - MANUFACTURING KIT {version}
-Radar V5.1 hardware baseline. Educational ultrasonic (sonar) instrument with a
-radar-style display - NOT radio-frequency radar, NOT a safety device.
-Nothing in this kit had been physically validated when it was generated:
-record your results (VALIDATION.md test IDs) and share them.
+Radar V6 "Mini": Cheap Yellow Display + 3.3 V ultrasonic sensor + SG90 servo,
+7 wires, 4 printed parts, one USB cable. Educational ultrasonic (sonar)
+instrument with a radar-style display - NOT radio-frequency radar, NOT a
+safety device. Nothing in this kit had been physically validated when it was
+generated: record your results (VALIDATION.md test IDs) and share them.
 
 BUILD ORDER
  1. build_packet.pdf ........ print it; it is your checklist for every step
  2. bom.csv ................. buy the parts (check each "check_before_buying")
  3. 3mf/plate_S1_fit_coupon.3mf  print the fit coupon FIRST, tune hole sizes
- 4. 3mf/plate_S2_servo_fit_subset.3mf  roof + hub + keeper, test the servo fit
- 5. wire_list.csv ........... power wires first (no ESP32), then signals
- 6. firmware/ ............... flash radar_v5_esp32_*_merged.bin at 0x0
+ 4. wire_list.csv ........... 7 wires, USB unplugged
+ 5. firmware/ ............... flash radar_v6_esp32_*_merged.bin at 0x0
                               (*_app.bin is the app alone, at 0x10000)
-                              (or use the web app's Flash page)
- 7. 3mf/radar_v5_a1mini_multiplate.3mf  print the rest (plates P1 + P2)
- 8. build_packet.pdf sections 6-7  assembly gates and the physical test sheet
+                              (or use the web page's Flash firmware button)
+ 6. 3mf/radar_a1mini_multiplate.3mf  print plates P1 + P2 (no supports)
+ 7. build_packet.pdf sections 6-7  assembly gates and the physical test sheet
 
 FILES
  3mf/   Bambu Lab A1 mini plates (any slicer opens the plate_*.3mf files)
  stl/   each part alone, already in print orientation, PLA, no supports
- step/  each part in assembled position + assembly_v5.step (editable CAD)
- diagrams/  wiring, ECHO divider + fuse callout, parts kit, plates, views
+ step/  each part in assembled position + assembly.step (editable CAD)
+ diagrams/  renders, wiring picture, parts kit, plates
 
-SAFETY (non-negotiable)
- - 3 A fuse on the battery positive lead.
- - Never connect a bare cell to ESP32 VIN or the servo.
- - ECHO reaches GPIO26 only through the 2.2k / 3.3k divider.
- - Never connect the ESP32's own USB while the battery harness is connected.
- - Do not charge unattended while prototyping.
+SAFETY
+ - Wire with USB unplugged; check each wire against wire_list.csv.
+ - Use a 3.3 V-capable sensor (RCWL-1601 / HC-SR04P). A 5 V-only HC-SR04
+   needs the ECHO divider described in the docs.
+ - Measure P1 VIN ~5 V before connecting the servo. Charger >= 1 A.
 
 Source, docs, apps: {repo}
 Licence: MIT (see LICENSE). Datasheets and credits: CREDITS.md.
@@ -85,7 +84,7 @@ def main():
         (ROOT / "docs" / "REQUIREMENTS.md", "REQUIREMENTS.md"), (ROOT / "docs" / "VALIDATION.md", "VALIDATION.md"),
     ]
     if a.firmware_dir:
-        for p in sorted(Path(a.firmware_dir).glob("radar_v5_esp32*.bin")):
+        for p in sorted(Path(a.firmware_dir).glob("radar_v6_esp32*.bin")):
             files.append((p, f"firmware/{p.name}"))
     missing = [str(p) for p, _ in files if not p.exists()]
     if missing:

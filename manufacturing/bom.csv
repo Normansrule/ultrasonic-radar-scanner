@@ -1,28 +1,9 @@
-id,category,qty,part,check_before_buying,reference_candidate,needed_from_stage,optional
-E1,Electronics,1,"ESP32-WROOM-32 development board (""DevKit""), classic 30-pin, headers already soldered","Module marking says WROOM-32 (not WROVER); pins labelled GPIO16/17/18/23/26/27/33/14; a USB data port. Do not substitute an ESP32-C3, ESP32-S3 or a WROVER board without re-checking every pin and the firmware — GPIO16/17 are used for PSRAM on WROVER.","Generic ""ESP32 DevKit V1 (30-pin)""",4,no
-E2,Electronics,1,HC-SR04 ultrasonic sensor,5 V part with 4-pin header VCC/TRIG/ECHO/GND; four corner mounting holes (the sensor head expects them — SR04_HOLE_X/Y in the CAD are VERIFY values).,Generic HC-SR04,5,no
-E3,Electronics,1,SG90-size positional micro servo with its factory double-arm horn,"180°-type positional servo, not continuous-rotation (""360°"") — those cannot hold an angle. Keep the factory horn and spline.",TowerPro SG90,2,no
-E4,Electronics,1,"Waveshare 1.8"" SPI LCD, ST7735S, 128×160",Pins VCC/GND/DIN/CLK/CS/DC/RST/BL; board 56.5 × 34 mm (check your revision).,Waveshare 1.8inch LCD Module,5,no
-E5,Power and protection,1,DFRobot DFR1026 charge/discharge module (5 V / 2 A output),"Accepts 4.6–5.4 V input, ~2 A charge. It has no USB connector — needs E6. See the open issue before committing to it.",DFRobot DFR1026,3,no
-E6,Power and protection,1,USB-C female power-input breakout with 5.1 kΩ pull-downs on both CC1 and CC2,The two 5.1 kΩ resistors (one per CC pin) are what make a USB-C charger switch on 5 V. No Power Delivery (PD) trigger board — this project must never receive 9 V or 12 V.,"Adafruit 4090 (USB-C breakout, downstream)",3,no
-E7,Power and protection,1,"Protected 18650 lithium-ion cell, ~2600–3500 mAh","Protected (built-in protection circuit). Check the datasheet for ≥2.1 A charge and ≥3 A continuous discharge — capacity alone is not enough. Buy from a reputable supplier; protected cells are slightly longer than bare ones, so check the holder fits.",Any reputable protected 18650 meeting both current ratings,3,no
-E8,Power and protection,1,Wired single-cell 18650 holder,"Flying leads (no soldering to the cell), fits a protected cell's length.",Generic 1 × 18650 holder with leads,3,no
-E9,Power and protection,1,"12 mm latching push-on/push-off button, 2 terminals, single-pole single-throw (SPST)","Rated ≥2 A at 5 V DC (check the DC rating, not only the AC one). Panel hole 12 mm; fascia is 2.6 mm thick.",Generic 12 mm latching metal push button,3,no
-E10,Power and protection,1,3 A fuse + insulated inline holder,"On battery positive, as close to the holder as practical. Blade (ATM/mini) or 5 × 20 mm glass both fine.",Inline mini-blade holder + 3 A fuse,3,no
-E11,Power and protection,1,"1000 µF electrolytic capacitor, ≥10 V (16 V gives margin)",Polarised: stripe = negative. Mounted at the servo end of its supply branch.,Any 1000 µF 16 V radial,3,no
-E12,Passive parts,1,"2.2 kΩ resistor, 1 %, ¼ W",ECHO divider R1.,Metal-film 1 %,4,no
-E13,Passive parts,1,"3.3 kΩ resistor, 1 %, ¼ W",ECHO divider R2.,Metal-film 1 %,4,no
-E14,Wiring and mounting,~20,"Jumper leads, mostly female–female, plus short 22–24 AWG stranded power wire",Power branches (charger → switch → load) in 22 AWG; signal leads can be jumpers.,Assorted Dupont leads + 22 AWG silicone wire,3,no
-E15,Wiring and mounting,≥1,Keyed two-pin power disconnect (J1),Polarised so it cannot be reversed (for example JST-XH 2.54 mm). Lets the ESP32's power lead unplug for programming.,JST-XH 2-pin pair (or similar),4,no
-E16,Wiring and mounting,1 lot,"Heat-shrink, double-sided foam tape, 2 battery straps or zip ties (≤3.6 mm wide), 4 rubber feet","Straps go round the holder, not the bare cell.",—,5,no
-E17,Cables,1,5 V / 3 A USB-C wall supply + USB-C cable,Plain 5 V is enough; a PD charger also works because the breakout only asks for 5 V.,Any reputable 5 V 3 A USB-C supply,3,no
-E18,Cables,1,USB data cable for the ESP32 board,Micro-USB or USB-C to match E1. Charge-only cables will not program.,—,4,no
-E19,Consumables,~260 g max,PLA filament,257 g is the solid-volume upper bound for all required parts plus the coupon (from cad/geometry_report.json); your slicer's figure with walls + infill will be lower.,Any PLA,1,no
-E20,Optional (live link),1 (optional),3.3 V-logic USB-to-serial adapter + 2 female jumper leads,"Only for the live console. CP2102, CH340 or FT232 type, voltage set to 3.3 V. Only its RX and GND are used; VCC stays unconnected. See LIVE_LINK.md.",Generic CP2102 USB-UART module,5,yes
-F1,Fasteners (M2 only),2,M2×6 screw,"horn → rotor hub (from below, through the horn arm holes)",ISO metric M2,2,no
-F2,Fasteners (M2 only),12,M2×8 screw,"4 roof → body, 4 front panel → body, 2 servo flange → roof, 2 turret keeper → roof",ISO metric M2,2,no
-F3,Fasteners (M2 only),4,M2×12 screw,HC-SR04 board → sensor head (nuts on the back),ISO metric M2,2,no
-F4,Fasteners (M2 only),1,M2×20 screw,cross-bolt through the rotor hub and the sensor-head mast,ISO metric M2,2,no
-F5,Fasteners (M2 only),6,M2 hex nut,4 sensor + 1 cross-bolt + 1 spare — buy extras,ISO metric M2,2,no
-F6,Fasteners (M2 only),8,M2 washer,6–10 under screw heads on printed plastic,ISO metric M2,2,no
-F7,Fasteners (M2 only),1,M2 hand tap,cuts threads in the 1.70 mm printed pilot holes,ISO metric M2,2,no
+id,category,qty,part,check_before_buying,reference_candidate,est_usd,needed_from_stage,optional
+E1,Electronics,1,"ESP32-2432S028R ""Cheap Yellow Display"" (CYD) — ESP32 + 2.8"" 320×240 touch screen","Exact name ESP32-2432S028R. Both the ILI9341 version and the two-USB ""CYD2USB"" (ST7789) version work — the firmware detects the panel.",witnessmenow/ESP32-Cheap-Yellow-Display,12–20,2,no
+E2,Electronics,1,"Ultrasonic sensor, 3.3 V capable: RCWL-1601 or HC-SR04P",Listing must say it works from 3 V–5.5 V. A plain 5 V-only HC-SR04 needs the fallback divider.,Adafruit 4007 (RCWL-1601),2–4,2,no
+E3,Electronics,1,"SG90 micro servo, positional (180°), with horns and its 2 screws","Not ""360°"" or ""continuous rotation"". The single-arm horn must come in the bag.",TowerPro SG90,2–3,2,no
+E4,Cables,3,JST 1.25 mm 4-pin → Dupont female cable,"Often one is in the CYD box — you need three (CN1, P3, P1).","""1.25 mm 4 pin to Dupont""",1–2,2,no
+E5,Cables,3,Male-male Dupont jumper pins (or 3 short male-male jumpers),Join the servo plug to the cable.,any,< 1,2,no
+E6,Optional,1,"470–1000 µF, ≥ 6.3 V electrolytic capacitor",Only if the board resets when the servo moves.,any,< 1,5,yes
+F1,Fasteners (included with the servo),2,self-tapping screws that come with the SG90,servo flange → the two bosses under the roof,SG90 accessory bag,0,4,no
+F2,Fasteners (included with the servo),1,small screw that comes with the SG90 horn (optional),"horn → head foot, only if the press fit is loose",SG90 accessory bag,0,4,yes

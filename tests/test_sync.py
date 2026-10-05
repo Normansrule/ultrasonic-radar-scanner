@@ -7,7 +7,7 @@ from pathlib import Path
 import radar_math as rm
 
 ROOT = Path(__file__).resolve().parents[1]
-INO = (ROOT / "firmware" / "Radar_V5" / "Radar_V5.ino").read_text(encoding="utf-8")
+INO = (ROOT / "firmware" / "Radar_V6" / "Radar_V6.ino").read_text(encoding="utf-8")
 WIRING = (ROOT / "docs" / "WIRING.md").read_text(encoding="utf-8")
 
 
@@ -43,9 +43,18 @@ def test_every_firmware_pin_is_documented():
     assert fw_pins == {r["Firmware constant"] for r in PINMAP}
 
 
-def test_netlist_esp32_gpios_match_pinmap():
-    gpio_rows = {int(r["Pin"].split("GPIO")[1]): r["Net"] for r in NETLIST if r["Pin"].startswith("ESP32.GPIO")}
-    assert gpio_rows == {int(r["GPIO"]): r["Net"] for r in PINMAP}
+def test_netlist_gpios_match_pinmap():
+    """Every IOxx pin in the net list is the GPIO the pin map gives for that net's firmware constant."""
+    net_of_const = {"PIN_TRIG": "TRIG", "PIN_ECHO": "ECHO", "PIN_SERVO": "SERVO_PWM"}
+    gpio_rows = {int(r["Pin"].split(".IO")[1]): r["Net"] for r in NETLIST if ".IO" in r["Pin"]}
+    assert gpio_rows == {int(r["GPIO"]): net_of_const[r["Firmware constant"]] for r in PINMAP
+                         if r["Where"] != "on-board"}
+
+
+def test_connector_pins_are_on_the_documented_connector():
+    for r in PINMAP:
+        if r["Where"] != "on-board":
+            assert f'{r["Where"]}.IO{r["GPIO"]}' in {n["Pin"] for n in NETLIST}, r
 
 
 def test_math_module_mirrors_firmware_constants():
@@ -53,7 +62,7 @@ def test_math_module_mirrors_firmware_constants():
                  "SERVO_RES_BITS", "SERVO_US_AT_0", "SERVO_US_AT_180", "SERVO_US_GUARD_MIN",
                  "SERVO_US_GUARD_MAX", "TFT_SPI_HZ"):
         assert float(fw_const(name)) == float(getattr(rm, name)), name
-    for name in ("MAX_RANGE_CM", "AIR_TEMP_C"):
+    for name in ("MAX_RANGE_CM", "AIR_TEMP_C", "DETECTION_TTL_MS"):
         assert float(fw_const(name)) == getattr(rm, name), name
 
 
@@ -67,13 +76,15 @@ def test_shipping_defaults():
 FLASH_PINS = set(range(6, 12))
 STRAPPING = {0, 2, 5, 12, 15}
 INPUT_ONLY = {34, 35, 36, 37, 38, 39}
+OFF_BOARD = [r for r in PINMAP if r["Where"] != "on-board"]
 
 
-def test_no_flash_or_strapping_pins():
+def test_no_flash_pins_and_no_strapping_pins_off_board():
+    """The CYD itself uses strapping pins 2, 12 and 15 for the display; our wires must not."""
     for r in PINMAP:
-        g = int(r["GPIO"])
-        assert g not in FLASH_PINS, r
-        assert g not in STRAPPING, r
+        assert int(r["GPIO"]) not in FLASH_PINS, r
+    for r in OFF_BOARD:
+        assert int(r["GPIO"]) not in STRAPPING, r
 
 
 def test_outputs_not_on_input_only_pins():
@@ -82,11 +93,22 @@ def test_outputs_not_on_input_only_pins():
             assert int(r["GPIO"]) not in INPUT_ONLY, r
 
 
-def test_lcd_cs_not_gpio5():
-    assert int(fw_const("PIN_TFT_CS")) != 5
+def test_echo_on_input_only_pin_is_fine():
+    assert int(fw_const("PIN_ECHO")) in INPUT_ONLY  # 35 can only be an input - that is all ECHO needs
 
 
 # ---------------------------------------------------------------- wiring safety rules
+def test_seven_wires_two_ends_each():
+    wires = defaultdict(list)
+    for r in NETLIST:
+        wires[r["Wire"]].append(r["Pin"])
+    assert sorted(wires) == [f"W{i}" for i in range(1, 8)]
+    for w, ends in wires.items():
+        assert len(ends) == 2, w
+        cyd_end = [e for e in ends if e.split(".")[0] in {"CN1", "P3", "P1"}]
+        assert len(cyd_end) == 1, f"{w} must run from a CYD connector to a module"
+
+
 def test_each_pin_listed_once_and_nets_have_two_ends():
     pins = [r["Pin"] for r in NETLIST]
     assert len(pins) == len(set(pins))
@@ -94,53 +116,33 @@ def test_each_pin_listed_once_and_nets_have_two_ends():
         assert len(members) >= 2, f"{net} is connected to only {members}"
 
 
-def test_echo_5v_never_touches_the_esp32():
-    assert set(NETS["ECHO_5V"]) == {"SR04.ECHO", "R1.1"}
-    assert "ESP32.GPIO26" in NETS["ECHO_3V"]
-    assert {"R1.2", "R2.1"} <= set(NETS["ECHO_3V"]) and "R2.2" in NETS["GND"]
+def test_sensor_runs_from_3v3_so_echo_is_3v3():
+    assert set(NETS["3V3"]) == {"CN1.3V3", "SENSOR.VCC"}
+    assert set(NETS["ECHO"]) == {"P3.IO35", "SENSOR.ECHO"}
+    assert rm.SENSOR_VCC == 3.3
 
 
-def test_fuse_is_first_thing_on_battery_positive():
-    assert set(NETS["BAT_RAW"]) == {"CELL.+", "FUSE.A"}
-    assert set(NETS["BAT_POS"]) == {"FUSE.B", "DFR1026.BAT+"}
+def test_servo_on_vin_not_3v3():
+    assert set(NETS["VIN_5V"]) == {"P1.VIN", "SERVO.+5V"}
+    assert not any(p.startswith("SERVO.") for p in NETS["3V3"])
 
 
-def test_bare_cell_never_feeds_a_load():
-    for net in ("BAT_RAW", "BAT_POS", "BAT_NEG"):
-        assert not any(p.split(".")[0] in {"ESP32", "SERVO", "SR04", "LCD"} for p in NETS[net]), net
+def test_usb_serial_and_backlight_pins_untouched():
+    used = {r["Pin"] for r in NETLIST}
+    for p in ("P1.TX", "P1.RX", "P3.IO21", "P3.IO22"):
+        assert p not in used, p
 
 
-def test_switch_cuts_load_not_charger():
-    assert set(NETS["OUT_5V"]) == {"DFR1026.OUT_5V", "SW.1"}
-    assert "SW.2" in NETS["LOAD_5V"]
-    for net in ("USB_5V", "BAT_POS", "BAT_RAW"):
-        assert not any(p.startswith("SW.") for p in NETS[net])
-
-
-def test_servo_and_sensor_on_5v_not_3v3():
-    assert "SERVO.RED" in NETS["LOAD_5V"] and "SR04.VCC" in NETS["LOAD_5V"]
-    assert not any(p.startswith(("SERVO.", "SR04.")) for p in NETS["3V3"])
-
-
-def test_bulk_cap_on_load_rail():
-    assert "C1.+" in NETS["LOAD_5V"] and "C1.-" in NETS["GND"]
-
-
-def test_rear_usb_has_no_data_lines():
-    assert not any(p.startswith("USBC.D") for p in NETS.keys()) and \
-        not any(r["Pin"].startswith(("USBC.D+", "USBC.D-")) for r in NETLIST)
-
-
-def test_no_sd_card_wiring():
-    assert not any("SD" in r["Pin"].split(".")[1] for r in NETLIST if r["Pin"].startswith("LCD."))
+def test_common_ground():
+    assert {"CN1.GND", "SENSOR.GND", "P1.GND", "SERVO.GND"} == set(NETS["GND"])
 
 
 def test_compile_records_match_current_firmware():
     """A compile record is only evidence for the exact source it was made from."""
     import hashlib
-    h = hashlib.sha256((ROOT / "firmware" / "Radar_V5" / "Radar_V5.ino").read_bytes()).hexdigest()
+    h = hashlib.sha256((ROOT / "firmware" / "Radar_V6" / "Radar_V6.ino").read_bytes()).hexdigest()
     for c in ("3", "2"):
         rec = (ROOT / "docs" / "validation" / f"compile_core{c}.txt").read_text(encoding="utf-8")
         assert f"source_sha256: {h}" in rec, (
-            f"compile_core{c}.txt was made from a different Radar_V5.ino - recompile and update the record")
+            f"compile_core{c}.txt was made from a different Radar_V6.ino - recompile and update the record")
         assert "warnings: 0" in rec and "errors: 0" in rec

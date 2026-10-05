@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:77257950-1258-5c42-9d41-2370403d0960",
+  "serialNumber": "urn:uuid:3996b814-64b0-5b91-b005-9467671ecc31",
   "version": 1,
   "metadata": {
     "component": {
@@ -19,7 +19,7 @@
     "properties": [
       {
         "name": "generated-from",
-        "value": "firmware/Radar_V5/sketch.yaml, requirements.txt, app/package-lock.json"
+        "value": "firmware/Radar_V6/sketch.yaml, requirements.txt, app/package-lock.json"
       }
     ]
   },
@@ -126,6 +126,23 @@
     },
     {
       "type": "library",
+      "name": "Adafruit ILI9341",
+      "version": "1.6.4",
+      "purl": "pkg:github/adafruit/Adafruit_ILI9341@1.6.4",
+      "properties": [
+        {
+          "name": "role",
+          "value": "firmware library"
+        }
+      ],
+      "licenses": [
+        {
+          "expression": "NOASSERTION"
+        }
+      ]
+    },
+    {
+      "type": "library",
       "name": "Adafruit ST7735 and ST7789 Library",
       "version": "1.11.0",
       "purl": "pkg:github/adafruit/Adafruit-ST7735-Library@1.11.0",
@@ -146,6 +163,23 @@
           "license": {
             "id": "MIT"
           }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "XPT2046_Touchscreen",
+      "version": "1.4",
+      "purl": "pkg:github/adafruit/XPT2046_Touchscreen@1.4",
+      "properties": [
+        {
+          "name": "role",
+          "value": "firmware library"
+        }
+      ],
+      "licenses": [
+        {
+          "expression": "NOASSERTION"
         }
       ]
     },

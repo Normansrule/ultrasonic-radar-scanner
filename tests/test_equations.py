@@ -42,7 +42,14 @@ def test_echo_timeout_matches_firmware_expression():
     assert rm.echo_timeout_us(200.0, 20.0) == 13812
 
 
-# 2. ECHO divider -------------------------------------------------------------
+# 2. ECHO level ---------------------------------------------------------------
+def test_3v3_sensor_echo_needs_no_divider():
+    """Default build: the sensor runs from 3.3 V, so ECHO high is at most 3.3 V."""
+    assert rm.SENSOR_VCC <= rm.ESP32_VDD < rm.ESP32_VIN_ABS_MAX
+    assert rm.SENSOR_VCC * 0.9 > rm.ESP32_VIH        # even a 10 % weak high reads as HIGH
+
+
+# fallback only: 5 V HC-SR04 + divider
 def test_divider_nominal():
     assert close(rm.divider_vout(5.0), 3.0, 1e-9)
 
@@ -111,14 +118,14 @@ def test_settle_exceeds_hcsr04_recommended_cycle():
 
 
 def test_cadence_estimate():
-    assert close(rm.FRAME_PUSH_MS, 21.85, 0.01)
+    assert close(rm.FRAME_PUSH_MS, 30.72, 0.01)       # 320 x 240 x 16 bit at 40 MHz
     step = rm.step_time_ms()
-    assert 90 < step < 110
+    assert 105 < step < 125
     assert close(rm.sweep_one_way_s(), 40 * step / 1000, 1e-9)
-    assert 3.6 < rm.sweep_one_way_s() < 4.4
-    assert 9 < rm.display_refresh_hz() < 11
+    assert 4.2 < rm.sweep_one_way_s() < 5.0
+    assert 8 < rm.display_refresh_hz() < 10
     # detections must outlive one full round trip so dots persist until revisited
-    assert 9000 > rm.sweep_round_trip_s() * 1000
+    assert rm.DETECTION_TTL_MS > rm.sweep_round_trip_s() * 1000
 
 
 if __name__ == "__main__":

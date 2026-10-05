@@ -27,686 +27,344 @@
 <a href="publish.html">Publishing</a>
 <a href="credits.html">Credits &amp; sources</a>
 <a href="changelog.html">Changelog</a></nav>
-<main class="doc"><h1 id="wiring--pin-by-pin-radar-v51-baseline">Wiring — pin by pin (Radar V5.1 baseline)</h1>
+<main class="doc"><h1 id="wiring--7-wires-pin-by-pin-radar-v6">Wiring — 7 wires, pin by pin (Radar V6)</h1>
+<p><img alt="Wiring picture" src="../assets/diagrams/wiring_picture.svg" /></p>
 <blockquote>
-<p><strong>Follow the labels, not the wire colours.</strong> Jumper colours vary between kits; module
-silkscreen labels do not. Where this page and your module's silkscreen disagree, stop and
-check the module's datasheet (links in <a href="credits.html"><code>CREDITS.md</code></a>).</p>
+<p><strong>Follow the silkscreen labels, not the wire colours.</strong> Cable colours and the pin order printed
+on Cheap Yellow Display (CYD) connectors differ between batches. Read the labels on <em>your</em> board
+before plugging anything in.</p>
 </blockquote>
-<p>This page is the <strong>single source of truth</strong> for connections. Two things are generated from it:</p>
-<ul>
-<li>the SVG wiring diagrams in <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/tree/main/hardware/diagrams"><code>hardware/diagrams/</code></a> (<code>python scripts/gen_diagrams.py</code>)</li>
-<li>the firmware pin check: <code>python -m pytest tests/test_sync.py</code> fails if the <code>PIN_…</code>
-  constants in <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/firmware/Radar_V5/Radar_V5.ino"><code>firmware/Radar_V5/Radar_V5.ino</code></a> and the
-  <a href="#esp32-pin-map">ESP32 pin map</a> below disagree.</li>
-</ul>
-<p>Spreadsheet versions: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/wiring_pins.csv"><code>manufacturing/wiring_pins.csv</code></a> (pin by pin) and
-<a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/wire_list.csv"><code>manufacturing/wire_list.csv</code></a> (point-to-point wires W01–W28, as printed in the
-<a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/build_packet.pdf">build packet</a>).</p>
-<p>Status: <strong>documented and cross-checked on paper only.</strong> Nothing on this page has been wired and
-powered yet — see <a href="validation.html"><code>VALIDATION.md</code></a>.</p>
-<p><img alt="Full wiring diagram" src="../assets/diagrams/wiring_full.svg" /></p>
-<h2 id="words-used-on-this-page">Words used on this page</h2>
+<p>This page is the <strong>single source of truth</strong>. <code>python scripts/gen_diagrams.py</code> draws the diagrams
+from the tables below, and <code>python -m pytest tests/test_sync.py</code> fails if the firmware <code>PIN_…</code>
+constants disagree with them.</p>
+<p>Status: <strong>checked on paper only</strong> — nothing here has been wired and powered yet
+(<a href="validation.html"><code>VALIDATION.md</code></a>).</p>
+<h2 id="the-three-connectors-you-use">The three connectors you use</h2>
+<p>The CYD has three small 4-pin <strong>JST 1.25 mm</strong> sockets on its back. You use one or two pins on each.</p>
 <div class="tablewrap"><table>
 <thead>
 <tr>
-<th>Term</th>
-<th>Meaning</th>
+<th>Connector</th>
+<th>Its 4 pins (typical silkscreen)</th>
+<th>You use</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Net</td>
-<td>A set of pins that are all electrically connected together. Every pin on the same net touches the same copper.</td>
+<td><strong>CN1</strong></td>
+<td>GND · IO22 · IO27 · 3.3V</td>
+<td>all four: sensor power, TRIG, ground + servo signal</td>
 </tr>
 <tr>
-<td><code>LOAD_5V</code></td>
-<td>The switched 5 V rail that feeds the scanner. It is live only when the latching switch is ON.</td>
+<td><strong>P3</strong></td>
+<td>GND · IO35 · IO22 · IO21</td>
+<td><strong>IO35 only</strong> (sensor ECHO). Leave IO22 and IO21 unconnected (IO21 is the backlight on most boards).</td>
 </tr>
 <tr>
-<td><code>GND</code> (common ground)</td>
-<td>The shared 0 V reference for the ESP32, sensor, servo and display.</td>
-</tr>
-<tr>
-<td>General-Purpose Input/Output (GPIO)</td>
-<td>A numbered ESP32 pin that firmware can read or drive.</td>
-</tr>
-<tr>
-<td>Serial Peripheral Interface (SPI)</td>
-<td>The 4-wire bus (clock, data, chip-select, data/command) that drives the LCD.</td>
-</tr>
-<tr>
-<td>Pulse-Width Modulation (PWM)</td>
-<td>A repeating square wave whose high time encodes a value; the servo reads the high time as an angle.</td>
-</tr>
-<tr>
-<td>Keyed disconnect (J1)</td>
-<td>A two-pin polarised plug (for example JST-XH) that can only be inserted one way, so the ESP32's power lead can be unplugged and re-plugged safely.</td>
+<td><strong>P1</strong></td>
+<td>VIN · TX · RX · GND</td>
+<td><strong>VIN and GND only</strong> (servo power). Leave TX/RX alone — they are the USB serial lines.</td>
 </tr>
 </tbody>
 </table></div>
-<h2 id="safety-rules-that-the-wiring-depends-on">Safety rules that the wiring depends on</h2>
-<ol>
-<li>The <strong>3 A fuse sits on the battery positive lead</strong>, as close to the cell holder as practical. Mandatory.</li>
-<li><strong>Never</strong> connect a bare cell to the ESP32 VIN or to the servo. Everything runs from the charger module's regulated 5 V output.</li>
-<li>The latching switch cuts the <strong>load</strong>, not the charger↔cell path, so USB-C charges the cell with the scanner OFF.</li>
-<li>The servo is powered from <code>LOAD_5V</code>, <strong>never</strong> from the ESP32's 3V3 pin.</li>
-<li>HC-SR04 ECHO is a 5 V signal. It reaches GPIO26 <strong>only through the 2.2 kΩ / 3.3 kΩ divider</strong> — never direct.</li>
-<li>Programming: unplug the whole harness from the ESP32 first. <strong>Never</strong> have external 5 V/VIN and the programming USB cable connected at the same time.</li>
-<li>The rear USB-C port is <strong>power/charging only</strong> — it is not connected to the ESP32's data lines.</li>
-</ol>
 <h2 id="net-list-machine-readable">Net list (machine-readable)</h2>
-<p>Each row is one pin and the net it joins. Parts: <code>USBC</code> = USB-C power-input breakout
-(Adafruit 4090 reference), <code>DFR1026</code> = DFRobot charge/discharge module, <code>CELL</code> = protected
-18650 in its wired holder, <code>FUSE</code> = 3 A inline fuse, <code>SW</code> = 12 mm latching push switch,
-<code>ESP32</code> = ESP32-WROOM-32 DevKit, <code>SR04</code> = HC-SR04, <code>SERVO</code> = SG90-size positional servo,
-<code>LCD</code> = Waveshare 1.8" ST7735S, <code>R1</code> = 2.2 kΩ, <code>R2</code> = 3.3 kΩ, <code>C1</code> = 1000 µF electrolytic.</p>
+<p>One row per wire end. <code>Wire</code> is the label to put on each wire.</p>
 <div class="tablewrap"><table>
 <thead>
 <tr>
 <th>ID</th>
+<th>Wire</th>
 <th>Pin</th>
 <th>Net</th>
 <th>Kind</th>
-<th>Wire</th>
 <th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>P01</td>
-<td>USBC.VBUS</td>
-<td>USB_5V</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>USB-C breakout VBUS to charger input</td>
-</tr>
-<tr>
-<td>P02</td>
-<td>DFR1026.VIN</td>
-<td>USB_5V</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>charger input (4.6–5.4 V)</td>
-</tr>
-<tr>
-<td>P03</td>
-<td>USBC.GND</td>
-<td>USB_GND</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td></td>
-</tr>
-<tr>
-<td>P04</td>
-<td>DFR1026.GND_IN</td>
-<td>USB_GND</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>charger input ground pad</td>
-</tr>
-<tr>
-<td>P05</td>
-<td>CELL.+</td>
-<td>BAT_RAW</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>cell holder positive lead, keep short</td>
-</tr>
-<tr>
-<td>P06</td>
-<td>FUSE.A</td>
-<td>BAT_RAW</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>3 A fuse, insulated holder, mandatory</td>
-</tr>
-<tr>
-<td>P07</td>
-<td>FUSE.B</td>
-<td>BAT_POS</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td></td>
-</tr>
-<tr>
-<td>P08</td>
-<td>DFR1026.BAT+</td>
-<td>BAT_POS</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td></td>
-</tr>
-<tr>
-<td>P09</td>
-<td>CELL.-</td>
-<td>BAT_NEG</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>cell holder negative lead</td>
-</tr>
-<tr>
-<td>P10</td>
-<td>DFR1026.GND_BAT</td>
-<td>BAT_NEG</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>battery ground pad only; do not tie elsewhere</td>
-</tr>
-<tr>
-<td>P11</td>
-<td>DFR1026.OUT_5V</td>
-<td>OUT_5V</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>regulated 5 V output</td>
-</tr>
-<tr>
-<td>P12</td>
-<td>SW.1</td>
-<td>OUT_5V</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>latching switch, rated ≥2 A at 5 V</td>
-</tr>
-<tr>
-<td>P13</td>
-<td>SW.2</td>
-<td>LOAD_5V</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>star point for the load branches</td>
-</tr>
-<tr>
-<td>P14</td>
-<td>DFR1026.GND_OUT</td>
-<td>GND</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>common ground star point</td>
-</tr>
-<tr>
-<td>P15</td>
-<td>ESP32.VIN</td>
-<td>LOAD_5V</td>
-<td>POWER</td>
-<td>22–24 AWG</td>
-<td>via keyed disconnect J1 pin 1; own branch from the star point</td>
-</tr>
-<tr>
-<td>P16</td>
-<td>ESP32.GND</td>
-<td>GND</td>
-<td>POWER</td>
-<td>22–24 AWG</td>
-<td>via keyed disconnect J1 pin 2</td>
-</tr>
-<tr>
-<td>P17</td>
-<td>SERVO.RED</td>
-<td>LOAD_5V</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>own short branch, separate from the ESP32 branch</td>
-</tr>
-<tr>
-<td>P18</td>
-<td>SERVO.BROWN</td>
-<td>GND</td>
-<td>POWER</td>
-<td>22 AWG</td>
-<td>brown or black lead</td>
-</tr>
-<tr>
-<td>P19</td>
-<td>C1.+</td>
-<td>LOAD_5V</td>
-<td>POWER</td>
-<td>leads</td>
-<td>1000 µF ≥10 V, mounted at the servo end; mind polarity</td>
-</tr>
-<tr>
-<td>P20</td>
-<td>C1.-</td>
-<td>GND</td>
-<td>POWER</td>
-<td>leads</td>
-<td>stripe side</td>
-</tr>
-<tr>
-<td>P21</td>
-<td>SR04.VCC</td>
-<td>LOAD_5V</td>
-<td>POWER</td>
-<td>jumper</td>
-<td></td>
-</tr>
-<tr>
-<td>P22</td>
-<td>SR04.GND</td>
-<td>GND</td>
-<td>POWER</td>
-<td>jumper</td>
-<td></td>
-</tr>
-<tr>
-<td>P23</td>
-<td>ESP32.3V3</td>
+<td>N01</td>
+<td>W1</td>
+<td>CN1.3V3</td>
 <td>3V3</td>
 <td>POWER</td>
-<td>jumper</td>
-<td>ESP32 on-board regulator output</td>
+<td>3.3 V from the CYD regulator</td>
 </tr>
 <tr>
-<td>P24</td>
-<td>LCD.VCC</td>
+<td>N02</td>
+<td>W1</td>
+<td>SENSOR.VCC</td>
 <td>3V3</td>
 <td>POWER</td>
-<td>jumper</td>
-<td></td>
+<td>RCWL-1601 / HC-SR04P runs at 3.3 V</td>
 </tr>
 <tr>
-<td>P25</td>
-<td>LCD.BL</td>
-<td>3V3</td>
-<td>POWER</td>
-<td>jumper</td>
-<td>backlight always on</td>
-</tr>
-<tr>
-<td>P26</td>
-<td>LCD.GND</td>
-<td>GND</td>
-<td>POWER</td>
-<td>jumper</td>
-<td></td>
-</tr>
-<tr>
-<td>S01</td>
-<td>ESP32.GPIO27</td>
+<td>N03</td>
+<td>W2</td>
+<td>CN1.IO27</td>
 <td>TRIG</td>
 <td>SIGNAL</td>
-<td>jumper</td>
 <td>10 µs trigger pulse</td>
 </tr>
 <tr>
-<td>S02</td>
-<td>SR04.TRIG</td>
+<td>N04</td>
+<td>W2</td>
+<td>SENSOR.TRIG</td>
 <td>TRIG</td>
 <td>SIGNAL</td>
-<td>jumper</td>
 <td></td>
 </tr>
 <tr>
-<td>S03</td>
-<td>SR04.ECHO</td>
-<td>ECHO_5V</td>
+<td>N05</td>
+<td>W3</td>
+<td>P3.IO35</td>
+<td>ECHO</td>
 <td>SIGNAL</td>
-<td>jumper</td>
-<td>5 V pulse — never straight to a GPIO</td>
+<td>input-only pin; 3.3 V echo, no divider</td>
 </tr>
 <tr>
-<td>S04</td>
-<td>R1.1</td>
-<td>ECHO_5V</td>
+<td>N06</td>
+<td>W3</td>
+<td>SENSOR.ECHO</td>
+<td>ECHO</td>
 <td>SIGNAL</td>
-<td>leads</td>
-<td>R1 = 2.2 kΩ 1 %</td>
+<td></td>
 </tr>
 <tr>
-<td>S05</td>
-<td>R1.2</td>
-<td>ECHO_3V</td>
-<td>SIGNAL</td>
-<td>leads</td>
-<td>divider junction</td>
-</tr>
-<tr>
-<td>S06</td>
-<td>R2.1</td>
-<td>ECHO_3V</td>
-<td>SIGNAL</td>
-<td>leads</td>
-<td>R2 = 3.3 kΩ 1 %</td>
-</tr>
-<tr>
-<td>S07</td>
-<td>R2.2</td>
+<td>N07</td>
+<td>W4</td>
+<td>CN1.GND</td>
 <td>GND</td>
-<td>SIGNAL</td>
-<td>leads</td>
+<td>POWER</td>
+<td>common ground</td>
+</tr>
+<tr>
+<td>N08</td>
+<td>W4</td>
+<td>SENSOR.GND</td>
+<td>GND</td>
+<td>POWER</td>
 <td></td>
 </tr>
 <tr>
-<td>S08</td>
-<td>ESP32.GPIO26</td>
-<td>ECHO_3V</td>
-<td>SIGNAL</td>
-<td>jumper</td>
-<td>≈3.0 V high level</td>
-</tr>
-<tr>
-<td>S09</td>
-<td>ESP32.GPIO14</td>
+<td>N09</td>
+<td>W5</td>
+<td>CN1.IO22</td>
 <td>SERVO_PWM</td>
 <td>SIGNAL</td>
-<td>jumper</td>
-<td>50 Hz LEDC output</td>
+<td>50 Hz pulses, 1000–2000 µs</td>
 </tr>
 <tr>
-<td>S10</td>
+<td>N10</td>
+<td>W5</td>
 <td>SERVO.SIGNAL</td>
 <td>SERVO_PWM</td>
 <td>SIGNAL</td>
-<td>jumper</td>
-<td>orange/yellow lead</td>
+<td>orange (or yellow/white) lead</td>
 </tr>
 <tr>
-<td>S11</td>
-<td>ESP32.GPIO23</td>
-<td>TFT_MOSI</td>
-<td>SIGNAL</td>
-<td>jumper</td>
-<td>LCD pin labelled DIN</td>
+<td>N11</td>
+<td>W6</td>
+<td>P1.VIN</td>
+<td>VIN_5V</td>
+<td>POWER</td>
+<td>USB 5 V on the board side. VERIFY on your board</td>
 </tr>
 <tr>
-<td>S12</td>
-<td>LCD.DIN</td>
-<td>TFT_MOSI</td>
-<td>SIGNAL</td>
-<td>jumper</td>
-<td></td>
+<td>N12</td>
+<td>W6</td>
+<td>SERVO.+5V</td>
+<td>VIN_5V</td>
+<td>POWER</td>
+<td>red lead (middle)</td>
 </tr>
 <tr>
-<td>S13</td>
-<td>ESP32.GPIO18</td>
-<td>TFT_SCK</td>
-<td>SIGNAL</td>
-<td>jumper</td>
-<td>LCD pin labelled CLK</td>
+<td>N13</td>
+<td>W7</td>
+<td>P1.GND</td>
+<td>GND</td>
+<td>POWER</td>
+<td>same copper as CN1.GND</td>
 </tr>
 <tr>
-<td>S14</td>
-<td>LCD.CLK</td>
-<td>TFT_SCK</td>
-<td>SIGNAL</td>
-<td>jumper</td>
-<td></td>
-</tr>
-<tr>
-<td>S15</td>
-<td>ESP32.GPIO33</td>
-<td>TFT_CS</td>
-<td>SIGNAL</td>
-<td>jumper</td>
-<td>not GPIO5 (boot strapping pin)</td>
-</tr>
-<tr>
-<td>S16</td>
-<td>LCD.CS</td>
-<td>TFT_CS</td>
-<td>SIGNAL</td>
-<td>jumper</td>
-<td></td>
-</tr>
-<tr>
-<td>S17</td>
-<td>ESP32.GPIO17</td>
-<td>TFT_DC</td>
-<td>SIGNAL</td>
-<td>jumper</td>
-<td>LCD pin labelled DC (sometimes A0)</td>
-</tr>
-<tr>
-<td>S18</td>
-<td>LCD.DC</td>
-<td>TFT_DC</td>
-<td>SIGNAL</td>
-<td>jumper</td>
-<td></td>
-</tr>
-<tr>
-<td>S19</td>
-<td>ESP32.GPIO16</td>
-<td>TFT_RST</td>
-<td>SIGNAL</td>
-<td>jumper</td>
-<td></td>
-</tr>
-<tr>
-<td>S20</td>
-<td>LCD.RST</td>
-<td>TFT_RST</td>
-<td>SIGNAL</td>
-<td>jumper</td>
-<td></td>
+<td>N14</td>
+<td>W7</td>
+<td>SERVO.GND</td>
+<td>GND</td>
+<td>POWER</td>
+<td>brown (or black) lead</td>
 </tr>
 </tbody>
 </table></div>
-<p>No SD-card pins are wired. No other GPIO is used.</p>
-<h2 id="esp32-pin-map">ESP32 pin map</h2>
+<h2 id="firmware-pin-map">Firmware pin map</h2>
+<p><code>Where</code> says how you reach the pin: a connector, or <code>on-board</code> (already wired on the CYD, nothing to do).</p>
 <div class="tablewrap"><table>
 <thead>
 <tr>
-<th>GPIO</th>
 <th>Firmware constant</th>
-<th>Net</th>
+<th>GPIO</th>
+<th>Where</th>
 <th>Direction</th>
-<th>Why this pin</th>
+<th>Function</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>27</td>
 <td>PIN_TRIG</td>
-<td>TRIG</td>
+<td>27</td>
+<td>CN1</td>
 <td>output</td>
-<td>ordinary GPIO, not a strapping pin</td>
+<td>sensor trigger</td>
 </tr>
 <tr>
-<td>26</td>
 <td>PIN_ECHO</td>
-<td>ECHO_3V</td>
+<td>35</td>
+<td>P3</td>
 <td>input</td>
-<td>ordinary GPIO; sees ≈3.0 V through the divider</td>
+<td>sensor echo (input-only pin)</td>
 </tr>
 <tr>
-<td>14</td>
 <td>PIN_SERVO</td>
-<td>SERVO_PWM</td>
-<td>output (LEDC)</td>
-<td>LEDC-capable, not a strapping pin. It can toggle briefly during boot, so the servo may twitch at power-up — keep fingers clear of the head</td>
+<td>22</td>
+<td>CN1</td>
+<td>output</td>
+<td>servo PWM (LEDC, 50 Hz)</td>
 </tr>
 <tr>
-<td>23</td>
+<td>PIN_TFT_SCK</td>
+<td>14</td>
+<td>on-board</td>
+<td>output</td>
+<td>display SPI clock</td>
+</tr>
+<tr>
+<td>PIN_TFT_MISO</td>
+<td>12</td>
+<td>on-board</td>
+<td>input</td>
+<td>display SPI data in</td>
+</tr>
+<tr>
 <td>PIN_TFT_MOSI</td>
-<td>TFT_MOSI</td>
+<td>13</td>
+<td>on-board</td>
 <td>output</td>
-<td>default VSPI MOSI</td>
+<td>display SPI data out</td>
 </tr>
 <tr>
-<td>18</td>
-<td>PIN_TFT_SCLK</td>
-<td>TFT_SCK</td>
-<td>output</td>
-<td>default VSPI SCK</td>
-</tr>
-<tr>
-<td>33</td>
 <td>PIN_TFT_CS</td>
-<td>TFT_CS</td>
+<td>15</td>
+<td>on-board</td>
 <td>output</td>
-<td>avoids GPIO5, a boot strapping pin</td>
+<td>display chip select</td>
 </tr>
 <tr>
-<td>17</td>
 <td>PIN_TFT_DC</td>
-<td>TFT_DC</td>
+<td>2</td>
+<td>on-board</td>
 <td>output</td>
-<td>free on WROOM-32 (used for PSRAM on WROVER — do not substitute a WROVER board)</td>
+<td>display data/command</td>
 </tr>
 <tr>
+<td>PIN_TFT_BL</td>
+<td>21</td>
+<td>on-board</td>
+<td>output</td>
+<td>backlight</td>
+</tr>
+<tr>
+<td>PIN_TOUCH_CLK</td>
+<td>25</td>
+<td>on-board</td>
+<td>output</td>
+<td>touch SPI clock</td>
+</tr>
+<tr>
+<td>PIN_TOUCH_MISO</td>
+<td>39</td>
+<td>on-board</td>
+<td>input</td>
+<td>touch SPI data in</td>
+</tr>
+<tr>
+<td>PIN_TOUCH_MOSI</td>
+<td>32</td>
+<td>on-board</td>
+<td>output</td>
+<td>touch SPI data out</td>
+</tr>
+<tr>
+<td>PIN_TOUCH_CS</td>
+<td>33</td>
+<td>on-board</td>
+<td>output</td>
+<td>touch chip select</td>
+</tr>
+<tr>
+<td>PIN_TOUCH_IRQ</td>
+<td>36</td>
+<td>on-board</td>
+<td>input</td>
+<td>touch interrupt</td>
+</tr>
+<tr>
+<td>PIN_LED_R</td>
+<td>4</td>
+<td>on-board</td>
+<td>output</td>
+<td>RGB LED red (active low)</td>
+</tr>
+<tr>
+<td>PIN_LED_G</td>
 <td>16</td>
-<td>PIN_TFT_RST</td>
-<td>TFT_RST</td>
+<td>on-board</td>
 <td>output</td>
-<td>free on WROOM-32 (used for PSRAM on WROVER)</td>
+<td>RGB LED green (active low)</td>
+</tr>
+<tr>
+<td>PIN_LED_B</td>
+<td>17</td>
+<td>on-board</td>
+<td>output</td>
+<td>RGB LED blue (active low)</td>
 </tr>
 </tbody>
 </table></div>
-<h2 id="the-same-connections-module-by-module">The same connections, module by module</h2>
-<h3 id="power-charger-cell-switch">Power (charger, cell, switch)</h3>
-<pre><code>USB-C VBUS  ──────────────────────────────▶ DFR1026 VIN
-USB-C GND   ──────────────────────────────▶ DFR1026 input GND
-Cell +  ──[ 3 A fuse ]────────────────────▶ DFR1026 BAT+
-Cell −  ──────────────────────────────────▶ DFR1026 battery GND
-DFR1026 OUT 5V ──[ latching switch ]──▶ LOAD_5V star point
-DFR1026 GND ──────────────────────────────▶ common GND star point
-LOAD_5V ─┬─ branch A ─[J1 pin 1]─▶ ESP32 VIN (5V)
-         ├─ branch B ─────────────▶ servo red  ── C1 (+) right at the servo
-         └─ branch C ─────────────▶ HC-SR04 VCC
-GND ─────┬─ [J1 pin 2] ─▶ ESP32 GND
-         ├─ servo brown/black ── C1 (−)
-         ├─ HC-SR04 GND
-         └─ R2 (bottom of the ECHO divider)
-</code></pre>
-<p>Separate short branches mean the servo's current spikes do not travel through the ESP32's
-supply lead. The 1000 µF capacitor sits at the servo end of branch B for the same reason.</p>
-<h3 id="hc-sr04-and-the-echo-divider">HC-SR04 and the ECHO divider</h3>
-<pre><code>HC-SR04 TRIG ◀──────────── GPIO27
-HC-SR04 ECHO ──[ R1 2.2 kΩ ]──●── GPIO26
-                              │
-                        [ R2 3.3 kΩ ]
-                              │
-                             GND
-</code></pre>
-<p>Divider output: <code>5.0 V × 3.3 / (2.2 + 3.3) = 3.0 V</code> — see <a href="equations.html#2-echo-voltage-divider"><code>EQUATIONS.md</code></a>.</p>
-<p><img alt="ECHO divider and fuse callout" src="../assets/diagrams/callout_echo_divider_fuse.svg" /></p>
-<h3 id="servo">Servo</h3>
-<div class="tablewrap"><table>
-<thead>
-<tr>
-<th>Servo lead</th>
-<th>Goes to</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>signal (orange/yellow)</td>
-<td>GPIO14</td>
-</tr>
-<tr>
-<td>red</td>
-<td><code>LOAD_5V</code> (branch B)</td>
-</tr>
-<tr>
-<td>brown/black</td>
-<td>common <code>GND</code></td>
-</tr>
-</tbody>
-</table></div>
-<h3 id="st7735s-lcd-waveshare-18">ST7735S LCD (Waveshare 1.8")</h3>
-<div class="tablewrap"><table>
-<thead>
-<tr>
-<th>LCD pin</th>
-<th>Goes to</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>VCC</td>
-<td>ESP32 3V3</td>
-</tr>
-<tr>
-<td>GND</td>
-<td>GND</td>
-</tr>
-<tr>
-<td>DIN (MOSI)</td>
-<td>GPIO23</td>
-</tr>
-<tr>
-<td>CLK (SCK)</td>
-<td>GPIO18</td>
-</tr>
-<tr>
-<td>CS</td>
-<td>GPIO33</td>
-</tr>
-<tr>
-<td>DC (A0)</td>
-<td>GPIO17</td>
-</tr>
-<tr>
-<td>RST</td>
-<td>GPIO16</td>
-</tr>
-<tr>
-<td>BL</td>
-<td>ESP32 3V3</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="programming-procedure">Programming procedure</h2>
+<h2 id="step-by-step">Step by step</h2>
 <ol>
-<li>Switch the scanner <strong>OFF</strong>.</li>
-<li>Unplug <strong>J1</strong> (ESP32 power) and every jumper on the ESP32 header — the whole harness.</li>
-<li>Plug the USB <strong>data</strong> cable into the ESP32's own micro-USB/USB-C port. The rear USB-C port
-   of the case is power-only and cannot program the board.</li>
-<li>Upload (Arduino IDE: board <strong>ESP32 Dev Module</strong>; or <code>arduino-cli compile --upload --profile esp32-core3 -p &lt;port&gt; firmware/Radar_V5</code>).</li>
-<li>Unplug the data cable. Re-connect the harness, checking every label against the net list, then J1 last.</li>
-<li>Switch ON.</li>
+<li><strong>Unplug USB.</strong> Never wire with the board powered.</li>
+<li><strong>CN1 cable → sensor + servo signal.</strong> 3.3V → <code>VCC</code>, IO27 → <code>Trig</code>, GND → <code>Gnd</code>, IO22 → servo signal.</li>
+<li><strong>P3 cable → sensor echo.</strong> IO35 → <code>Echo</code>. Tape off the other three wires of that cable.</li>
+<li><strong>P1 cable → servo power.</strong> VIN → servo red, GND → servo brown. Tape off TX and RX.</li>
+<li>Route the sensor's four wires up through the slot next to the turret hole and leave a loop
+   so the head can turn ±60°.</li>
+<li>Check every wire against the net list above before connecting USB.</li>
 </ol>
-<h2 id="optional-live-link-tap">Optional live-link tap</h2>
-<p>To watch the scanner in the web or desktop app's live console, add a two-wire, listen-only tap from
-ESP32 <strong>TX0 (GPIO1)</strong> and <strong>GND</strong> to a 3.3 V USB-to-serial adapter (adapter VCC unconnected). It is
-kept out of the net list above because it is optional and plugs in only when needed — full details and
-diagram in <a href="live-link.html"><code>LIVE_LINK.md</code></a>. It never replaces the rule above: the ESP32's own USB port
-stays unplugged while the battery harness is connected.</p>
-<h2 id="open-issue--dfr1026-restart-after-offon-unresolved-must-be-bench-tested">Open issue — DFR1026 restart after OFF→ON (unresolved, must be bench-tested)</h2>
-<p><strong>Question:</strong> after the latching switch goes OFF and back ON, does the DFR1026 output come back
-by itself, or does someone have to press the module's on-board KEY (which is inside the case)?</p>
-<p><strong>What the sources say (not yet confirmed on our hardware):</strong></p>
+<p>The servo plug and the CYD cables often both end in <em>female</em> Dupont sockets: join them with
+three male-to-male jumper pins, or crimp/solder and heat-shrink.</p>
+<h2 id="power--read-this">Power — read this</h2>
 <ul>
-<li>DFRobot's product page describes the KEY: in discharge mode a short press enables the output
-  and a long press (about 10 s) disables it. It does not say whether the output re-enables
-  automatically when a load is reconnected.</li>
-<li>Users on the Core Electronics forum report the module switching its output off after roughly
-  30 s at light load and needing a KEY press to come back; one user found the keep-alive load was
-  closer to 100 mA than the 50 mA they expected.</li>
+<li>The scanner runs from <strong>one USB cable</strong>. Use a phone charger or power bank rated <strong>≥ 1 A</strong>.
+  A laptop port (often 500 mA) may brown out when the servo starts.</li>
+<li>The servo is fed from P1 <strong>VIN</strong>. On the boards documented by the community this pin is the
+  USB 5 V rail (through the board's protection parts). <strong>VERIFY with a multimeter</strong> on your board
+  before connecting the servo: you should read ≈ 4.5–5.2 V between P1 VIN and GND with USB in.</li>
+<li>If the screen flickers or the board resets when the servo moves, add a <strong>470–1000 µF, ≥ 6.3 V
+  electrolytic capacitor</strong> across the servo's red (+) and brown (−) leads, stripe to brown.</li>
 </ul>
-<p><strong>Why it matters here:</strong> with the switch on the <em>load</em> side, switching OFF leaves the module with
-no load, so it will probably go to sleep; switching ON again may then do nothing. Separately, if
-the scanner's idle draw (ESP32 + LCD backlight + sensor + holding servo) falls below the
-module's keep-alive threshold, the output could drop out while the scanner is running.</p>
-<p><strong>Bench tests that settle it</strong> (log results in <a href="validation.html"><code>VALIDATION.md</code></a>): T-PWR-2 (measure the
-scanner's minimum running current), T-PWR-3 (OFF→ON after 5 s, 60 s, 10 min, with and without USB-C
-connected), T-PWR-4 (one-hour run, watch for dropouts).</p>
-<p><strong>If the DFR1026 fails T-PWR-3 or T-PWR-4, adopt one of these (documented, not yet tested):</strong></p>
-<div class="tablewrap"><table>
-<thead>
-<tr>
-<th>Option</th>
-<th>Change</th>
-<th>Trade-off</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>A — rear KEY button</td>
-<td>Open the rear knock-out (Ø7 mm, printed as a 0.45 mm skin above the cell holder) and fit a small momentary push button wired across the DFR1026 KEY pads. User presses it once after switching ON.</td>
-<td>Keeps all other parts. Two-step turn-on; does not fix a light-load dropout.</td>
-</tr>
-<tr>
-<td>B — PowerBoost 1000C (V5.2 candidate)</td>
-<td>Replace the DFR1026 with an Adafruit PowerBoost 1000C. Wire USB-C VBUS → its USB pad, cell (through the fuse) → BAT, its 5V → <code>LOAD_5V</code>. Wire the latching switch between its EN pin and GND (switch closed = OFF, because EN low disables the boost).</td>
-<td>Clean on/off with no keep-alive. Lower output (about 1 A) — check servo stall + ESP32 peak; confirm that charging continues with EN low before adopting.</td>
-</tr>
-</tbody>
-</table></div>
-<p>Whichever is chosen, update this page, the BOM, <code>hardware/diagrams/</code> (re-run the generator) and
-<code>VALIDATION.md</code> in the same commit.</p>
+<h2 id="fallback-you-only-have-a-5-v-hc-sr04">Fallback: you only have a 5 V HC-SR04</h2>
+<p>A classic HC-SR04 (not the "P" version) needs 5 V and outputs a <strong>5 V echo</strong> that can damage the
+ESP32. If that is what you have:</p>
+<ul>
+<li>Power it from <strong>P1 VIN</strong> instead of CN1 3.3V.</li>
+<li>Put a divider in the echo line: <code>ECHO —[2.2 kΩ]— IO35</code>, and <code>IO35 —[3.3 kΩ]— GND</code>
+  (5 V × 3.3/5.5 ≈ 3.0 V).</li>
+</ul>
+<p>The RCWL-1601 / HC-SR04P costs about the same and needs neither, which is why it is the default.</p>
+<h2 id="programming">Programming</h2>
+<p>Plug the CYD into your computer by USB and flash from the web page (<code>flash.html</code>) or with
+<code>arduino-cli</code> (<a href="overview.html#flash"><code>README</code></a>). The sensor and servo can stay connected.
+Spreadsheet versions: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/wiring_pins.csv"><code>manufacturing/wiring_pins.csv</code></a> and
+<a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/manufacturing/wire_list.csv"><code>manufacturing/wire_list.csv</code></a>.</p>
 <p class="src">Source: <a href="https://github.com/Normansrule/ultrasonic-radar-scanner/blob/main/docs/WIRING.md">docs/WIRING.md</a> — generated by scripts/build_site.py</p>
 </main></div>
 <script src="../assets/pwa.js" data-root="../"></script>

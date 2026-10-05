@@ -6,7 +6,7 @@ source file in the repo, so it cannot silently drift:
   hardware/diagrams/wiring_full.svg     } from the NETLIST table in docs/WIRING.md
   hardware/diagrams/wiring_power.svg    }
   hardware/diagrams/wiring_signal.svg   }
-  hardware/diagrams/callout_echo_divider_fuse.svg   illustrated callout (values from WIRING.md)
+  hardware/diagrams/wiring_picture.svg  illustrated 7-wire picture   } NETLIST too
   hardware/diagrams/build_flow.svg      build-stage gate diagram
   docs/img/eq_*.svg                     equation figures (numbers from tests/radar_math.py)
 
@@ -46,22 +46,16 @@ def load_netlist():
 
 
 NET_COLORS = {
-    "USB_5V": "#e8590c", "USB_GND": "#5c636a", "BAT_RAW": "#b02a2a", "BAT_POS": "#e03131",
-    "BAT_NEG": "#343a40", "OUT_5V": "#f08c00", "LOAD_5V": "#d6336c", "GND": "#111418",
-    "3V3": "#7048e8", "TRIG": "#1c7ed6", "ECHO_5V": "#e67700", "ECHO_3V": "#2f9e44",
-    "SERVO_PWM": "#0c8599", "TFT_MOSI": "#1971c2", "TFT_SCK": "#5f3dc4", "TFT_CS": "#087f5b",
-    "TFT_DC": "#9c36b5", "TFT_RST": "#a61e4d",
+    "3V3": "#7048e8", "GND": "#111418", "TRIG": "#1c7ed6", "ECHO": "#2f9e44",
+    "SERVO_PWM": "#e67700", "VIN_5V": "#e03131",
 }
-LEFT = ["USBC", "DFR1026", "CELL", "FUSE", "SW", "C1"]
-RIGHT = ["ESP32", "SR04", "R1", "R2", "SERVO", "LCD"]
+LEFT = ["CN1", "P3", "P1"]
+RIGHT = ["SENSOR", "SERVO"]
 TITLES = {
-    "USBC": "USB-C input breakout", "DFR1026": "DFR1026 charger/boost", "CELL": "18650 cell (protected)",
-    "FUSE": "3 A inline fuse", "SW": "Latching switch", "C1": "C1 1000 µF",
-    "ESP32": "ESP32-WROOM-32 DevKit", "SR04": "HC-SR04", "R1": "R1 2.2 kΩ", "R2": "R2 3.3 kΩ",
-    "SERVO": "SG90-size servo", "LCD": "ST7735S 1.8\" LCD",
+    "CN1": "CYD connector CN1", "P3": "CYD connector P3", "P1": "CYD connector P1",
+    "SENSOR": "RCWL-1601 / HC-SR04P", "SERVO": "SG90 micro servo",
 }
-NET_ORDER = ["USB_5V", "USB_GND", "BAT_RAW", "BAT_POS", "BAT_NEG", "OUT_5V", "LOAD_5V", "GND", "3V3",
-             "ECHO_5V", "ECHO_3V", "TRIG", "SERVO_PWM", "TFT_MOSI", "TFT_SCK", "TFT_CS", "TFT_DC", "TFT_RST"]
+NET_ORDER = ["VIN_5V", "3V3", "GND", "TRIG", "ECHO", "SERVO_PWM"]
 
 
 def wiring_svg(rows, title, subtitle):
@@ -85,7 +79,7 @@ def wiring_svg(rows, title, subtitle):
     pin_pos = {}
     boxes = []
     for side, order, x in (("L", LEFT, mx_left), ("R", RIGHT, right_x)):
-        y = top
+        y = top if side == "L" else top + PH // 2  # offset so left and right stubs never share a row
         for c in order:
             if c not in comps:
                 continue
@@ -149,147 +143,109 @@ def wiring_svg(rows, title, subtitle):
     return "\n".join(o)
 
 
-# =========================================================================== callout
-def callout_svg():
-    W, H = 1100, 520
-    # 5-band 1 % colour codes: 2.2 k = red red black brown brown; 3.3 k = orange orange black brown brown
-    bands = {"R1": ["#d11f1f", "#d11f1f", "#111", "#7a4a1d", "#7a4a1d"],
-             "R2": ["#f08c00", "#f08c00", "#111", "#7a4a1d", "#7a4a1d"]}
-    vout = rm.divider_vout(5.0, rm.R1_OHM, rm.R2_OHM)
-
-    def resistor(cx, cy, name, vertical=False):
-        g = [f'<g transform="translate({cx},{cy}){" rotate(90)" if vertical else ""}">',
-             '<line x1="-62" y1="0" x2="62" y2="0" stroke="#a7a9ac" stroke-width="3"/>',
-             '<rect x="-34" y="-11" width="68" height="22" rx="10" fill="url(#body)" stroke="#8d7a5a"/>']
-        for i, col in enumerate(bands[name]):
-            x = -24 + i * 11 + (6 if i == 4 else 0)
-            g.append(f'<rect x="{x}" y="-11" width="5" height="22" fill="{col}"/>')
-        g.append("</g>")
-        return "\n".join(g)
-
+# =========================================================================== wiring picture
+def wiring_picture_svg(rows):
+    """Illustrated picture: CYD back with its three connectors, the sensor and the servo.
+    Wire ends come from the NETLIST, so the picture cannot disagree with the table."""
+    W, H = 1180, 640
+    pins = {  # pin -> (x, y) of the wire end
+        "CN1.GND": (288, 238), "CN1.IO22": (288, 262), "CN1.IO27": (288, 286), "CN1.3V3": (288, 310),
+        "P3.GND": (288, 408), "P3.IO35": (288, 432), "P3.IO22": (288, 456), "P3.IO21": (288, 480),
+        "P1.VIN": (288, 536), "P1.TX": (288, 560), "P1.RX": (288, 584), "P1.GND": (288, 608),
+        "SENSOR.VCC": (842, 288), "SENSOR.TRIG": (842, 312), "SENSOR.ECHO": (842, 336), "SENSOR.GND": (842, 360),
+        "SERVO.GND": (842, 470), "SERVO.+5V": (842, 494), "SERVO.SIGNAL": (842, 518),
+    }
+    used = {r["Pin"] for r in rows}
     o = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
-         'aria-label="Callout: ECHO voltage divider and the fuse on battery positive">',
+         'aria-label="Seven wires: CYD connectors CN1, P3 and P1 to the ultrasonic sensor and the servo">',
          '<defs>',
-         '<linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4dfb6"/>'
-         '<stop offset="0.5" stop-color="#e2c38c"/><stop offset="1" stop-color="#b99a62"/></linearGradient>',
-         '<linearGradient id="pcb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d6fb8"/>'
-         '<stop offset="1" stop-color="#124a7c"/></linearGradient>',
-         '<linearGradient id="cell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b82c4"/>'
-         '<stop offset="0.45" stop-color="#9cc7ef"/><stop offset="1" stop-color="#1f4e7a"/></linearGradient>',
-         '<linearGradient id="holder" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3a3a"/>'
-         '<stop offset="1" stop-color="#111"/></linearGradient>',
-         '<linearGradient id="fuse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b197fc"/>'
-         '<stop offset="1" stop-color="#6741d9"/></linearGradient>',
+         '<linearGradient id="cyd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2cf3a"/>'
+         '<stop offset="1" stop-color="#d9ac12"/></linearGradient>',
+         '<linearGradient id="pcb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a7cc7"/>'
+         '<stop offset="1" stop-color="#17528a"/></linearGradient>',
          '<radialGradient id="can" cx="0.4" cy="0.35" r="0.7"><stop offset="0" stop-color="#f1f3f5"/>'
          '<stop offset="1" stop-color="#868e96"/></radialGradient>',
+         '<linearGradient id="servo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b6fd8"/>'
+         '<stop offset="1" stop-color="#1c3f8f"/></linearGradient>',
          '<filter id="sh" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" '
-         'stdDeviation="3" flood-opacity="0.25"/></filter>',
+         'stdDeviation="3" flood-opacity="0.22"/></filter>',
          '</defs>',
          f'<rect width="{W}" height="{H}" fill="#fbfaf7"/>',
-         f'<text x="30" y="38" style="{FONT};font-size:22px;font-weight:bold" fill="#111">Two details that protect '
-         'the build</text>',
-         f'<text x="30" y="62" style="{FONT};font-size:13px" fill="#555">Illustration (not a photo). '
-         'Resistor colour bands shown for 5-band 1 % parts.</text>']
-    # ---- panel A: divider
-    o.append('<g filter="url(#sh)"><rect x="30" y="85" width="500" height="405" rx="14" fill="#fff" stroke="#ddd"/></g>')
-    o.append(f'<text x="50" y="115" style="{FONT};font-size:16px;font-weight:bold" fill="#1f3b2d">A · ECHO divider '
-             '(5 V → ≈3 V)</text>')
-    # HC-SR04 board
-    o.append('<g filter="url(#sh)"><rect x="60" y="140" width="190" height="90" rx="6" fill="url(#pcb)"/></g>')
-    for cx in (105, 205):
-        o.append(f'<circle cx="{cx}" cy="185" r="34" fill="url(#can)" stroke="#495057" stroke-width="2"/>')
-        o.append(f'<circle cx="{cx}" cy="185" r="22" fill="#343a40" opacity="0.85"/>')
-    for i, lab in enumerate(["VCC", "TRIG", "ECHO", "GND"]):
-        x = 106 + i * 30
-        o.append(f'<rect x="{x - 3}" y="230" width="6" height="22" fill="#ced4da"/>')
-        o.append(f'<text x="{x}" y="225" text-anchor="middle" style="{FONT};font-size:9px;font-weight:bold" fill="#fff">{lab}</text>')
-    # echo wire to R1
-    o.append('<path d="M 166 252 L 166 300 L 250 300" stroke="#e67700" stroke-width="4" fill="none"/>')
-    o.append(resistor(312, 300, "R1"))
-    o.append('<path d="M 374 300 L 420 300" stroke="#2f9e44" stroke-width="4" fill="none"/>')
-    o.append('<circle cx="420" cy="300" r="7" fill="#2f9e44"/>')
-    o.append('<path d="M 420 300 L 490 300" stroke="#2f9e44" stroke-width="4" fill="none"/>')
-    o.append(resistor(420, 362, "R2", vertical=True))
-    o.append('<path d="M 420 424 L 420 450 L 196 450 L 196 252" stroke="#111" stroke-width="4" fill="none"/>')
-    o.append(f'<text x="505" y="287" style="{FONT};font-size:13px;font-weight:bold" fill="#2f9e44" text-anchor="end">'
-             'to GPIO26 →</text>')
-    o.append(f'<text x="312" y="280" text-anchor="middle" style="{FONT};font-size:12.5px;font-weight:bold" '
-             'fill="#333">R1 2.2 kΩ</text>')
-    o.append(f'<text x="438" y="366" style="{FONT};font-size:12.5px;font-weight:bold" fill="#333">R2 3.3 kΩ</text>')
-    o.append(f'<text x="300" y="472" text-anchor="middle" style="{FONT};font-size:12px" fill="#111">common GND</text>')
-    o.append(f'<rect x="275" y="135" width="238" height="100" rx="8" fill="#ebfbee" stroke="#2f9e44"/>')
-    o.append(f'<text x="287" y="158" style="{FONT};font-size:13px;font-weight:bold" fill="#1b5e20">Vout = Vin·R2/(R1+R2)</text>')
-    o.append(f'<text x="287" y="180" style="{FONT};font-size:13px" fill="#1b5e20">= 5.0 × 3.3 / 5.5 ≈ {vout:.2f} V</text>')
-    o.append(f'<text x="287" y="202" style="{FONT};font-size:12px" fill="#1b5e20">Never wire ECHO straight to a</text>')
-    o.append(f'<text x="287" y="219" style="{FONT};font-size:12px" fill="#1b5e20">GPIO: the ESP32 is 3.3 V logic.</text>')
-    # ---- panel B: fuse
-    o.append('<g filter="url(#sh)"><rect x="560" y="85" width="510" height="405" rx="14" fill="#fff" stroke="#ddd"/></g>')
-    o.append(f'<text x="580" y="115" style="{FONT};font-size:16px;font-weight:bold" fill="#1f3b2d">B · 3 A fuse on '
-             'battery + (mandatory)</text>')
-    o.append('<g filter="url(#sh)"><rect x="600" y="150" width="300" height="70" rx="8" fill="url(#holder)"/></g>')
-    o.append('<rect x="620" y="162" width="258" height="46" rx="20" fill="url(#cell)"/>')
-    o.append('<rect x="872" y="175" width="10" height="20" rx="2" fill="#adb5bd"/>')
-    o.append(f'<text x="750" y="190" text-anchor="middle" style="{FONT};font-size:13px;font-weight:bold" fill="#fff">'
-             'protected 18650</text>')
-    o.append(f'<text x="905" y="160" style="{FONT};font-size:18px;font-weight:bold" fill="#e03131">+</text>')
-    o.append(f'<text x="585" y="160" style="{FONT};font-size:18px;font-weight:bold" fill="#111">−</text>')
-    # + lead to fuse holder
-    o.append('<path d="M 900 185 L 960 185 L 960 270" stroke="#e03131" stroke-width="5" fill="none"/>')
-    o.append('<g filter="url(#sh)"><rect x="928" y="270" width="64" height="104" rx="12" fill="#212529"/></g>')
-    o.append('<rect x="942" y="296" width="36" height="52" rx="4" fill="url(#fuse)"/>')
-    o.append(f'<text x="960" y="327" text-anchor="middle" style="{FONT};font-size:14px;font-weight:bold" fill="#fff">3A</text>')
-    o.append('<path d="M 960 374 L 960 440 L 820 440" stroke="#e03131" stroke-width="5" fill="none"/>')
-    o.append(f'<text x="812" y="444" text-anchor="end" style="{FONT};font-size:13px;font-weight:bold" fill="#e03131">'
-             'to DFR1026 BAT+</text>')
-    o.append('<path d="M 600 185 L 580 185 L 580 400 L 640 400" stroke="#111" stroke-width="5" fill="none"/>')
-    o.append(f'<text x="648" y="404" style="{FONT};font-size:13px;font-weight:bold" fill="#111">to DFR1026 battery GND</text>')
-    o.append(f'<rect x="600" y="245" width="300" height="120" rx="8" fill="#fff5f5" stroke="#e03131"/>')
-    for i, t in enumerate(["Fuse first, as close to the holder as practical.",
-                           "Insulated holder; heat-shrink every joint.",
-                           "Never solder to the cell; never series two cells.",
-                           "Strap the HOLDER, not the cell; nothing sharp",
-                           "against the cell wrapping."]):
-        o.append(f'<text x="612" y="{268 + i * 21}" style="{FONT};font-size:12.5px" fill="#7d1a1a">{escape(t)}</text>')
-    o.append("</svg>\n")
-    return "\n".join(o)
-
-
-# =========================================================================== live-link tap
-def live_link_svg():
-    W, H = 1000, 380
-    o = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
-         'aria-label="Listen-only telemetry tap: ESP32 TX0 and GND to a 3.3 V USB-serial adapter">',
-         f'<rect width="{W}" height="{H}" fill="#ffffff"/>',
-         f'<text x="30" y="38" style="{FONT};font-size:21px;font-weight:bold" fill="#111">Live link — listen-only telemetry tap (optional)</text>',
-         f'<text x="30" y="62" style="{FONT};font-size:13px" fill="#555">Two wires. The ESP32\'s own USB port stays unplugged while the battery harness is connected.</text>']
-    # ESP32 board
-    o.append('<rect x="40" y="95" width="300" height="230" rx="10" fill="#1f2a24" stroke="#0e1511" stroke-width="2"/>')
-    o.append(f'<text x="60" y="125" style="{FONT};font-size:15px;font-weight:bold" fill="#d9f7e3">ESP32-WROOM-32 DevKit</text>')
-    o.append(f'<text x="60" y="146" style="{FONT};font-size:12px" fill="#9fb3a8">powered by the scanner battery</text>')
-    pins = [("TX0 / GPIO1", 185, "#1971c2"), ("GND", 245, "#111418")]
-    for name, y, col in pins:
-        o.append(f'<rect x="320" y="{y - 9}" width="24" height="18" rx="3" fill="#ced4da"/>')
-        o.append(f'<text x="306" y="{y + 5}" text-anchor="end" style="{FONT};font-size:13.5px;font-weight:bold" fill="#e9fbe9">{name}</text>')
-    o.append('<rect x="60" y="282" width="34" height="22" rx="4" fill="#adb5bd"/>')
-    o.append(f'<text x="104" y="298" style="{FONT};font-size:12px;font-weight:bold" fill="#ffb3b3">own USB port: leave unplugged</text>')
-    # adapter
-    o.append('<rect x="620" y="110" width="270" height="200" rx="10" fill="#1c4f8a" stroke="#123259" stroke-width="2"/>')
-    o.append(f'<text x="640" y="140" style="{FONT};font-size:15px;font-weight:bold" fill="#fff">USB-to-serial adapter</text>')
-    o.append(f'<text x="640" y="160" style="{FONT};font-size:12px" fill="#cfe2ff">3.3 V logic (CP2102 / CH340 / FT232)</text>')
-    apins = [("RX", 185, True), ("GND", 245, True), ("TX", 210, False), ("VCC", 270, False)]
-    for name, y, used in apins:
-        o.append(f'<rect x="608" y="{y - 9}" width="24" height="18" rx="3" fill="#ced4da"/>')
-        o.append(f'<text x="642" y="{y + 5}" style="{FONT};font-size:13.5px;font-weight:bold" fill="{"#fff" if used else "#9bb8dc"}">{name}{"" if used else "  — not connected"}</text>')
-    o.append('<rect x="890" y="195" width="46" height="30" rx="5" fill="#adb5bd"/>')
-    o.append('<path d="M 936 210 L 975 210" stroke="#555" stroke-width="5"/>')
-    o.append(f'<text x="955" y="187" text-anchor="middle" style="{FONT};font-size:12px" fill="#333">to computer</text>')
-    # wires
-    o.append('<path d="M 344 185 L 608 185" stroke="#1971c2" stroke-width="4" fill="none"/>')
-    o.append('<path d="M 344 245 L 608 245" stroke="#111418" stroke-width="4" fill="none"/>')
-    o.append(f'<text x="476" y="176" text-anchor="middle" style="{FONT};font-size:13px;font-weight:bold" fill="#1971c2">L1  data (ESP32 → computer)</text>')
-    o.append(f'<text x="476" y="236" text-anchor="middle" style="{FONT};font-size:13px;font-weight:bold" fill="#111">L2  common ground</text>')
-    o.append(f'<text x="30" y="{H - 22}" style="{FONT};font-size:12px" fill="#666">115 200 baud, 8N1. The console only listens. '
-             'Optional and not yet tested on hardware — see docs/LIVE_LINK.md.</text>')
+         f'<text x="30" y="40" style="{FONT};font-size:23px;font-weight:bold" fill="#111">7 wires. No breadboard, no '
+         'resistors, no soldering to the board.</text>',
+         f'<text x="30" y="66" style="{FONT};font-size:13.5px" fill="#555">Back of the Cheap Yellow Display (CYD). '
+         'Illustration, not a photo — pin order on your connectors may differ: follow the silkscreen.</text>']
+    # CYD board
+    o.append('<g filter="url(#sh)"><rect x="40" y="95" width="270" height="535" rx="14" fill="url(#cyd)" '
+             'stroke="#a8840c" stroke-width="2"/></g>')
+    o.append(f'<text x="60" y="128" style="{FONT};font-size:17px;font-weight:bold" fill="#3d2f00">CYD (back)</text>')
+    o.append(f'<text x="60" y="148" style="{FONT};font-size:12px" fill="#5c4700">ESP32-2432S028R</text>')
+    o.append('<rect x="60" y="160" width="74" height="30" rx="5" fill="#adb5bd" stroke="#6c757d"/>')
+    o.append(f'<text x="144" y="181" style="{FONT};font-size:12px;font-weight:bold" fill="#3d2f00">USB → charger ≥ 1 A</text>')
+    for name, y0, labels in (("CN1", 222, ["GND", "IO22", "IO27", "3.3V"]),
+                             ("P3", 392, ["GND", "IO35", "IO22", "IO21"]),
+                             ("P1", 520, ["VIN", "TX", "RX", "GND"])):
+        o.append(f'<rect x="198" y="{y0}" width="90" height="{4 * 24 + 8}" rx="5" fill="#f8f9fa" stroke="#495057" stroke-width="1.5"/>')
+        o.append(f'<text x="188" y="{y0 + 18}" text-anchor="end" style="{FONT};font-size:15px;font-weight:bold" fill="#3d2f00">{name}</text>')
+        for i, lab in enumerate(labels):
+            pin = f"{name}.{lab.replace('3.3V', '3V3')}"
+            y = y0 + 16 + 24 * i
+            on = pin in used
+            o.append(f'<rect x="272" y="{y - 6}" width="16" height="12" rx="2" fill="{"#495057" if on else "#dee2e6"}"/>')
+            o.append(f'<text x="264" y="{y + 4}" text-anchor="end" style="{FONT};font-size:12px;'
+                     f'font-weight:{"bold" if on else "normal"}" fill="{"#111" if on else "#adb5bd"}">{lab}</text>')
+    o.append(f'<text x="60" y="618" style="{FONT};font-size:11px" fill="#5c4700">grey pins: leave unconnected</text>')
+    # sensor
+    o.append('<g filter="url(#sh)"><rect x="842" y="150" width="300" height="230" rx="10" fill="url(#pcb)"/></g>')
+    for cx in (920, 1064):
+        o.append(f'<circle cx="{cx}" cy="208" r="48" fill="url(#can)" stroke="#495057" stroke-width="2"/>')
+        o.append(f'<circle cx="{cx}" cy="208" r="32" fill="#343a40" opacity="0.85"/>')
+    o.append(f'<text x="1128" y="320" text-anchor="end" style="{FONT};font-size:14px;font-weight:bold" fill="#fff">RCWL-1601</text>')
+    o.append(f'<text x="1128" y="338" text-anchor="end" style="{FONT};font-size:14px;font-weight:bold" fill="#fff">/ HC-SR04P</text>')
+    o.append(f'<text x="1128" y="362" text-anchor="end" style="{FONT};font-size:12px" fill="#cfe2ff">3.3 V version</text>')
+    # servo
+    o.append('<rect x="836" y="456" width="22" height="76" rx="4" fill="#212529"/>')  # servo plug
+    for y, col in ((470, "#6b3f1d"), (494, "#e03131"), (518, "#f08c00")):  # servo's own cable
+        o.append(f'<path d="M 858 {y} C 920 {y} 930 494 990 494" stroke="{col}" stroke-width="3" fill="none"/>')
+    o.append('<g filter="url(#sh)"><rect x="990" y="440" width="150" height="110" rx="8" fill="url(#servo)"/></g>')
+    o.append('<rect x="968" y="472" width="194" height="12" rx="3" fill="#2a56b4"/>')
+    o.append('<circle cx="1105" cy="440" r="20" fill="#2a56b4"/><circle cx="1105" cy="440" r="7" fill="#f8f9fa"/>')
+    o.append(f'<text x="1065" y="525" text-anchor="middle" style="{FONT};font-size:14px;font-weight:bold" fill="#fff">SG90 servo</text>')
+    for pin, (x, y) in pins.items():
+        if pin.startswith("SENSOR."):
+            o.append(f'<rect x="{x - 14}" y="{y - 6}" width="14" height="12" rx="2" fill="#ced4da" stroke="#868e96"/>')
+            o.append(f'<text x="{x + 8}" y="{y + 4}" style="{FONT};font-size:12px;font-weight:bold" '
+                     f'fill="#fff">{pin.split(".")[1]}</text>')
+        elif pin.startswith("SERVO."):
+            o.append(f'<text x="{x - 22}" y="{y - 4}" text-anchor="end" style="{FONT};font-size:11px;font-weight:bold" '
+                     f'fill="#333">{pin.split(".")[1]}</text>')
+    # wires from the NETLIST
+    by_wire = OrderedDict()
+    for r in rows:
+        by_wire.setdefault(r["Wire"], []).append(r)
+    lanes = {w: 420 + i * 34 for i, w in enumerate(by_wire)}
+    for w, ends in by_wire.items():
+        a = next(e for e in ends if e["Pin"].split(".")[0] in LEFT)
+        b = next(e for e in ends if e["Pin"].split(".")[0] in RIGHT)
+        (x1, y1), (x2, y2) = pins[a["Pin"]], pins[b["Pin"]]
+        x2 -= 14 if b["Pin"].startswith("SENSOR.") else 6
+        col = NET_COLORS.get(a["Net"], "#444")
+        lx = lanes[w]
+        o.append(f'<g class="wire net" data-net="{a["Net"]}" data-wire="{w}"><title>{escape(w + ": " + a["Pin"] + " → " + b["Pin"] + " (" + a["Net"] + ")")}</title>')
+        d = (f'M {x1} {y1} L {lx - 12} {y1} Q {lx} {y1} {lx} {y1 + (12 if y2 > y1 else -12)} '
+             f'L {lx} {y2 + (-12 if y2 > y1 else 12)} Q {lx} {y2} {lx + 12} {y2} L {x2} {y2}')
+        o.append(f'<path d="{d}" stroke="#fbfaf7" stroke-width="9" fill="none" stroke-linejoin="round"/>')
+        o.append(f'<path d="{d}" stroke="{col}" stroke-width="4.5" fill="none" stroke-linejoin="round"/>')
+        o.append(f'<rect x="{lx - 17}" y="{(y1 + y2) / 2 - 10}" width="34" height="20" rx="10" fill="{col}"/>')
+        o.append(f'<text x="{lx}" y="{(y1 + y2) / 2 + 4.5}" text-anchor="middle" style="{FONT};font-size:12px;'
+                 f'font-weight:bold" fill="#fff">{w}</text></g>')
+    # legend
+    for i, n in enumerate(NET_ORDER):
+        x = 360 + i * 125
+        o.append(f'<rect x="{x}" y="94" width="22" height="8" rx="4" fill="{NET_COLORS[n]}"/>')
+        o.append(f'<text x="{x + 28}" y="103" style="{FONT};font-size:12px" fill="#333">{n}</text>')
+    o.append(f'<text x="360" y="128" style="{FONT};font-size:12px" fill="#666">Generated from the NETLIST table in '
+             'docs/WIRING.md by scripts/gen_diagrams.py.</text>')
     o.append("</svg>\n")
     return "\n".join(o)
 
@@ -297,11 +253,11 @@ def live_link_svg():
 # =========================================================================== build flow
 def build_flow_svg():
     stages = [
-        ("1", "Fit coupon", "print 08 first", ["pilot + clearance holes", "servo cut-out + flange", "12 mm switch, M2 nut"]),
-        ("2", "Servo-fit subset", "roof + hub + keeper", ["servo drops in, flange flat", "hub axial play 0.2–0.6 mm", "keeper fitted, hub turns"]),
-        ("3", "Bench power", "no ESP32 yet", ["fuse in battery +", "OUT 5 V at the switch", "OFF→ON restart (open issue)"]),
-        ("4", "Flash + bench run", "harness off to flash", ["splash, grid, sweep", "CENTER_ONLY → horn", "echo at a known distance"]),
-        ("5", "Full print", "body + front panel", ["fit all modules", "sweep clears keeper", "charge + run log"]),
+        ("1", "Fit coupon", "print 05 first (≈ 20 min)", ["CYD pegs: snug, not loose", "sensor cans press in", "servo screw pilots bite"]),
+        ("2", "Bench: wire + flash", "nothing printed yet", ["P1 VIN ≈ 5 V (meter)", "grid + sweep on screen", "echo at a known distance"]),
+        ("3", "Print", "P1 shell, P2 bezel/base/head", ["no supports needed", "bezel slides in grooves", "base clicks in"]),
+        ("4", "Assemble", "CENTER_ONLY = true first", ["servo at 90°, fit head", "head turns ±60° freely", "cables don't snag"]),
+        ("5", "Run + record", "CENTER_ONLY = false", ["sweep matches roof ticks", "no resets at servo start", "log in VALIDATION.md"]),
     ]
     W, H = 1250, 330
     bw, gap, x0, y0 = 216, 28, 30, 90
@@ -400,8 +356,8 @@ def equation_figures():
     ax.annotate(f"5.0 V in → {rm.divider_vout(5.0, rm.R1_OHM, rm.R2_OHM):.2f} V", (5.0, 3.0), (3.2, 1.2),
                 arrowprops=dict(arrowstyle="->", color="#333"))
     ax.set_xlabel("ECHO high level Vin (V)")
-    ax.set_ylabel("GPIO26 Vout (V)")
-    ax.set_title(f"Vout = Vin·R2/(R1+R2)   (worst case at 5.25 V with 1 % parts: {lo:.2f}–{hi:.2f} V)", fontsize=10.5)
+    ax.set_ylabel("IO35 Vout (V)")
+    ax.set_title(f"FALLBACK ONLY (5 V HC-SR04): Vout = Vin·R2/(R1+R2)\nworst case at 5.25 V with 1 % parts: {lo:.2f}–{hi:.2f} V", fontsize=10.5)
     fig.tight_layout()
     fig.savefig(IMG / "eq_divider.svg")
     plt.close(fig)
@@ -429,22 +385,13 @@ def main():
     wiring_only = "--wiring-only" in sys.argv
     DIAG.mkdir(parents=True, exist_ok=True)
     rows = load_netlist()
-    (DIAG / "wiring_full.svg").write_text(wiring_svg(rows, "Radar V5.1 — full wiring (pin → net)",
-                                                     "Power and signal. Hover a dot for the net-list row ID."), encoding="utf-8")
-    (DIAG / "wiring_power.svg").write_text(wiring_svg([r for r in rows if r["Kind"] == "POWER"],
-                                                      "Radar V5.1 — power wiring",
-                                                      "Fuse on battery +, switch cuts the load, separate servo and ESP32 branches."),
-                                           encoding="utf-8")
-    (DIAG / "wiring_signal.svg").write_text(wiring_svg([r for r in rows if r["Kind"] == "SIGNAL"],
-                                                       "Radar V5.1 — signal wiring",
-                                                       "HC-SR04 through the ECHO divider, servo PWM, LCD over SPI."),
-                                            encoding="utf-8")
+    (DIAG / "wiring_full.svg").write_text(wiring_svg(rows, "Radar V6 — wiring (pin → net)",
+                                                     "7 wires. Hover a dot for the net-list row ID."), encoding="utf-8")
+    (DIAG / "wiring_picture.svg").write_text(wiring_picture_svg(rows), encoding="utf-8")
     if wiring_only:
         print("wiring diagrams written")
         return
-    (DIAG / "callout_echo_divider_fuse.svg").write_text(callout_svg(), encoding="utf-8")
     (DIAG / "build_flow.svg").write_text(build_flow_svg(), encoding="utf-8")
-    (DIAG / "live_link_tap.svg").write_text(live_link_svg(), encoding="utf-8")
     equation_figures()
     print("diagrams written:", ", ".join(sorted(p.name for p in DIAG.glob("*.svg"))))
 

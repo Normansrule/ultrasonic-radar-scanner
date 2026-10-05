@@ -18,7 +18,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[2]
 SITE = ROOT / "site"
 
-SAMPLE_LOG = """# Radar V5.1 - educational ultrasonic sonar, radar-style display
+SAMPLE_LOG = """# Radar V6 - educational ultrasonic sonar, radar-style display
 # sweep 30..150 deg, step 3, settle 70 ms, range 200 cm, echo timeout 13812 us
 host_ms,angle_deg,distance_cm
 0,84,61.0
@@ -64,7 +64,9 @@ def main():
         page.goto(base + "/index.html")
         page.wait_for_timeout(1500)
         check("landing: simulator readout filled", page.inner_text("#r-sweep") not in ("", "–"), page.inner_text("#r-sweep"))
-        check("landing: wiring explorer chips", page.locator("#netchips .chip").count() >= 15)
+        check("landing: wiring explorer chips", page.locator("#netchips .chip").count() == 6)  # 6 nets in V6
+        page.click('#netchips .chip[data-net="ECHO"]')
+        check("landing: wiring explorer filters", page.locator("#pinlist tbody tr").count() == 2)
         check("landing: links to live console", page.locator('a[href="live.html"]').count() >= 2)
         sw = page.evaluate("navigator.serviceWorker.getRegistration().then(r => !!r)")
         page.wait_for_timeout(500)
@@ -112,7 +114,8 @@ def main():
 
         # firmware flasher page
         page.goto(base + "/flash.html")
-        check("flash: page has the safety steps", "unplug the" in page.inner_text("main").lower())
+        check("flash: page has the steps and honest status", "data" in page.inner_text("main").lower()
+              and "not yet been tested on a real board" in page.inner_text("main"))
         if (SITE / "firmware" / "manifest.json").exists():
             man = page.evaluate("fetch('firmware/manifest.json').then(r => r.json())")
             part = man["builds"][0]["parts"][0]
