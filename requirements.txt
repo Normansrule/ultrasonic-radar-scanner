@@ -3,7 +3,7 @@
 cadquery==2.8.0
 cadquery-ocp==7.9.3.1.1
 trimesh==5.1.0
-numpy==2.4.4
+numpy==2.5.3
 pillow==12.2.0
 matplotlib==3.10.9
 Markdown==3.10.2
