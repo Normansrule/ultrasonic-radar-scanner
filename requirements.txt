@@ -5,6 +5,6 @@ cadquery-ocp==7.9.3.1.1
 trimesh==5.1.0
 numpy==2.4.4
 pillow==12.2.0
-matplotlib==3.10.9
+matplotlib==3.11.2
 Markdown==3.10.2
 pytest==9.1.1
